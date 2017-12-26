@@ -1,0 +1,51 @@
+title: Lorenzo Cesconetto
+email: lorenzo@lorenzocesconetto.com
+description: > # this means to ignore newlines until "baseurl:"
+  We write about entrepreneurship, university and life meaning. This blog is designed to help people find passion in life!
+permalink: ':title/'
+
+# baseurl: # the subpath of your site, e.g. /blog
+url: "http://lorenzocesconetto.com" # the base hostname & protocol for your site, e.g. http://example.com
+
+# Set Timezone in Sao Paulo
+timezone: America/Sao_Paulo
+
+# Author settings
+author: Lorenzo Cesconetto # add your name
+author-pic: lorenzo.jpg
+about-author: Hi! My name is Lorenzo Cesconetto. I’m a Brazilian engineering student and entrepreneur. This blog is designed to help people find passion in life!
+
+# Contact links
+email: lorenzo@lorenzocesconetto.com # Add your Email address
+
+# phone: # Add your Phone number
+website: lorenzocesconetto.com # Add your website, do not add http://
+linkedin: /lorenzo-cesconetto/ # Add your Linkedin handle
+# github: #artemsheludko # Add your Github handle
+# twitter: #'@artemsheludko_' # Add your Twitter handle
+# facebook: # Add your Facebook handle
+instagram: lorenzocesconeto # Add your Instagram handle
+# pinterest: # Add your Pinterest handle
+
+# Newsletter
+mailchimp: 4bb34e0f21 # Add your MailChimp form identifier.
+
+# Disqus
+discus_identifier: lorenzocesconetto-com # Add your discus identifier
+
+# Tracker
+analytics: UA-111507718-1 # Google Analytics
+
+# Paginate
+paginate: 6
+paginate_path: /page:num/
+
+# Build settings
+markdown: kramdown
+plugins:
+  - jekyll-paginate
+  - jekyll-feed
+  - jekyll-sitemap
+
+include: [_pages]
+exclude: ["node_modules", "gulpfile.js", "package.json", "yarn.lock"]

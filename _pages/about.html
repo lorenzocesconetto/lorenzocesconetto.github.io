@@ -1,0 +1,113 @@
+---
+layout: home-page
+title: About
+permalink: /about/
+---
+<div class="small-wrapper">
+  <div class="about-container">
+    <section class="about-header">
+      <div class="author-image-container">
+        <img src="{{site.baseurl}}/assets/img/{% if site.author-pic %}{{site.author-pic}}{% endif %}" alt="{{site.author}}">
+      </div>
+      <p class="subtitle">{{site.about-author}}</p>
+    </section>
+    <section class="about-body">
+      <h2>What I write about</h2>
+      <p> &emsp; &emsp; I write articles that can make people's lives better. Also, I share my thoughts about university and entrepreneursip. The articles are supposed to help you find your passion in life and pursue your dreams</p>
+      
+      <h2>Why I started this blog, and why you should start yours</h2>
+      <p></p>
+
+      <h2>How I developed this Blog</h2>
+      <p> &emsp; &emsp; If you're thinking about starting your own blog this is how I started mine step-by-step. I use a tool called Jekyll, which makes it easier to maintain.
+
+        <ul>
+          <li>You need some basic knowledge of HTML and CSS, which you can learn <a href="https://www.codecademy.com/" target="_blank">here</a>.</li>
+          <li>Then you should learn about the Jekyll tool, I recommend this <a href="https://www.udemy.com/criando-sites-estaticos-com-jekyll/learn/v4/t/lecture/7225206?start=0" target="_blank">link</a>. It's in Portuguese.</li>
+          <li>You can find hundreds of free template to get started <a href="http://themes.jekyllrc.org/" target="_blank">here</a>.</li>
+          <li>The template I'm using I got from this guy on <a href="https://github.com/artemsheludko/adam-blog" target="_blank">github</a>.</li>
+        </ul>
+      </p>
+
+      <h2>My Story</h2>
+      <p> &emsp; &emsp; Until early on school, I didn't have a passion and I thought I did not like school. When finally, for the first time in life I had a professor who hed passion for what he did, he taught math by the way. And for the first time in line I was challenged, and I liked it! I realized that math is awesome, and the only reason I didn't like it before was because of the way we're taught in school, which sucks.
+      <br>
+      <!-- Remember to include a couple pics -->
+      &emsp; &emsp; From that on, everything changed. In the first year o high school I got awarded in a internal competition in my school and that ended up being printed in the news: 
+      #Put pic here
+
+      In the second year of high school I was the champion of the Brazilian Physics Olympics, not only the single person to achieve this in my school, but the single person to achieve this in the entire state. 
+      #Put pic here
+
+      This entire experience was really important to me, because it was the first time I realized it's possible to achieve anything that you put your mind into it.
+      <br>
+      &emsp; &emsp; After high school, I was accepted at the best university in my state (UFES). During the first two years I dedicated myself to the gym. I went from 50kg to 70kg during that period. I was really skinny, so gaining weight was important to me, and this was a pretty valuable experience. I was extremely disciplined, and I still carry some of that discipline today. 
+      <br>
+      &emsp; &emsp; I went to Nebraska
+      <br>
+      &emsp; &emsp; I left home ! But I felt like there was something missing, mainly because I felt like I was not making an impact. So I decided to leave everything behind to come to São Paulo in order to pursue my dreams.
+      <br>
+       &emsp; &emsp; By the way, my big dream is to create an innovative company where people will be happy to come to work on modays and that will inspire other entrepreneurs in my country. I believe entrepreneurship is the key to make Brazil a better place. 
+      <br>
+       &emsp; &emsp; Since I came to São Paulo, I've been attending the best university in Latin America (UNICAMP), and also I got really engaged in the startup world. I was the champion of the "Unicamp Entrepreneurial Challenge" which is a business model competition based on the patents of the university. Also, I won the"Starting Point" startup competition, which was organized by students from the most important universities in Brazil (ITA, UNICAMP, MACKENZIE and FGV).
+       </p>
+      <ul class="contact-list">
+      
+      <!-- {% if site.email %}
+        <li class="email"><a href="mailto:{{site.email}}"><i class="fa fa-envelope-o"></i></a></li>
+      {% else %}
+        <li class="email"><a href="mailto:example.adam@blog.com"><i class="fa fa-envelope-o" aria-hidden="true"></i></a></li>
+      {% endif %} -->
+
+<!--       {% if site.phone %}
+        <li class="phone"><a href="tel:{{site.phone}}"><i class="fa fa-phone"></i></a></li>
+      {% else %}
+        <li class="phone"><a href="tel:044 825 5523"><i class="fa fa-phone" aria-hidden="true"></i></a></li>
+      {% endif %}
+ -->
+<!--       {% if site.website %}
+        <li class="website"><a href="http://{{site.website}}" target="_blank"><i class="fa fa-globe"></i></a></li>
+      {% else %}
+        <li class="website"><a href="https://artemsheludko.github.io" target="_blank"><i class="fa fa-globe" aria-hidden="true"></i></a></li>
+      {% endif %}
+ -->
+      {% if site.linkedin %}
+        <li class="linkedin"><a href="https://in.linkedin.com/in/{{site.linkedin}}" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+      {% else %}
+        <li class="linkedin"><a href="https://in.linkedin.com/" target="_blank"><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
+      {% endif %}
+
+<!--       {% if site.github %}
+        <li class="github"><a href="http://github.com/{{site.github}}" target="_blank"><i class="fa fa-github"></i></a></li>
+      {% else %}
+        <li class="github"><a href="http://github.com/artemsheludko" target="_blank"><i class="fa fa-github" aria-hidden="true"></i></a></li>
+      {% endif %}
+ -->
+<!--       {% if site.twitter %}
+        <li class="twitter"><a href="https://twitter.com/{{site.twitter}}" target="_blank"><i class="fa fa-twitter"></i></a></li>
+      {% else %}
+        <li class="twitter"><a href="https://twitter.com/artemsheludko_" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+      {% endif %}
+ -->
+<!--       {% if site.facebook %}
+        <li class="facebook"><a href="https://facebook.com/{{site.facebook}}" target="_blank"><i class="fa fa-facebook"></i></a></li>
+      {% else %}
+        <li class="facebook"><a href="https://facebook.com/" target="_blank"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+      {% endif %}
+ -->
+      {% if site.instagram %}
+        <li class="instagram"><a href="https://instagram.com/{{site.instagram}}" target="_blank"><i class="fa fa-instagram"></i></a></li>
+      {% else %}
+        <li class="instagram"><a href="https://instagram.com/" target="_blank"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
+      {% endif %}
+
+<!--       {% if site.pinterest %}
+        <li class="pinterest"><a href="https://pinterest.com/{{site.pinterest}}" target="_blank"><i class="fa fa-pinterest"></i></a></li>
+      {% else %}
+        <li class="pinterest"><a href="https://pinterest.com/" target="_blank"><i class="fa fa-pinterest" aria-hidden="true"></i></a></li>
+      {% endif %}
+ -->
+      </ul>
+    </section> <!-- End About Body-->
+  </div> <!-- End About Container -->
+</div> <!-- End Small Wrapper -->
