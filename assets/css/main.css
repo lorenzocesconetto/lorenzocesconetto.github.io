@@ -5,6 +5,11 @@
   padding-left:5em;
 }
 
+.pic {
+  height: 380px;
+  display: block;
+  margin: 2% auto;
+}
 /*Lorenzo Fim*/
 
 .highlight {
