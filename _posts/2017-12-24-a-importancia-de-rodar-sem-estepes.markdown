@@ -19,3 +19,5 @@ published: true
 &emsp; &emsp; Algumas pessoas saem atirando para todo lado, sem mirar em algo que realmente faça sentido para elas, “se não der certo nessa empresa, eu vou pra vizinha, e se na vizinha não der certo, eu troco de setor”. Isso também é valido para relacionamentos, por exemplo uma pessoa que se relaciona com alguém mantendo uma terceira pessoa como “estepe”. Esta pessoa é mais propicia a desistir do seu relacionamento, ainda que ele faça todo o sentido para ela. Essa pessoa possivelmente não terá a persistência para passar pelos altos e baixos de um relacionamento duradouro.
 
 &emsp; &emsp; __As coisas extraordinárias da vida dão trabalho para se construir__, se fossem simples alguém já os teriam feito. O modelo “estepe” não constrói nada incrível, apenas o medíocre. Então, não declare falência antes de falir, não desista das suas paixões, e das coisas que realmente fazem sentido na sua vida.
+
+Se você quiser que eu escreva sobre algum tema específico, comente aqui em baixo. :)

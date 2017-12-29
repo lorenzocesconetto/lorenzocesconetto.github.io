@@ -50,3 +50,5 @@ __Para bloquear sites no Mac ou Linux:__
     sudo dscacheutil -flushcache
     ```
 Pressione "enter". Esse comando reseta os dados gravados de servidores no seu computador. Mas geralmente já funciona sem esse comando.
+
+Comenta aqui em baixo sugestões de melhoras, ou se você gostou do post! :)
