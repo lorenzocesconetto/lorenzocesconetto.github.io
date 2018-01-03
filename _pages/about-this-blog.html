@@ -1,0 +1,104 @@
+---
+layout: home-page
+title: About
+permalink: /about-this-blog/
+---
+<div class="small-wrapper">
+  <div class="about-container">
+    <section class="about-header">
+      <div class="author-image-container">
+        <img src="{{site.baseurl}}/assets/img/{% if site.author-pic %}{{site.author-pic}}{% endif %}" alt="{{site.author}}">
+      </div>
+      <p class="subtitle">{{site.about-author}}</p>
+    </section>
+    <section class="about-body">
+      <h2>What I write about</h2>
+      <p> &emsp; &emsp; I share my learnings about university, career, entrepreneurship and personal satisfaction. The articles are supposed to help you make wiser decisions and inspire you to pursue your dreams</p>
+      
+      <h2>Why I started this blog</h2>
+      <p> &emsp; &emsp; Imagine life as if it was a long mountain climb, every time you take a step, you get to a higher spot that allows you to see the bigger picture of what is passed. I wish I had somebody a few steps in front of me to guide and mentor my choices. In this blog, I want to offer you this mentorship I never had! I am sharing what I can see from the spot I am right now, hoping it will help you to make smart decisions.</p>
+      
+      <h2>Why you should start your blog</h2>
+      <p>&emsp; &emsp; I'll list here some reasons to start your blog:
+      <ul>
+        <li>Helping other people is rewarding.</li>
+        <li>Puting your own ideas out there in the world is a good challenge. Your ideas will be put to test!</li>
+        <li>Find other people who think like you.</li>
+        <li>Get connected to your environment.</li>
+        <li>It's really cool to have a blog.</li>
+      </ul>
+      <p>Besides all that, I'll leave you with this quote:</p>
+      <blockquote> "If you want to find your purpose in life, help somebody to find their purpose in life" - Simon Sinek.</blockquote></p>
+
+      <h2>How I developed this Blog</h2>
+      <p> &emsp; &emsp; If you're thinking about starting your own blog, here is a list of the steps I took to started mine. I'm hosting it on github pages (it's free =) ), and I use a tool called Jekyll, which makes it easier to maintain.
+
+        <ul>
+          <li>You need some basic knowledge of HTML and CSS, which you can learn <a href="https://www.codecademy.com/" target="_blank">here</a>.</li>
+          <li>Then you should learn about the Jekyll tool and web deploying, so I recommend this <a href="https://www.udemy.com/criando-sites-estaticos-com-jekyll/learn/v4/t/lecture/7225206?start=0" target="_blank">link</a> for learning about those (It's in Portuguese).</li>
+          <li>You can find hundreds of free template to get started <a href="http://themes.jekyllrc.org/" target="_blank">here</a>.</li>
+          <li>The template I'm using I got from this guy on <a href="https://github.com/artemsheludko/adam-blog" target="_blank">github</a>.</li>
+        </ul>
+      &emsp; &emsp; If this is too much work, you can always go with platforms that build up web sites, although they tend to be more expensive, it's faster.
+      </p>
+
+      <ul class="contact-list">
+      
+      <!-- {% if site.email %}
+        <li class="email"><a href="mailto:{{site.email}}"><i class="fa fa-envelope-o"></i></a></li>
+      {% else %}
+        <li class="email"><a href="mailto:example.adam@blog.com"><i class="fa fa-envelope-o" aria-hidden="true"></i></a></li>
+      {% endif %} -->
+
+<!--       {% if site.phone %}
+        <li class="phone"><a href="tel:{{site.phone}}"><i class="fa fa-phone"></i></a></li>
+      {% else %}
+        <li class="phone"><a href="tel:044 825 5523"><i class="fa fa-phone" aria-hidden="true"></i></a></li>
+      {% endif %}
+ -->
+<!--       {% if site.website %}
+        <li class="website"><a href="http://{{site.website}}" target="_blank"><i class="fa fa-globe"></i></a></li>
+      {% else %}
+        <li class="website"><a href="https://artemsheludko.github.io" target="_blank"><i class="fa fa-globe" aria-hidden="true"></i></a></li>
+      {% endif %}
+ -->
+      {% if site.linkedin %}
+        <li class="linkedin"><a href="https://in.linkedin.com/in/{{site.linkedin}}" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+      {% else %}
+        <li class="linkedin"><a href="https://in.linkedin.com/" target="_blank"><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
+      {% endif %}
+
+<!--       {% if site.github %}
+        <li class="github"><a href="http://github.com/{{site.github}}" target="_blank"><i class="fa fa-github"></i></a></li>
+      {% else %}
+        <li class="github"><a href="http://github.com/artemsheludko" target="_blank"><i class="fa fa-github" aria-hidden="true"></i></a></li>
+      {% endif %}
+ -->
+<!--       {% if site.twitter %}
+        <li class="twitter"><a href="https://twitter.com/{{site.twitter}}" target="_blank"><i class="fa fa-twitter"></i></a></li>
+      {% else %}
+        <li class="twitter"><a href="https://twitter.com/artemsheludko_" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+      {% endif %}
+ -->
+<!--       {% if site.facebook %}
+        <li class="facebook"><a href="https://facebook.com/{{site.facebook}}" target="_blank"><i class="fa fa-facebook"></i></a></li>
+      {% else %}
+        <li class="facebook"><a href="https://facebook.com/" target="_blank"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+      {% endif %}
+ -->
+      {% if site.instagram %}
+        <li class="instagram"><a href="https://instagram.com/{{site.instagram}}" target="_blank"><i class="fa fa-instagram"></i></a></li>
+      {% else %}
+        <li class="instagram"><a href="https://instagram.com/" target="_blank"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
+      {% endif %}
+
+<!--       {% if site.pinterest %}
+        <li class="pinterest"><a href="https://pinterest.com/{{site.pinterest}}" target="_blank"><i class="fa fa-pinterest"></i></a></li>
+      {% else %}
+        <li class="pinterest"><a href="https://pinterest.com/" target="_blank"><i class="fa fa-pinterest" aria-hidden="true"></i></a></li>
+      {% endif %}
+ -->
+      </ul>
+    </section> <!-- End About Body-->
+  </div> <!-- End About Container -->
+</div> <!-- End Small Wrapper -->
