@@ -8,7 +8,7 @@ tags: [Universidade]
 author: Lorenzo Cesconetto # Add name author (optional)
 published: true # Shows or hides a post
 ---
-&emsp; &emsp; Esse artigo é direcionado à todas as pessoas que gastam mais tempo do que gostariam com redes sociais.
+&emsp; &emsp; Esse artigo é direcionado a todas as pessoas que gastam mais tempo do que gostariam com redes sociais.
 
 &emsp; &emsp; As redes sociais causam dependência e são perigosas. As redes são comparáveis ao álcool, em pequenas quantidades podem ser divertidas, mas quando evoluem para um vício, torna-se algo muito perigoso.
 
