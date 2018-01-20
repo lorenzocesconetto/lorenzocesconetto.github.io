@@ -37,3 +37,5 @@ published: true
 &emsp; &emsp; Precisamos discutir nossas universidades! O modelo atual está rasgando verba pública e não fará do nosso país um lugar melhor.
 
 Se quiser conversar comigo sobre algo específico ou me passar um feedback, comente aqui em baixo. :)
+
+

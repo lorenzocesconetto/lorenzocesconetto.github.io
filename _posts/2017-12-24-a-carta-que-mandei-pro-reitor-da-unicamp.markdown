@@ -12,7 +12,7 @@ published: true # Shows or hides a post
 &emsp; &emsp; O conteúdo desse post é direcionado à pessoas que estão decidindo sobre a universidade que atenderão e à pessoas que cursam universidade atualmente. Apresento aqui uma crítica às universidades brasileiras.
 Serei bem direto, se eu pudesse voltar atrás, não teria feito graduação no Brasil. Aqui vou colocar a carta que enviei para Reitor da UNICAMP, que expressa bem a minha visão.
 
->  Exmo. Sr. Reitor da Universidade Estadual de Campinas, Prof. Dr. Marcelo Knobel,
+> Exmo. Sr. Reitor da Universidade Estadual de Campinas, Prof. Dr. Marcelo Knobel,
 >
 > [...] O motivo do meu contato é que gostaria de conversar com o senhor sobre a cultura dos cursos de engenharia da nossa universidade.
 >

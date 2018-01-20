@@ -10,15 +10,21 @@ published: true # Shows or hides a post
 ---
 &emsp; &emsp; Esse artigo é direcionado a todas as pessoas que gastam mais tempo do que gostariam com redes sociais.
 
-&emsp; &emsp; As redes sociais causam dependência e são perigosas. As redes são comparáveis ao álcool, em pequenas quantidades podem ser divertidas, mas quando evoluem para um vício, torna-se algo muito perigoso.
+&emsp; &emsp; Quando usamos redes sociais uma substância chamada dopamina é liberada no nosso cérebro, por isso nos sentimos bem ao usá-las. Essa mesma substância é liberada quando consumimos álcool, fumamos e etc, ou seja, a dopamina faz que essas atividades sejam altamente viciantes.
 
-&emsp; &emsp; O hábito de acessar alguma rede social está tão enraizado que algumas pessoas abrem a aba do facebook no computador sem se dar conta!
+&emsp; &emsp; Além disso, diversas pesquisas apontam que o uso de redes sociais geram depressão (sugerindo um [artigo de harvard][HBR] sobre o assunto). Aproveito para sugerir a leitura do livro Hooked, um dos livros mais lidos no Vale do Silício sobre como criar produtos viciantes.
+
+&emsp; &emsp; Alguns sintomas que o uso das redes sociais chegou à níveis preocupantes:
+- Você abre a página (ou app) da sua rede social favorita sem se dar conta disso ("no automático").
+- O número de likes nas suas fotos te preocupam bastante.
+- Quando você se sente sozinho ou triste, você recorre à mídias sociais para se sentir melhor.
+
 Eu quero que você retome o controle sobre a sua vida! Seu trabalho é quebrar um hábito bem enraizado. Vou te contar o que eu fiz para controlar esse mal hábito, talvez funcione com você:
 
 - Eu deletei todos apps de rede social do meu celular. Quando eu realmente preciso acessar por algum motivo, eu baixo o app novamente, e depois que eu uso, deleto ele de novo.
 - Bloqueei o Facebook, Instagram e Youtube no meu computador. Para acessar eu tenho o trabalho de desbloquear e depois bloquear novamente.
 
-A idéia é criar uma barreira de forma que seja trabalhoso acessar os sites que tomam seu tempo. Algumas pessoas me acham esse método radical, mas se você realmente quer mudar pra melhor, você terá que abrir mão de algumas coisas. To colocando aqui um tutorial de como fazer o bloqueio desses sites no computador.
+A idéia é criar uma barreira de forma que seja trabalhoso acessar os sites que tomam seu tempo. O método é radical, mas se você realmente quer mudar isso, é preciso abrir mão de algumas coisas. To colocando aqui um tutorial de como fazer o bloqueio desses sites no computador.
 
 __Para bloquear sites no Mac ou Linux:__
 
@@ -51,4 +57,10 @@ __Para bloquear sites no Mac ou Linux:__
     ```
 Pressione "enter". Esse comando reseta os dados gravados de servidores no seu computador. Mas geralmente já funciona sem esse comando.
 
-Comenta aqui em baixo sugestões de melhoras, ou se você gostou do post! :)
+Se esse artigo te ajudou de alguma forma, ajude outras pessoas com problemas semelhantes.
+Comenta aqui em baixo sugestões de posts! :)
+
+
+[HBR]: https://hbr.org/2017/04/a-new-more-rigorous-study-confirms-the-more-you-use-facebook-the-worse-you-feel
+
+
