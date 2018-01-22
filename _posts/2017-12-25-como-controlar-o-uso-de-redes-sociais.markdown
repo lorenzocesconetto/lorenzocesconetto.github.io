@@ -6,7 +6,7 @@ description: Bloquear o uso de Redes Sociais # Add post description (optional)
 img: addict.jpg # Add image post (optional)
 tags: [Universidade]
 author: Lorenzo Cesconetto # Add name author (optional)
-published: true # Shows or hides a post
+published: true
 ---
 &emsp; &emsp; Esse artigo é direcionado a todas as pessoas que gastam mais tempo do que gostariam com redes sociais.
 
