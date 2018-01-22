@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Filosofia de um VC do Vale
+title: Filosofia de um VC do Vale do Silício
 date: 2018-01-21 23:01:31
 description: Filosofia de investimentos da Draper
 img: andy.JPG 
