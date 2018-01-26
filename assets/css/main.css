@@ -1,11 +1,16 @@
 
 /*Lorenzo Inicio*/
 /*Media queries inicio*/
+      
+      @media screen and (min-width: 751px) {
+        .menu-icon-container {
+          display: none;
+        }
+      }
       /* When the screen is less than 600 pixels wide, hide all links, except for the first one ("Home"). Show the link that contains should open and close the topnav (.icon) */
       @media screen and (max-width: 750px) {
-        .topnav a:not(:first-child) {display: none;}
-        .topnav a.icon {
-          float: right;
+        .topnav a:not(:last-child) {display: none;}
+        .menu-icon-container {
           display: block;
         }
       }
@@ -1840,9 +1845,4 @@ pre code {
   }
 }
 
-@media only screen and (max-width: 410px) {
-  .main-header .logo a {
-    font-size: 16px;
-  }
-}
 
