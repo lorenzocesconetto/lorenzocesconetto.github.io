@@ -3,9 +3,8 @@
     <div class="header-flex">
       <div class="topnav" id="myTopnav">
         
-        <a {% if page.url == "{{site.baseurl}}" %} class="active" {% endif %} href="{{site.baseurl}}/">Blog</a>
-
-        <a href="{{site.baseurl}}/about-me">About me</a>
+        <a {% if page.url == "/" %} class="active" {% endif %} href="{{site.baseurl}}/">Blog</a>
+        <a {% if page.url == "/about-me/" %} class="active" {% endif %} href="{{site.baseurl}}/about-me">About me</a>
         <a href="javascript:void(0);" class="icon" onclick="myFunction()">&#9776;</a>
       </div>
       
