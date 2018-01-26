@@ -6,13 +6,18 @@
         .menu-icon-container {
           display: none;
         }
+        .search-icon-container {
+          width: 15%;
+        }
       }
       /* When the screen is less than 600 pixels wide, hide all links, except for the first one ("Home"). Show the link that contains should open and close the topnav (.icon) */
       @media screen and (max-width: 750px) {
         .topnav a:not(:last-child) {display: none;}
-        .menu-icon-container {
+        
+        /*.menu-icon-container {
           display: block;
-        }
+        }*/
+
       }
 
       /* The "responsive" class is added to the topnav with JavaScript when the user clicks on the icon. This class makes the topnav look good on small screens (display the links vertically instead of horizontally) */
@@ -26,7 +31,7 @@
         .topnav.responsive a {
           float: none;
           display: block;
-          text-align: left;
+          text-align: right;
         }
       }
 /*Media queries Fim*/
@@ -44,7 +49,7 @@
           display: block;
           color: #000;
           text-align: center;
-          padding: 14px 12px;
+          padding: 14px 16px;
           text-decoration: none;
           font-size: 17px;
       }
@@ -1048,12 +1053,12 @@ pre code {
 }
 
 .menu-icon-container {
-  width: 25%;
+  /*width: 25%;*/
   text-align: left;
 }
 
 .search-icon-container {
-  width: 25%;
+  /*width: 25%;*/
   text-align: right;
 }
 
