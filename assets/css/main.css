@@ -1,91 +1,99 @@
 
 /*Lorenzo Inicio*/
 /*Media queries inicio*/
-      
-      @media screen and (min-width: 751px) {
-        .menu-icon-container {
-          display: none;
-        }
-        .search-icon-container {
-          width: 15%;
-        }
-      }
-      /* When the screen is less than 600 pixels wide, hide all links, except for the first one ("Home"). Show the link that contains should open and close the topnav (.icon) */
-      @media screen and (max-width: 750px) {
-        .topnav a:not(:last-child) {display: none;}
-        
-        /*.menu-icon-container {
-          display: block;
-        }*/
+            
+            @media screen and (min-width: 751px) {
+              .menu-icon-container {
+                display: none;
+              }
+              .search-icon-container {
+                width: 15%;
+              }
+            }
+/* When the screen is less than 600 pixels wide, hide all links, except for the first one ("Home"). Show the link that contains should open and close the topnav (.icon) */
+            @media screen and (max-width: 750px) {
+              .topnav a:not(:last-child) {display: none;}
+              
+              /*.menu-icon-container {
+                display: block;
+              }*/
 
-      }
+            }
 
-      /* The "responsive" class is added to the topnav with JavaScript when the user clicks on the icon. This class makes the topnav look good on small screens (display the links vertically instead of horizontally) */
-      @media screen and (max-width: 750px) {
-        .topnav.responsive {position: relative;}
-        .topnav.responsive a.icon {
-          position: absolute;
-          right: 0;
-          top: 0;
-        }
-        .topnav.responsive a {
-          float: none;
-          display: block;
-          text-align: right;
-        }
-      }
+/* The "responsive" class is added to the topnav with JavaScript when the user clicks on the icon. This class makes the topnav look good on small screens (display the links vertically instead of horizontally) */
+            @media screen and (max-width: 750px) {
+              .topnav.responsive {position: relative;}
+              .topnav.responsive a.icon {
+                position: absolute;
+                right: 0;
+                top: 0;
+              }
+              .topnav.responsive a {
+                float: none;
+                display: block;
+                text-align: right;
+              }
+            }
 /*Media queries Fim*/
 
 /*Top Navigation*/
-      /* Add a black background color to the top navigation */
-      .topnav {
-          /*background-color: #333;*/
-          overflow: hidden;
-      }
+/* Add a black background color to the top navigation */
+            .topnav {
+/*background-color: #333;*/
+                overflow: hidden;
+            }
 
-      /* Style the links inside the navigation bar */
-      .topnav a {
-          float: left;
-          display: block;
-          color: #000;
-          text-align: center;
-          padding: 14px 16px;
-          text-decoration: none;
-          font-size: 17px;
-      }
+/* Style the links inside the navigation bar */
+            .topnav a {
+                float: left;
+                display: block;
+                color: #000;
+                text-align: center;
+                padding: 14px 16px;
+                text-decoration: none;
+                font-size: 17px;
+            }
 
-      /* Change the color of links on hover */
-      .topnav a:hover {
-          background-color: #311e3e;
-          /*font-weight: bold;*/
-          color: white;
-      }
+/* Change the color of links on hover */
+            .topnav a:hover {
+                background-color: #311e3e;
+                /*font-weight: bold;*/
+                color: white;
+            }
 
-      /* Add an active class to highlight the current page */
-      .active {
-          background-color: #ddd;
-          color: white;
-      }
+/* Add an active class to highlight the current page */
+            .active {
+                background-color: #ddd;
+                color: white;
+            }
 
-      /* Hide the link that should open and close the topnav on small screens */
-      .topnav .icon {
-          display: none;
-      }
+/* Hide the link that should open and close the topnav on small screens */
+            .topnav .icon {
+                display: none;
+            }
 
 /*Low Navigation*/
-        .paragraph {
-          padding-left:5em;
-        }
+              .paragraph {
+                padding-left:5em;
+              }
 
-        .pic {
-          height: 380px;
-          display: block;
-          margin: 2% auto;
-        }
-        .pic-about{
-          display: block;
-          margin: 2% auto; 
-        }
+              .pic {
+                height: 380px;
+                display: block;
+                margin: 2% auto;
+              }
+              .pic-about{
+                display: block;
+                margin: 2% auto; 
+              }
+              .inner-menu li a{
+                padding: 15px 15px;
+              }
+              .inner-menu li a:hover{
+                background-color: #311e3e;
+                color: white;
+              }
+
 /*Lorenzo Fim*/
 
 .highlight {
@@ -1039,7 +1047,7 @@ pre code {
 
 .main-nav ul li a {
   display: block;
-  padding: 15px 0;
+  /*padding: 15px 0;*/
   text-decoration: none;
   text-transform: uppercase;
   font-weight: 400;
@@ -1048,8 +1056,8 @@ pre code {
 }
 
 .main-nav ul li a:hover {
-  opacity: .8;
-  color: #87314e;
+  /*opacity: .8;*/
+  /*color: #87314e;*/
 }
 
 .menu-icon-container {

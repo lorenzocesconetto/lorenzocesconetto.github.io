@@ -13,10 +13,10 @@
 
       <nav class="main-nav">
         <span class="menu-icon-close"><i class="fa fa-times" aria-hidden="true"></i></span>
-        <ul>
-          <li><a href="{{site.baseurl}}/">Blog</a></li>
+        <ul class="inner-menu">
+          <li><a {% if page.url == "/" %} class="active" {% endif %} href="{{site.baseurl}}/">Blog</a></li>
           <br>
-          <li><a href="{{site.baseurl}}/about-me">About me</a></li>
+          <li><a {% if page.url == "/about-me/" %} class="active" {% endif %} href="{{site.baseurl}}/about-me">About me</a></li>
         </ul>
       </nav>
 
