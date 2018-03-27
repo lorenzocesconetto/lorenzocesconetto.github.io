@@ -1,5 +1,10 @@
 
 /*Lorenzo Inicio*/
+/*Give phones a smooth with momentum scroll*/
+.touch {
+  -webkit-overflow-scrolling: touch;
+  overflow-y: scroll;
+}
 /*Media queries inicio*/
             
             @media screen and (min-width: 751px) {
