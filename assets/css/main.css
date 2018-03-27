@@ -1,6 +1,10 @@
 
 /*Lorenzo Inicio*/
 /*Give phones a smooth with momentum scroll*/
+.module {
+  -webkit-overflow-scrolling: touch;
+  overflow-y: scroll;
+}
 .touch {
   -webkit-overflow-scrolling: touch;
   overflow-y: scroll;
