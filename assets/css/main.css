@@ -3,7 +3,6 @@
 /*Give phones a smooth with momentum scroll*/
 html * {
   -webkit-overflow-scrolling: touch;
-  overflow-y: scroll;
 }
 /*Media queries inicio*/
             
