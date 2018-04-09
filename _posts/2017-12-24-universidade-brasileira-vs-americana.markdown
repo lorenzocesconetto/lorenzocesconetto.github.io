@@ -36,6 +36,6 @@ published: true
 
 &emsp; &emsp; Precisamos discutir nossas universidades! O modelo atual está rasgando verba pública e não fará do nosso país um lugar melhor.
 
-Se quiser conversar comigo sobre algo específico, comente aqui em baixo.
+Se quiser conversar comigo sobre algo específico, entre em contato comigo pelo <a href="https://www.linkedin.com/in/lorenzo-cesconetto/">LinkedIn</a>.
 
 

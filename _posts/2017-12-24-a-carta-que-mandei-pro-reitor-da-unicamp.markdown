@@ -40,6 +40,6 @@ mas elas saem daqui na mesma posição em que entraram?
 &emsp; &emsp; Diga-se de passagem, não recebi nenhuma resposta dele. 
 Eu discorro mais sobre o assunto de universidades no post sobre [universidade][post-universidade].
 
-Se houver alguma forma que eu possa te ajudar, comente aqui em baixo! :)
+Entre em contato comigo pelo <a href="https://www.linkedin.com/in/lorenzo-cesconetto/">LinkedIn</a>.
 
 [post-universidade]: http://lorenzocesconetto/universidade

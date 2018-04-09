@@ -1,5 +1,34 @@
-
 /*Lorenzo Inicio*/
+/*Table begin*/
+table {
+    margin: 1% auto;
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 60%;
+}
+th {
+    text-align: center;
+    vertical-align: middle;
+    font-weight: bold;
+    border: 2px solid #dddddd;
+    padding: 8px;
+}
+tr {
+    text-align: center;
+    vertical-align: middle;
+    border: 2px solid #dddddd;
+    padding: 8px;
+}
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+td {
+    padding: 8px;
+    border: 2px solid #dddddd;
+    text-align: center;
+    vertical-align: middle;
+}
+/*Table End*/
 /*Give phones a smooth with momentum scroll*/
 html * {
   -webkit-overflow-scrolling: touch;

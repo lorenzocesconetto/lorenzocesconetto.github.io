@@ -37,7 +37,7 @@ as coisas acontecem nesse planeta. Basicamente isso se resume em uma pergunta: �
 small group of thoughtful, committed people can change the world. Indeed, it is the only thing that ever 
 has.” - Margaret Mead.
 
-&emsp; &emsp; Se quiser conversar sobre um assunto específico, basta deixar um comentário!
+&emsp; &emsp; Se quiser conversar sobre um assunto específico, entre em contato comigo pelo <a href="https://www.linkedin.com/in/lorenzo-cesconetto/">LinkedIn</a>.
 
 [hbr]: https://hbr.org/2002/05/how-resilience-works
 
