@@ -62,4 +62,4 @@ __Para bloquear sites no Windows:__
 
 Acessa esse __<a target="_blank" href="https://www.pcworld.com/article/249077/web-apps/how-to-block-websites.html">tutorial</a>__.
 
-Se esse artigo te ajudou, ajude outras pessoas a quebrar esse mal hábito. Entre em contato comigo pelo <a href="https://www.linkedin.com/in/lorenzo-cesconetto/">LinkedIn</a>.
+Se esse artigo te ajudou, ajude outras pessoas a quebrar esse mal hábito. Entre em contato comigo pelo <a target="_blank" href="https://www.linkedin.com/in/lorenzo-cesconetto/">LinkedIn</a>.

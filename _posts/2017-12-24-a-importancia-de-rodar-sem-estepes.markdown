@@ -20,4 +20,4 @@ published: true
 
 &emsp; &emsp; __As coisas extraordinárias da vida dão trabalho para se construir__, se fossem simples alguém já os teriam feito. O modelo “estepe” não constrói nada incrível, apenas o medíocre. Então, não declare falência antes de falir, não desista das suas paixões, e das coisas que realmente fazem sentido na sua vida.
 
-Entre em contato comigo pelo <a href="https://www.linkedin.com/in/lorenzo-cesconetto/">LinkedIn</a>.
+Entre em contato comigo pelo <a target="_blank" href="https://www.linkedin.com/in/lorenzo-cesconetto/">LinkedIn</a>.
