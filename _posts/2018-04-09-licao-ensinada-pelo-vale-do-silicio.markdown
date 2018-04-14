@@ -6,48 +6,52 @@ description:
 img: lorenzo_google.JPG
 tags: [Empreendedorismo]
 author: Lorenzo Cesconetto # Add name author (optional)
-published: false
+published: true
 ---
 &emsp; O artigo é direcionado a todos que gostam do tema empreendedorismo. Recentemente passei um mês no Vale do Silício, e tirei uma lição valiosa de lá.
 
 &emsp; Primeiramente uma visão histórica das coisas.
-Existe uma teoria de que cada década guarda uma grande oportunidade de inovação durante seu período (aproximadamente). Uma tecnologia nova “destrava” varias possibilidades, coisas que até então eram impossíveis por conta de fatores econômicos ou técnicos, passam a ser realidade o que possibilita que empresas surjam, gerem valor para economia, e capturem parte desse valor.
+Existe uma teoria de que cada década guarda uma grande oportunidade de inovação durante seu período (aproximadamente). Uma tecnologia nova “destrava” várias possibilidades, coisas que até então eram impossíveis por conta de fatores econômicos ou técnicos, passam a ser realidade o que possibilita que empresas surjam, gerem valor para economia, e capturem de volta parte desse valor. 
 
-Assim, uma retrospectiva histórica seria:
+Algumas vezes essa revolução não vem de algo novo, mas sim do processo de democratização do acesso a dada tecnologia.
 
-Nos anos 80 a grande oportunidade estava nos computadores pessoais.
-Nos anos 90 a revolução da internet com as empresas “ponto com”.
-Nos anos 2000 foram mobile e aplicações mobile.
-Nos anos 2010 plataformas para conectar pessoas, se alavancando na grande quantidade de pessoas que passaram a possuir um smartphone.
+Assim, fazendo uma retrospectiva histórica:
 
-Para a próxima década, provavelmente teremos uma revolução na forma com que fazemos transações, isso com o auxilio do blockchain.
+- Nos anos 80 a grande oportunidade estava nos computadores pessoais. Com a criação dos microcomputadores, destravou-se a possibilidade de pessoas comuns possuírem um computador, e o seu acesso foi democratizado.
+- Nos anos 90 a revolução da internet com as empresas “ponto com”. Graças ao fato de pessoas comuns passarem a ter acesso à internet, o que antes só era possível para universidades e instituições militares.
+- Nos anos 2000 foram mobile e aplicações mobile. As peças eletrônicas e telefones celulares foram baratedados, assim celulares com mais funcionalidades e baratos começaram a se difundir (nesse caso mais pro final da década).
+- Nos anos 2010 plataformas para conectar pessoas e serviços, por exemplo, Uber e Airbnb. O que foi possível devido a quantidade de pessoas que passaram a possuir um smartphone.
+- Para a próxima década, provavelmente teremos uma revolução na forma com que fazemos transações, isso com o auxílio do blockchain.
 
-Para cada uma dessas gerações tecnológicas, temos algumas grandes vencedoras. O interessante, é que todas elas ou surgiram durante os estágios iniciais de euforia ou foram fundadas bem antes disso. Dificilmente depois.
+Para cada uma dessas gerações tecnológicas, temos algumas empresas que foram as grandes vencedoras. O interessante é que todas elas ou surgiram durante os estágios iniciais de euforia das novas possibilidades ou foram fundadas bem antes disso. Dificilmente depois.
 
-Computadores Pessoais: Apple (1976), Microsoft (1975).
-Ponto com: Google (1997), Amazon (1994), Hotmail (1996).
-Aplicações Mobile: Facebook (2004), Youtube (2005)
-Plataformas: Uber (2009), Airbnb (2008).
+- Computadores Pessoais: Sun (1982), HP (1939).
+- Ponto com: Google (1997), Amazon (1994), Hotmail (1996).
+- Aplicações Mobile: Facebook (2004), Youtube (2005).
+- Plataformas: Uber (2009), Airbnb (2008).
 
 Agora parando um pouco pra pensar. Que tipo de inovação você via no Brasil em 2008? Algo do tipo do Uber ou Airbnb? Provavelmente não.
 
-E que tipo de inovação você tem visto hoje? Muitas startups que são o “Uber das entregas”, “Uber dos pets”, etc. Elas estão com uma década de atraso.
+E que tipo de inovação você tem visto hoje? Talvez você veja muitas startups que são o “Uber das entregas”, “Uber dos pets”, etc. Elas estão com uma década de atraso.
 
 Olhando para o movimento do mercado Brasileiro nesses períodos.
 
-80: ?
-90: Somente em 1984 reserva de mercado 
-2000: Febre dos site’s. Muita gente querendo criar um site.
-2010: Febre dos aplicativos. A maioria das startups queria construir um app.
+80's: A IBM já operava no Brasil desde 1924, e nós eramos fortemente dependentes de tecnologias estrangeiras até meados dos anos 70. Somente em 1972 (48 anos depois) percebeu-se a importancia estrategica de nao dependermos de tecnologia de fora. Então,em 1977, depois de empresas como a Sun a IBM já eram gigantescas, instiuímos uma reserva de mercado como uma tentativa de recuperar o tempo perdido. Acabou não dando certo, e o resto é história.
 
-__Obs: Existe um artigo bem legal que conta a história da reserva de mercado nos anos 70 e 80, e pode ser baixado em pdf <a target="_blank" href="http://www.scielo.br/scielo.php?script=sci_arttext&pid=S0104-59702003000200008" target="_">nesse link</a> _
+90's: Começou-se a ver movimentos brasileiros mais relevantes já bem próximo do estouro da bolha, nos anos 99 e 2000. Apesar de uma defasagem menor, ainda estavamos cerca 5 anos atrás dos americanos.
+
+2000's: Febre dos aplicativos foi tardia, provavelmente porque e disseminacao dos smartphone tambem foi. Talvez o ápice foi atingido por volta do ano de 2012. As iniciativas empreendedoras na sua grande maioria era de criar um aplicativo.
+
+2010's: Mais ou menos onde estamos agora. Plataformas é uma geração tecnológica que já escolheu os grandes vencedores. Ainda assim, estamos persistindo em inovações nessa área. Muitas startups recentes criando plataformas que conectam pessoas X com serviços Y.
+
+_Obs: Existe um artigo bem legal que conta a história da reserva de mercado nos anos 70 e 80, e pode ser baixado em pdf <a target="_blank" href="http://www.scielo.br/scielo.php?script=sci_arttext&pid=S0104-59702003000200008" target="_">nesse link</a>._
 
 Percebeu algo? No Brasil estamos sempre uma geração atrás. Provavelmente porque estamos tentando construir (imitar) coisas que já deram certo. O problema é que não olhamos pro futuro, olhamos pros casos de sucesso do passado.
 Devido a esse atraso, na maioria das vezes criamos negócios locais, e não globais. Juntando ao fato de termos um mercado interno relativamente grande, ficamos ainda mais conformados em criar negócios restritos ao nosso território. Não expandir globalmente significa não capturar valor lá fora e trazer pro país, e significa que empresas estrangeiras mais maduras entram no nosso mercado e capturam valor aqui e mandam pro seu país de origem. Dessa forma não conseguimos nem proteger o mercado nacional. Startup’s como a Uber entram e conquistam market share, as empresas brasileiras como a 99 ou a Easy não são capazes de impedir o avanço dessas empresas. O resultado disso é uma déficit no balanço da nossa economia. Já ouvi milhares de vezes que “o empreendedorismo é o que vai salvar o Brasil”. Esse tipo de empreendedorismo que vai salvar o país?
 
-O objetivo de muitas startups brasileiras é criar um negocio e vender pra um player estrangeiro. Uma situação muito parecida com a relação comercial entre colônia e metrópole, onde a metrópole é dona dos meios de produção na colônia, assim capturando suas riquezas. Esse tipo de empreendedorismo que vai salvar o país?
+O objetivo de muitas startups brasileiras é criar um negocio e vender pra um _player_ estrangeiro. Uma situação muito parecida com a relação comercial entre colônia e metrópole, onde a metrópole é dona dos meios de produção na colônia, assim capturando suas riquezas. Esse tipo de empreendedorismo que vai salvar o país?
 
-Em geral, ainda construímos startups que são muito óbvias. <a target="_blank" href="https://vimeo.com/214439991"></a>
+Em geral, ainda construímos startups que são muito óbvias. Durante o tempo que passei fora, vi esse <a target="_blank" href="https://vimeo.com/214439991">tipo de startup</a> recebendo atenção, realmente fora da caixa. Pode parecer loucura agora, mas vamos abrir os olhos para esse tipo de inovação depois que os grandes _players_ de sucesso estiverem se expandindo globalmente.
 
 ## Visão Internacional
 
@@ -60,9 +64,9 @@ Aqui no Brasil ainda estamos comemorando com isso. Aportes do Nubank e aquisiç�
 ### Estonia
 
 A Estonia é um case interessante. Primeiramente, o país digitalizou a maior parte dos seus processos burocráticos, o que economiza a eles 2% do PIB anualmente. O mais fantástico porém, é que essa digitalização permite que empresas que operam 100% fora do país podem ser estonianas realizando todos os processos burocráticos remotamente. Dessa forma, o país oferece estrutura para essas companhias, e em contra partida captura parte do valor gerado por elas.
-O fato de possuírem um mercado interno pequeno, e uma educação fortemente voltada à tecnologia fez com que eles se tornassem uma potência tecnológica na Europa. O Skype por exemplo, foi fundado na Estonia. Assisti à uma palestra do Toomas Hendrik Ilves, ex-presidente do país, quando estava em Stanford, e ele recomendou esse <strong><a target="_blank" href="https://www.newyorker.com/magazine/2017/12/18/estonia-the-digital-republic">artigo muito interessante</a></strong>. Recomendo!
+O fato de possuírem um mercado interno pequeno, e uma educação fortemente voltada à tecnologia fez com que eles se tornassem uma potência tecnológica na Europa. O Skype por exemplo, foi fundado na Estonia. Assisti à uma palestra do Toomas Hendrik Ilves, ex-presidente do país, quando estava em Stanford, e ele recomendou esse <strong><a target="_blank" href="https://www.newyorker.com/magazine/2017/12/18/estonia-the-digital-republic">artigo</a></strong>. Vale a pena ler.
 
-A Estonia permite que qualquer um aplique para se tornar um cidadão do país. O caso da Estonia demonstra um momento incrível que estamos vivendo, a tecnologia está derrubando fronteiras. Cryptomoedas derrubaram fronteiras econômicas, e é muito possível que AR/VR mude o nosso conceito de visitar um local. Governos estão se digitalizando, e terão que competir por nós, cidadãos ou empreendedores.
+A Estonia permite que qualquer um aplique para se tornar um cidadão do país. O caso da Estonia demonstra um momento incrível que estamos vivendo, a tecnologia está derrubando fronteiras. Cryptomoedas derrubaram fronteiras econômicas, e é possível que AR/VR mude o nosso conceito de visitar um local. Governos estão se digitalizando, e terão que competir por nós, cidadãos ou empreendedores.
 
 ### Eslovenia
 
@@ -85,9 +89,9 @@ O Brasil teve seu primeiro unicórnio no final de 2017 / início de 18. A Eslove
 	</tr>
 </table>
 
-Faria todo sentido se o Brasil tivesse atingido seu primeiro unicórnio antes da Eslovenia! A situação pode estar evidenciando que não extraímos o máximo do que temos. Talvez não temos o _mindset_ ideal.
+Com um mercado interno maior, e mais mão de obra, faria todo sentido se o Brasil tivesse atingido seu primeiro unicórnio antes da Eslovenia! A situação pode estar evidenciando que não extraímos o máximo do que temos. Talvez não temos o _mindset_ ideal.
 
-### Brasil
+### Nossa situação
 
 No Brasil, existe uma grande quantidade de startups trabalhando com plataformas de Delivery, inclusive uma das empresas de tecnologia mais relevantes do Brasil, a Movile com a Rapiddo. Mas de acordo com o que eu estou te falando, plataforma é uma oportunidade que já passou e deve haver algo de maior relevância. Durante uma palestra em Stanford conversei com um dos co-fundadores da <a href="https://www.starship.xyz/">Starship</a>, uma empresa que cria robôs de delivery. Qual a chance de termos nossas startups violentamente disruptadas?
 
@@ -95,15 +99,15 @@ Falando agora sobre o mercado de AR / VR (realidade aumentada e realidade virtua
 
 Começamos a falar de blockchain depois que o diversos unicórnios pelo mundo já haviam se formado.
 
-Colocando as coisas de uma forma visual, esse é um gráfico (mais qualitativo) que demonstra como é a evolução de uma tecnologia nova.
+Colocando as coisas de uma forma visual, esse é um gráfico (qualitativo) que demonstra como é a evolução de uma tecnologia nova.
 
 <img src="/assets/img/graph_tech_.png" class="pic-about" alt="Gráfico evolução tecnologia">
 
-__A:__ Primeiras empresas que empregam a tecnologia surgem.
+__A:__ Surgimento da tecnologia e testes iniciais. Primeiras empresas empregando a tecnologia. Investidores do Vale procuram oportunidades nesse estagio para investir. Exemplos de movimentações no estagio A: Tim Draper comprando Bitcoins em 2014.
 
-__B:__ Explosão midiática. Empresas com valuations gordos. Provavelmente os vencedores dessa geração já nasceram.
+__B:__ Explosão midiática, muita especulação. Empresas passam a ter valuations gordos (muitas vezes irracionais), e possívelmente modelos de negócio ainda incertos. Provavelmente os vencedores dessa geração de tech já nasceram. Febre das réplicas. Ex: Nascimento do Google em 1997.
 
-__C:__ Clientes finais usando em peso a tecnologia. Modelos de negocio comprovados e gerando receita.
+__C:__ Clientes finais usando em peso a tecnologia. Modelos de negocio comprovados e gerando receita. Aproximadamente quando a febre atinge o Brasil.
 
 Entre o B e C, pode nascer e estourar uma bolha. Isso acontece pela euforia em cima de modelos de negócios ainda desconhecidos e não comprovados. A euforia trás algo comumente chamado de “funny money”, dinheiro fácil. É a combinação perfeita pra uma bolha. Foi o que aconteceu nos anos 90, e é o que pode acontecer com a atual euforia de ICO’s (mais sobre isso em outra postagem).
 Quando o mercado chega no estagio C, eles viram cases de sucesso, empreendedores atrasados passam a olha-lo como referencia e começam as cópias que normalmente não atingem grande sucesso.
