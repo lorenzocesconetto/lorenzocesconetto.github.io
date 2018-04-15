@@ -19,7 +19,7 @@ Assim, fazendo uma retrospectiva histórica:
 
 - Nos anos 80 a grande oportunidade estava nos computadores pessoais. Com a criação dos microcomputadores, destravou-se a possibilidade de pessoas comuns possuírem um computador, e o seu acesso foi democratizado.
 - Nos anos 90 a revolução da internet com as empresas “ponto com”. Graças ao fato de pessoas comuns passarem a ter acesso à internet, o que antes só era possível para universidades e instituições militares.
-- Nos anos 2000 foram mobile e aplicações mobile. As peças eletrônicas e telefones celulares foram baratedados, assim celulares com mais funcionalidades e baratos começaram a se difundir (nesse caso mais pro final da década).
+- Nos anos 2000 foram mobile e aplicações mobile. As peças eletrônicas e telefones celulares foram barateados, assim celulares com mais funcionalidades e baratos começaram a se difundir (nesse caso mais pro final da década).
 - Nos anos 2010 plataformas para conectar pessoas e serviços, por exemplo, Uber e Airbnb. O que foi possível devido a quantidade de pessoas que passaram a possuir um smartphone.
 - Para a próxima década, provavelmente teremos uma revolução na forma com que fazemos transações, isso com o auxílio do blockchain.
 
@@ -47,9 +47,9 @@ Olhando para o movimento do mercado __Brasileiro__ nesses períodos.
 _Obs: Existe um artigo bem legal que conta a história da reserva de mercado nos anos 70 e 80, e pode ser baixado em pdf <a target="_blank" href="http://www.scielo.br/scielo.php?script=sci_arttext&pid=S0104-59702003000200008" target="_">nesse link</a>._
 
 Percebeu algo? No Brasil estamos sempre uma geração atrás. Provavelmente porque estamos tentando construir (imitar) coisas que já deram certo. O problema é que não olhamos pro futuro, olhamos pros casos de sucesso do passado.
-Devido a esse atraso, na maioria das vezes criamos negócios locais, e não globais. Juntando ao fato de termos um mercado interno relativamente grande, ficamos ainda mais conformados em criar negócios restritos ao nosso território. Não expandir globalmente significa não capturar valor lá fora e trazer pro país, e significa que empresas estrangeiras mais maduras entram no nosso mercado e capturam valor aqui e mandam pro seu país de origem. Dessa forma não conseguimos nem proteger o mercado nacional. Startup’s como a Uber entram e conquistam market share, as empresas brasileiras como a 99 ou a Easy não são capazes de impedir o avanço dessas empresas. O resultado disso é uma déficit no balanço da nossa economia. Já ouvi milhares de vezes que “o empreendedorismo é o que vai salvar o Brasil”. Esse tipo de empreendedorismo que vai salvar o país?
+Devido a esse atraso, na maioria das vezes criamos negócios locais, e não globais. Juntando ao fato de termos um mercado interno relativamente grande, ficamos ainda mais conformados em criar negócios restritos ao nosso território. Não expandir globalmente significa não capturar valor lá fora e trazer pro país, e significa que empresas estrangeiras mais maduras entram no nosso mercado e capturam valor aqui e mandam pro seu país de origem. Dessa forma não conseguimos nem proteger o mercado nacional. Startup’s como a Uber entram e conquistam market share, as empresas brasileiras como a 99 ou a Easy não são capazes de impedir o avanço dessas empresas. O resultado disso é uma déficit no balanço da nossa economia. Já ouvi milhares de vezes que “o empreendedorismo é o que vai salvar o Brasil”. É esse tipo de empreendedorismo que vai salvar o país?
 
-O objetivo de muitas startups brasileiras é criar um negocio e vender pra um _player_ estrangeiro. Uma situação muito parecida com a relação comercial entre colônia e metrópole, onde a metrópole é dona dos meios de produção na colônia, assim capturando suas riquezas. Esse tipo de empreendedorismo que vai salvar o país?
+O objetivo de muitas startups brasileiras é criar um negocio e vender pra um _player_ estrangeiro. Uma situação muito parecida com a relação comercial entre colônia e metrópole, onde a metrópole é dona dos meios de produção na colônia, assim capturando suas riquezas. É esse tipo de empreendedorismo que vai salvar o país?
 
 Em geral, ainda construímos startups que são óbvias. Durante o tempo que passei fora, as startups que recebiam atenção eram realmente inovadoras, por exemplo a <strong><a target="_blank" href="https://vimeo.com/214439991">gravity</a></strong>, uma empresa que constrói _jetpacks_, ou então a <strong><a href="http://madeinspace.us/">Made in Space</a></strong> uma empresa que faz impressões 3D no espaço. Podem parecer coisas fora da realidade por agora, mas é análogo a te apresentarem a idéia de crypto moeda há alguns anos atrás.
 Vamos abrir os olhos para esse tipo de inovação depois que os grandes _players_ de sucesso já estiverem se expandindo globalmente.
@@ -60,7 +60,7 @@ Vamos abrir os olhos para esse tipo de inovação depois que os grandes _players
 
 Claramente os EUA se preocupam com a entrada de capital Chinês. A exemplo disso, pode-se citar o caso da Broadcom (chinesa) que foi impedida comprar a Qualcomm (americana) o que seria uma transação de mais de USD 100 bi, ou ainda fato dos EUA estarem aprovando medidas protecionistas bem agressivas. Só para se ter ideia, aprox. 10% de todas as _venture deals_ nos EUA teve participação de capital Chinês, o que é visto com maus olhos por eles obviamente. 
 
-Aqui no Brasil ainda estamos comemorando com isso. Aportes do Nubank e aquisição da 99 regadas a capital estrangeiro. As vendas não são boas para o Brasil no longo prazo. Esse tipo de empreendedorismo que vai salvar o país?
+Aqui no Brasil ainda estamos comemorando com isso. Aportes do Nubank e aquisição da 99 regadas a capital estrangeiro. As vendas não são boas para o Brasil no longo prazo. É esse tipo de empreendedorismo que vai salvar o país?
 
 ### Estônia
 
@@ -94,7 +94,7 @@ Com um mercado interno maior, e mais mão de obra, faria todo sentido se o Brasi
 
 ### Nossa situação
 
-Dando um exemplo bem tangível. No Brasil, existe uma grande quantidade de startups trabalhando com plataformas de Delivery, inclusive uma das empresas de tecnologia mais relevantes do Brasil, a Movile com a Rapiddo. Mas de acordo com o que eu estou te falando, plataforma é uma oportunidade que já passou e deve haver algo de maior relevância. Durante uma palestra em Stanford conversei com um dos co-fundadores da <strong><a href="https://www.starship.xyz/">Starship</a></strong>, uma empresa que cria robôs de delivery. Qual a chance de termos nossas startups violentamente disruptadas?
+Dando um exemplo bem tangível. No Brasil, existe uma grande quantidade de startups trabalhando com plataformas de Delivery, inclusive uma das empresas de tecnologia mais relevantes do Brasil, a Movile com a Rapiddo. Mas de acordo com o que eu estou te falando, plataforma é uma oportunidade que já passou e deve haver algo de maior relevância. Durante uma palestra em Stanford conversei com um dos co-fundadores da <strong><a href="https://www.starship.xyz/">Starship</a></strong>, uma empresa que cria robôs de delivery. Qual a chance de termos nossas startups serem desmanchadas? É possível mercado interno tenha que a importar esses robôs para suprir necessidades internas.
 
 Falando agora sobre o mercado de AR / VR (realidade aumentada e realidade virtual). A startup Magic Leap já levantou USD 2 bi com investidores como Warner Bros, Morgan Stanley, etc. Existem alguns movimentos nessas áreas no Brasil, mas são em geral tímidos.
 
@@ -106,7 +106,7 @@ Colocando as coisas de uma forma visual, esse é um gráfico (qualitativo) que e
 
 __A:__ Surgimento da tecnologia e realização de testes iniciais. Primeiras empresas nascem empregando essa tecnologia para resolver problemas. Investidores do Vale procuram oportunidades nesse estágio para investir. Exemplos de movimentações no estagio __A__: Tim Draper comprando Bitcoins em 2014.
 
-__B:__ Explosão midiática, muita especulação. Empresas passam a ter _valuations_ gordos (muitas vezes irracionais), e possivelmente os seus modelos de negócio ainda são incertos. Ocorre uma febre das réplicas, e provavelmente os vencedores dessa geração de tech já nasceram. Ex: Febre das empresas ponto com no final dos anos 90.
+__B:__ Explosão midiática, muita especulação. Empresas passam a ter _valuations_ gordos (muitas vezes meramente especulativo), e possivelmente os seus modelos de negócio ainda são incertos. Ocorre uma febre das réplicas, e provavelmente os vencedores dessa geração de tech já nasceram. Ex: Febre das empresas ponto com no final dos anos 90.
 
 __C:__ Nesse ponto, realmente existem clientes finais usando em peso a tecnologia (não apenas _early adopters_). Modelos de negócio já comprovados e gerando receita. Aproximadamente quando nascem empresas brasileiras no setor, e muito dificilmente nascem grandes vencedores. Exemplo desse período foram os anos prósperos para as empresas ponto com após a bolha.
 
