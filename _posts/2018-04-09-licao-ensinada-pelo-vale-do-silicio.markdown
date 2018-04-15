@@ -3,7 +3,7 @@ layout: post
 title: Lição ensinada pelo Vale do Silício
 date: 2018-04-09 12:52:24
 description:
-img: lorenzo_google.JPG
+img: google_hq.JPG
 tags: [Empreendedorismo]
 author: Lorenzo Cesconetto # Add name author (optional)
 published: true
