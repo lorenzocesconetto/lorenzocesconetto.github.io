@@ -6,16 +6,16 @@ description:
 img: google_hq.JPG
 tags: [Empreendedorismo]
 author: Lorenzo Cesconetto # Add name author (optional)
-published: true
+published: false
 ---
-&emsp; O artigo é direcionado a todos que gostam do tema empreendedorismo. Recentemente passei um mês no Vale do Silício, e tirei uma lição valiosa de lá. O objetivo do artigo é compartilhar os aprendizados.
+&emsp; O artigo é direcionado a todos que gostam do tema empreendedorismo. Recentemente passei um mês no Vale do Silício, e o objetivo aqui é compartilhar os aprendizados. Ficou um texto mais longo do que eu gostaria, mas por ser um assunto interconectado, acredito que valha a pena.
 
 &emsp; Primeiramente uma visão histórica das coisas.
 No Vale do Silício existe uma teoria de que cada década guarda uma grande oportunidade de inovação durante seu período (o que vem sendo mais ou menos respeitado), ouvi isso algumas vezes enquanto estive lá. Uma tecnologia nova “destrava” várias possibilidades, coisas que até então eram impossíveis por conta de fatores econômicos ou técnicos passam a ser realidade, o que possibilita que empresas surjam, gerem valor para economia, e capturem de volta parte desse valor.
 
 &emsp; Algumas vezes essa revolução não vem de algo novo, mas sim do processo de democratização do acesso a dada tecnologia.
 
-Assim, fazendo uma retrospectiva histórica:
+&emsp; Assim, fazendo uma retrospectiva histórica:
 
 - Nos anos 80 a grande oportunidade estava nos computadores pessoais. Com a criação dos microcomputadores, destravou-se a possibilidade de pessoas comuns possuírem um computador, e o seu acesso foi democratizado.
 - Nos anos 90 a revolução da internet com as empresas “ponto com”. Graças ao fato de pessoas comuns passarem a ter acesso à internet, o que antes só era possível para universidades e instituições militares.
@@ -52,7 +52,7 @@ _Obs: Existe um artigo bem legal que conta a história da reserva de mercado nos
 
 &emsp; O objetivo de muitas startups brasileiras é criar um negocio e vender pra um _player_ estrangeiro. Uma situação muito parecida com a relação comercial entre colônia e metrópole, onde a metrópole é dona dos meios de produção na colônia, assim capturando suas riquezas. É esse tipo de empreendedorismo que vai salvar o país?
 
-&emsp; Em geral, ainda construímos startups que são óbvias. Durante o tempo que passei fora, as startups que recebiam atenção eram realmente inovadoras, por exemplo a <strong><a target="_blank" href="https://vimeo.com/214439991">gravity</a></strong>, uma empresa que constrói _jetpacks_, ou então a <strong><a href="http://madeinspace.us/">Made in Space</a></strong> uma empresa que faz impressões 3D no espaço. Podem parecer coisas fora da realidade por agora, mas é análogo a te apresentarem a idéia de crypto moeda há alguns anos atrás.
+&emsp; Em geral, ainda construímos startups que são óbvias. Durante o tempo que passei fora, as startups que recebiam atenção eram realmente inovadoras, por exemplo a <strong><a target="_blank" href="https://vimeo.com/214439991">Gravity</a></strong>, uma empresa que constrói _jetpacks_, ou então a <strong><a href="http://madeinspace.us/">Made in Space</a></strong> uma empresa que faz impressões 3D no espaço. Podem parecer coisas fora da realidade por agora, mas é análogo a te apresentarem a idéia de crypto moeda há alguns anos atrás.
 Vamos abrir os olhos para esse tipo de inovação depois que os grandes _players_ de sucesso já estiverem se expandindo globalmente.
 
 ## Visão Internacional
@@ -96,7 +96,9 @@ Vamos abrir os olhos para esse tipo de inovação depois que os grandes _players
 
 ### Nossa situação
 
-&emsp; Dando um exemplo bem tangível. No Brasil, existe uma grande quantidade de startups trabalhando com plataformas de Delivery, inclusive uma das empresas de tecnologia mais relevantes do Brasil, a Movile com a Rapiddo. Mas de acordo com o que eu estou te falando, plataforma é uma oportunidade que já passou e deve haver algo de maior relevância. Durante uma palestra em Stanford conversei com um dos co-fundadores da <strong><a href="https://www.starship.xyz/">Starship</a></strong>, uma empresa que cria robôs de delivery. Dependendo como as coisas evoluírem, é possível que as empresas brasileiras tenham que importar esses robôs para se manterem competitivas, ou que elas sejam desmanchadas por startups de fora.
+&emsp; Dando um exemplo bem tangível. No Brasil, existe uma grande quantidade de startups trabalhando com plataformas de Delivery, inclusive uma das empresas de tecnologia mais relevantes do Brasil, a Movile (que eu admiro muito) com a Rapiddo. Negócios baseados em plataformas não tem o mesmo potencial do que há 8 anos atrás. É uma oportunidade que já passou, e já existem inovações de maior relevância. Durante uma palestra em Stanford conversei com um dos co-fundadores da <strong><a href="https://www.starship.xyz/">Starship</a></strong>, uma empresa que cria robôs de delivery. Dependendo como as coisas evoluírem, é possível que as empresas brasileiras tenham que importar esses robôs para se manterem competitivas, ou que elas sejam desmanchadas por startups de fora.
+
+&emsp; No último dia de curso da Draper University, tive a oportunidade de trocar algumas palavras com Tim Draper, e ela foi exatamente acerca do assunto desse post. Ele acredita que nos próximos anos teremos grandes oportunidades aparecendo a cada 2 anos aproximadamente, e serão anos de mudanças muito mais aceleradas do que vimos no passado recente. Visto isso, o Brasil criou recentemente o programa "Rumo à Indústria 4.0" através da Agência Brasileira de Desenvolvimento Industrial (ABDI) e da Federação das Indústrias do Estado de São Paulo (Fiesp). Uma situação parecida com os anos 70, quando de repente percebemos a importância estratégica de não sermos dependentes de fabricantes estrangeiros de computadores. É importante que não tenha o mesmo desfecho. Será necessário muito trabalho, por que assim como nos anos 70 estávamos atrasados, agora também estamos. Porque já existem empresas como a <strong><a href="https://www.bostondynamics.com/atlas">Boston Dynamics</a></strong> fazendo coisas fora de série. Importante citar que eles saíram do MIT, e que as universidades historicamente possuem uma influencia gigantesca no processo de inovação. O papel que as nossas universidades tem desempenhado é algo a ser discutido.
 
 &emsp; Falando agora sobre o mercado de AR / VR (realidade aumentada e realidade virtual). A startup Magic Leap já levantou USD 2 bi com investidores como Warner Bros, Morgan Stanley, etc. Existem alguns movimentos nessas áreas no Brasil, mas são em geral tímidos.
 
