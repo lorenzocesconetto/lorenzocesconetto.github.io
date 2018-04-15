@@ -19,7 +19,7 @@ Assim, fazendo uma retrospectiva histórica:
 
 - Nos anos 80 a grande oportunidade estava nos computadores pessoais. Com a criação dos microcomputadores, destravou-se a possibilidade de pessoas comuns possuírem um computador, e o seu acesso foi democratizado.
 - Nos anos 90 a revolução da internet com as empresas “ponto com”. Graças ao fato de pessoas comuns passarem a ter acesso à internet, o que antes só era possível para universidades e instituições militares.
-- Nos anos 2000 foram mobile e aplicações mobile. As peças eletrônicas e telefones celulares foram barateados, assim celulares com mais funcionalidades e baratos começaram a se difundir (nesse caso mais pro final da década).
+- Nos anos 2000 foram mobile e aplicações mobile. As peças eletrônicas e telefones celulares foram barateados, assim celulares com mais funcionalidades e mais baratos começaram a se difundir (o que aconteceu mais no final da década).
 - Nos anos 2010 plataformas para conectar pessoas e serviços, por exemplo, Uber e Airbnb. O que foi possível devido a quantidade de pessoas que passaram a possuir um smartphone.
 - Para a próxima década, provavelmente teremos uma revolução na forma com que fazemos transações, isso com o auxílio do blockchain.
 
