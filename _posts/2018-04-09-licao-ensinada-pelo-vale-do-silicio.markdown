@@ -13,7 +13,7 @@ published: true
 &emsp; Primeiramente uma visão histórica das coisas.
 Existe uma teoria de que cada década guarda uma grande oportunidade de inovação durante seu período (aproximadamente). Uma tecnologia nova “destrava” várias possibilidades, coisas que até então eram impossíveis por conta de fatores econômicos ou técnicos, passam a ser realidade o que possibilita que empresas surjam, gerem valor para economia, e capturem de volta parte desse valor. 
 
-Algumas vezes essa revolução não vem de algo novo, mas sim do processo de democratização do acesso a dada tecnologia.
+&emsp; Algumas vezes essa revolução não vem de algo novo, mas sim do processo de democratização do acesso a dada tecnologia.
 
 Assim, fazendo uma retrospectiva histórica:
 
@@ -23,18 +23,18 @@ Assim, fazendo uma retrospectiva histórica:
 - Nos anos 2010 plataformas para conectar pessoas e serviços, por exemplo, Uber e Airbnb. O que foi possível devido a quantidade de pessoas que passaram a possuir um smartphone.
 - Para a próxima década, provavelmente teremos uma revolução na forma com que fazemos transações, isso com o auxílio do blockchain.
 
-Para cada uma dessas gerações tecnológicas, temos algumas empresas que foram as grandes vencedoras. O interessante é que todas elas ou surgiram durante os estágios iniciais de euforia das novas possibilidades ou foram fundadas bem antes disso. Dificilmente depois.
+&emsp; Para cada uma dessas gerações tecnológicas, temos algumas empresas que foram as grandes vencedoras. O interessante é que todas elas ou surgiram durante os estágios iniciais de euforia das novas possibilidades ou foram fundadas bem antes disso. Dificilmente depois.
 
 - Computadores Pessoais: Sun (1982), HP (1939).
 - Ponto com: Google (1997), Amazon (1994), Hotmail (1996).
 - Aplicações Mobile: Facebook (2004), Youtube (2005).
 - Plataformas: Uber (2009), Airbnb (2008).
 
-Agora parando um pouco pra pensar. Que tipo de inovação você via no Brasil em 2008? Algo do tipo do Uber ou Airbnb? Provavelmente não.
+&emsp; Agora parando um pouco pra pensar. Que tipo de inovação você via no Brasil em 2008? Algo do tipo do Uber ou Airbnb? Provavelmente não.
 
-E que tipo de inovação você tem visto hoje? Talvez você veja muitas startups que são o “Uber das entregas”, “Uber dos pets”, etc. Elas estão com uma década de atraso.
+&emsp; E que tipo de inovação você tem visto hoje? Talvez você veja muitas startups que são o “Uber das entregas”, “Uber dos pets”, etc. Elas estão com uma década de atraso.
 
-Olhando para o movimento do mercado __Brasileiro__ nesses períodos.
+&emsp; Olhando para o movimento do mercado __Brasileiro__ nesses períodos.
 
 - 80's: A IBM já operava no Brasil desde 1924, e nós éramos fortemente dependentes de tecnologias estrangeiras até meados dos anos 70. Somente em 1972 (48 anos depois) percebeu-se a importância estratégica de não dependermos de tecnologia de fora. Então, em 1977, depois de empresas como a Sun a IBM já eram gigantescas, instituímos uma reserva de mercado como uma tentativa de recuperar o tempo perdido. Acabou não dando certo, e o resto é história.
 
@@ -46,32 +46,34 @@ Olhando para o movimento do mercado __Brasileiro__ nesses períodos.
 
 _Obs: Existe um artigo bem legal que conta a história da reserva de mercado nos anos 70 e 80, e pode ser baixado em pdf <a target="_blank" href="http://www.scielo.br/scielo.php?script=sci_arttext&pid=S0104-59702003000200008" target="_">nesse link</a>._
 
-Percebeu algo? No Brasil estamos sempre uma geração atrás. Provavelmente porque estamos tentando construir (imitar) coisas que já deram certo. O problema é que não olhamos pro futuro, olhamos pros casos de sucesso do passado.
-Devido a esse atraso, na maioria das vezes criamos negócios locais, e não globais. Juntando ao fato de termos um mercado interno relativamente grande, ficamos ainda mais conformados em criar negócios restritos ao nosso território. Não expandir globalmente significa não capturar valor lá fora e trazer pro país, e significa que empresas estrangeiras mais maduras entram no nosso mercado e capturam valor aqui e mandam pro seu país de origem. Dessa forma não conseguimos nem proteger o mercado nacional. Startup’s como a Uber entram e conquistam market share, as empresas brasileiras como a 99 ou a Easy não são capazes de impedir o avanço dessas empresas. O resultado disso é uma déficit no balanço da nossa economia. Já ouvi milhares de vezes que “o empreendedorismo é o que vai salvar o Brasil”. É esse tipo de empreendedorismo que vai salvar o país?
+&emsp; Percebeu algo? No Brasil estamos sempre uma geração atrás. Provavelmente porque estamos tentando construir (imitar) coisas que já deram certo. O problema é que não olhamos pro futuro, olhamos pros casos de sucesso do passado. Devido a esse atraso, na maioria das vezes criamos negócios locais, e não globais. Juntando ao fato de termos um mercado interno relativamente grande, ficamos ainda mais conformados em criar negócios restritos ao nosso território.
 
-O objetivo de muitas startups brasileiras é criar um negocio e vender pra um _player_ estrangeiro. Uma situação muito parecida com a relação comercial entre colônia e metrópole, onde a metrópole é dona dos meios de produção na colônia, assim capturando suas riquezas. É esse tipo de empreendedorismo que vai salvar o país?
+&emsp; Não expandir globalmente significa não capturar valor lá fora e trazer pro país, e significa que empresas estrangeiras mais maduras entram no nosso mercado e capturam valor aqui e mandam pro seu país de origem. Dessa forma não conseguimos nem proteger o mercado nacional. Startup’s como a Uber entram e conquistam market share, as empresas brasileiras como a 99 ou a Easy não são capazes de impedir o avanço dessas empresas. O resultado disso é uma déficit no balanço da nossa economia. Já ouvi milhares de vezes que “o empreendedorismo é o que vai salvar o Brasil”. É esse tipo de empreendedorismo que vai salvar o país?
 
-Em geral, ainda construímos startups que são óbvias. Durante o tempo que passei fora, as startups que recebiam atenção eram realmente inovadoras, por exemplo a <strong><a target="_blank" href="https://vimeo.com/214439991">gravity</a></strong>, uma empresa que constrói _jetpacks_, ou então a <strong><a href="http://madeinspace.us/">Made in Space</a></strong> uma empresa que faz impressões 3D no espaço. Podem parecer coisas fora da realidade por agora, mas é análogo a te apresentarem a idéia de crypto moeda há alguns anos atrás.
+&emsp; O objetivo de muitas startups brasileiras é criar um negocio e vender pra um _player_ estrangeiro. Uma situação muito parecida com a relação comercial entre colônia e metrópole, onde a metrópole é dona dos meios de produção na colônia, assim capturando suas riquezas. É esse tipo de empreendedorismo que vai salvar o país?
+
+&emsp; Em geral, ainda construímos startups que são óbvias. Durante o tempo que passei fora, as startups que recebiam atenção eram realmente inovadoras, por exemplo a <strong><a target="_blank" href="https://vimeo.com/214439991">gravity</a></strong>, uma empresa que constrói _jetpacks_, ou então a <strong><a href="http://madeinspace.us/">Made in Space</a></strong> uma empresa que faz impressões 3D no espaço. Podem parecer coisas fora da realidade por agora, mas é análogo a te apresentarem a idéia de crypto moeda há alguns anos atrás.
 Vamos abrir os olhos para esse tipo de inovação depois que os grandes _players_ de sucesso já estiverem se expandindo globalmente.
 
 ## Visão Internacional
 
 ### EUA
 
-Claramente os EUA se preocupam com a entrada de capital Chinês. A exemplo disso, pode-se citar o caso da Broadcom (chinesa) que foi impedida comprar a Qualcomm (americana) o que seria uma transação de mais de USD 100 bi, ou ainda fato dos EUA estarem aprovando medidas protecionistas bem agressivas. Só para se ter ideia, aprox. 10% de todas as _venture deals_ nos EUA teve participação de capital Chinês, o que é visto com maus olhos por eles obviamente. 
+&emsp; Claramente os EUA se preocupam com a entrada de capital Chinês. A exemplo disso, pode-se citar o caso da Broadcom (chinesa) que foi impedida comprar a Qualcomm (americana) o que seria uma transação de mais de USD 100 bi, ou ainda fato dos EUA estarem aprovando medidas protecionistas bem agressivas. Só para se ter ideia, aprox. 10% de todas as _venture deals_ nos EUA teve participação de capital Chinês, o que é visto com maus olhos por eles obviamente. 
 
-Aqui no Brasil ainda estamos comemorando com isso. Aportes do Nubank e aquisição da 99 regadas a capital estrangeiro. As vendas não são boas para o Brasil no longo prazo. É esse tipo de empreendedorismo que vai salvar o país?
+&emsp; Aqui no Brasil ainda estamos comemorando com isso. Aportes do Nubank e aquisição da 99 regadas a capital estrangeiro. As vendas não são boas para o Brasil no longo prazo. É esse tipo de empreendedorismo que vai salvar o país?
 
 ### Estônia
 
-A Estônia é um case interessante. Primeiramente, o país digitalizou a maior parte dos seus processos burocráticos, o que economiza a eles 2% do PIB anualmente. O mais fantástico porém, é que essa digitalização permite que empresas que operam 100% fora do país podem ser estonianas realizando todos os processos burocráticos remotamente. Dessa forma, o país oferece estrutura para essas companhias, e em contra partida captura parte do valor gerado por elas.
-O fato de possuírem um mercado interno pequeno, e uma educação fortemente voltada à tecnologia fez com que eles se tornassem uma potência tecnológica na Europa. O Skype por exemplo, foi fundado na Estônia. Assisti à uma palestra do Toomas Hendrik Ilves, ex-presidente do país, quando estava em Stanford, e ele recomendou esse <strong><a target="_blank" href="https://www.newyorker.com/magazine/2017/12/18/estonia-the-digital-republic">artigo</a></strong>. Vale a pena ler.
+&emsp; A Estônia é um case interessante. Primeiramente, o país digitalizou a maior parte dos seus processos burocráticos, o que economiza a eles 2% do PIB anualmente. O mais fantástico porém, é que essa digitalização permite que empresas que operam 100% fora do país podem ser estonianas realizando todos os processos burocráticos remotamente. Dessa forma, o país oferece estrutura para essas companhias, e em contra partida captura parte do valor gerado por elas.
 
-A Estônia permite que qualquer um aplique para se tornar um cidadão do país. O caso da Estônia demonstra um momento incrível que estamos vivendo, a tecnologia está derrubando fronteiras. Cryptomoedas derrubaram fronteiras econômicas, e é possível que AR/VR mude o nosso conceito de visitar um local. Governos estão se digitalizando, e terão que competir por nós, cidadãos ou empreendedores.
+&emsp; O fato de possuírem um mercado interno pequeno, e uma educação fortemente voltada à tecnologia fez com que eles se tornassem uma potência tecnológica na Europa. O Skype por exemplo, foi fundado na Estônia. Assisti à uma palestra do Toomas Hendrik Ilves, ex-presidente do país, quando estava em Stanford, e ele recomendou esse <strong><a target="_blank" href="https://www.newyorker.com/magazine/2017/12/18/estonia-the-digital-republic">artigo</a></strong>. Vale a pena ler.
+
+&emsp; A Estônia permite que qualquer um aplique online para se tornar um cidadão do país, e isso é um ótimo exemplo que demonstra o momento incrível que estamos vivendo hoje, a tecnologia está derrubando fronteiras. Cryptomoedas derrubaram fronteiras econômicas, e é possível que AR/VR mude o nosso conceito de visitar um local. Governos estão se digitalizando, e em breve eles terão que competir um contra o outro por nós, que somos seus cidadãos.
 
 ### Eslovênia
 
-O Brasil teve seu primeiro unicórnio no final de 2017 / início de 18. A Eslovênia teve seu primeiro unicórnio no início de 2017. Períodos mais ou menos parecidos. Mas olhando para alguns dados macro que refletem a capacidade de geração de negócios desses países:
+&emsp; O Brasil teve seu primeiro unicórnio no final de 2017 / início de 18. A Eslovênia teve seu primeiro unicórnio no início de 2017. Períodos mais ou menos parecidos. Mas olhando para alguns dados macro que refletem a capacidade de geração de negócios desses países:
 <table>
 	<tr>
 		<th></th>
@@ -90,17 +92,17 @@ O Brasil teve seu primeiro unicórnio no final de 2017 / início de 18. A Eslov�
 	</tr>
 </table>
 
-Com um mercado interno maior, e mais mão de obra, faria todo sentido se o Brasil tivesse atingido seu primeiro unicórnio antes da Eslovênia! A situação pode estar evidenciando que não extraímos o máximo do que temos. Talvez não temos o _mindset_ ideal.
+&emsp; Com um mercado interno maior, e mais mão de obra, faria todo sentido se o Brasil tivesse atingido seu primeiro unicórnio antes da Eslovênia! A situação pode estar evidenciando que não extraímos o máximo do que temos. Talvez não temos o _mindset_ ideal.
 
 ### Nossa situação
 
-Dando um exemplo bem tangível. No Brasil, existe uma grande quantidade de startups trabalhando com plataformas de Delivery, inclusive uma das empresas de tecnologia mais relevantes do Brasil, a Movile com a Rapiddo. Mas de acordo com o que eu estou te falando, plataforma é uma oportunidade que já passou e deve haver algo de maior relevância. Durante uma palestra em Stanford conversei com um dos co-fundadores da <strong><a href="https://www.starship.xyz/">Starship</a></strong>, uma empresa que cria robôs de delivery. Qual a chance de termos nossas startups serem desmanchadas? É possível mercado interno tenha que a importar esses robôs para suprir necessidades internas.
+&emsp; Dando um exemplo bem tangível. No Brasil, existe uma grande quantidade de startups trabalhando com plataformas de Delivery, inclusive uma das empresas de tecnologia mais relevantes do Brasil, a Movile com a Rapiddo. Mas de acordo com o que eu estou te falando, plataforma é uma oportunidade que já passou e deve haver algo de maior relevância. Durante uma palestra em Stanford conversei com um dos co-fundadores da <strong><a href="https://www.starship.xyz/">Starship</a></strong>, uma empresa que cria robôs de delivery. Qual a chance de termos nossas startups serem desmanchadas? É possível mercado interno tenha que a importar esses robôs para suprir necessidades internas.
 
-Falando agora sobre o mercado de AR / VR (realidade aumentada e realidade virtual). A startup Magic Leap já levantou USD 2 bi com investidores como Warner Bros, Morgan Stanley, etc. Existem alguns movimentos nessas áreas no Brasil, mas são em geral tímidos.
+&emsp; Falando agora sobre o mercado de AR / VR (realidade aumentada e realidade virtual). A startup Magic Leap já levantou USD 2 bi com investidores como Warner Bros, Morgan Stanley, etc. Existem alguns movimentos nessas áreas no Brasil, mas são em geral tímidos.
 
-Começamos a falar de blockchain depois que o diversos unicórnios pelo mundo já haviam se formado.
+&emsp; Começamos a falar de blockchain depois que o diversos unicórnios pelo mundo já haviam se formado.
 
-Colocando as coisas de uma forma visual, esse é um gráfico (qualitativo) que eu inventei que talvez ajude a visualizar as coisas. É como eu enxergo a evolução de uma tecnologia nova.
+&emsp; Colocando as coisas de uma forma visual, esse é um gráfico (qualitativo) que eu inventei que talvez ajude a visualizar as coisas. É como eu enxergo a evolução de uma tecnologia nova.
 
 <img src="/assets/img/graph_tech_.png" class="pic-about" alt="Gráfico evolução tecnologia">
 
@@ -110,12 +112,12 @@ __B:__ Explosão midiática, muita especulação. Empresas passam a ter _valuati
 
 __C:__ Nesse ponto, realmente existem clientes finais usando em peso a tecnologia (não apenas _early adopters_). Modelos de negócio já comprovados e gerando receita. Aproximadamente quando nascem empresas brasileiras no setor, e muito dificilmente nascem grandes vencedores. Exemplo desse período foram os anos prósperos para as empresas ponto com após a bolha.
 
-Entre o B e C, pode ser que surja uma bolha, e que eventualmente estoure. Isso acontece pela euforia em cima de modelos de negócios ainda desconhecidos e não comprovados. A euforia trás algo comumente chamado de “_funny money_”, dinheiro fácil, uma vez que investidores tem medo de perder a oportunidade de participar da revolução. É a combinação perfeita para uma bolha. Foi o que aconteceu nos anos 90, e é o que pode acontecer com a atual euforia de ICO’s (mais sobre isso em outra postagem).
-Quando o mercado chega no estagio C, tem-se os cases de sucesso, empreendedores atrasados passam a olha-los como referencia e começam as cópias que normalmente não atingem grande sucesso.
+&emsp; Entre o __B__ e __C__, pode ser que surja uma bolha, e que eventualmente estoure. Isso acontece pela euforia em cima de modelos de negócios ainda desconhecidos e não comprovados. A euforia trás algo comumente chamado de “_funny money_”, dinheiro fácil, uma vez que investidores tem medo de perder a oportunidade de participar da revolução. É a combinação perfeita para uma bolha. Foi o que aconteceu nos anos 90, e é o que pode acontecer com a atual euforia de ICO’s (mais sobre isso em outra postagem).
+Quando o mercado chega no estagio __C__, tem-se os cases de sucesso, empreendedores atrasados passam a olha-los como referencia e começam as cópias que normalmente não atingem grande sucesso.
 
-Segundo o livro do Peter Thiel, “Zero to One”, essas startups que desbravam a nova tecnologia estão indo de 0 para 1 (efetivamente criar algo novo), enquanto aqueles que estão copiando vão de 1 até n (multiplicar algo já existente). Acredito que é o empreendedorismo que vai de 0 para 1 possa salvar o país.
+&emsp; Segundo o livro do Peter Thiel, “Zero to One”, essas startups que desbravam a nova tecnologia estão indo de 0 para 1 (efetivamente criar algo novo), enquanto aqueles que estão copiando vão de 1 até n (multiplicar algo já existente). Acredito que é o empreendedorismo que vai de 0 para 1 possa salvar o país.
 
-Entre em contato comigo pelo <a target="_blank" href="https://www.linkedin.com/in/lorenzo-cesconetto/">LinkedIn</a>, ou deixe um comentário aqui embaixo.
+&emsp; Entre em contato comigo pelo <a target="_blank" href="https://www.linkedin.com/in/lorenzo-cesconetto/">LinkedIn</a>, ou deixe um comentário aqui embaixo.
 
 
 
