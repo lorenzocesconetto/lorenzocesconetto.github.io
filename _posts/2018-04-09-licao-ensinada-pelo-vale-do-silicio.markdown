@@ -8,12 +8,12 @@ tags: [Empreendedorismo]
 author: Lorenzo Cesconetto # Add name author (optional)
 published: true
 ---
-&emsp; O artigo é direcionado a todos que gostam do tema empreendedorismo. Recentemente passei um mês no Vale do Silício, e tirei uma lição valiosa de lá.
+&emsp; O artigo é direcionado a todos que gostam do tema empreendedorismo. Recentemente passei um mês no Vale do Silício, e tirei uma lição valiosa de lá. O objetivo do artigo é compartilhar os aprendizados.
 
 &emsp; Primeiramente uma visão histórica das coisas.
-Existe uma teoria de que cada década guarda uma grande oportunidade de inovação durante seu período (o que vem sendo mais ou menos respeitado). Uma tecnologia nova “destrava” várias possibilidades, coisas que até então eram impossíveis por conta de fatores econômicos ou técnicos passam a ser realidade, o que possibilita que empresas surjam, gerem valor para economia, e capturem de volta parte desse valor.
+No Vale do Silício existe uma teoria de que cada década guarda uma grande oportunidade de inovação durante seu período (o que vem sendo mais ou menos respeitado), ouvi isso algumas vezes enquanto estive lá. Uma tecnologia nova “destrava” várias possibilidades, coisas que até então eram impossíveis por conta de fatores econômicos ou técnicos passam a ser realidade, o que possibilita que empresas surjam, gerem valor para economia, e capturem de volta parte desse valor.
 
-&emsp; Algumas vezes essa revolução não vem de algo novo, mas sim do processo de democratização do acesso a dada tecnologia.
+<!-- &emsp; Algumas vezes essa revolução não vem de algo novo, mas sim do processo de democratização do acesso a dada tecnologia. -->
 
 Assim, fazendo uma retrospectiva histórica:
 
@@ -69,7 +69,7 @@ Vamos abrir os olhos para esse tipo de inovação depois que os grandes _players
 
 &emsp; O fato de possuírem um mercado interno pequeno, e uma educação fortemente voltada à tecnologia fez com que eles se tornassem uma potência tecnológica na Europa. O Skype por exemplo, foi fundado na Estônia. Assisti à uma palestra do Toomas Hendrik Ilves, ex-presidente do país, quando estava em Stanford, e ele recomendou esse <strong><a target="_blank" href="https://www.newyorker.com/magazine/2017/12/18/estonia-the-digital-republic">artigo</a></strong>. Vale a pena ler.
 
-&emsp; A Estônia permite que qualquer um aplique online para se tornar um cidadão do país, e isso é um ótimo exemplo que demonstra o momento incrível que estamos vivendo hoje, a tecnologia está derrubando fronteiras. Cryptomoedas derrubaram fronteiras econômicas, e é possível que AR / VR (realidade aumentada e realidade virtual) mude o nosso conceito de visitar um local. Governos estão se digitalizando, e em breve eles terão que competir um contra o outro por nós, que somos seus cidadãos.
+<!-- &emsp; A Estônia permite que qualquer um aplique online para se tornar um cidadão do país, e isso é um ótimo exemplo que demonstra o momento incrível que estamos vivendo hoje, a tecnologia está derrubando fronteiras. Cryptomoedas derrubaram fronteiras econômicas, e é possível que AR / VR (realidade aumentada e realidade virtual) mude o nosso conceito de visitar um local. Governos estão se digitalizando, e em breve eles terão que competir um contra o outro por nós, que somos seus cidadãos. -->
 
 ### Eslovênia
 
@@ -96,11 +96,11 @@ Vamos abrir os olhos para esse tipo de inovação depois que os grandes _players
 
 ### Nossa situação
 
-&emsp; Dando um exemplo bem tangível. No Brasil, existe uma grande quantidade de startups trabalhando com plataformas de Delivery, inclusive uma das empresas de tecnologia mais relevantes do Brasil, a Movile com a Rapiddo. Mas de acordo com o que eu estou te falando, plataforma é uma oportunidade que já passou e deve haver algo de maior relevância. Durante uma palestra em Stanford conversei com um dos co-fundadores da <strong><a href="https://www.starship.xyz/">Starship</a></strong>, uma empresa que cria robôs de delivery. Qual a chance de termos nossas startups serem desmanchadas? É possível mercado interno tenha que a importar esses robôs para suprir necessidades internas.
+&emsp; Dando um exemplo bem tangível. No Brasil, existe uma grande quantidade de startups trabalhando com plataformas de Delivery, inclusive uma das empresas de tecnologia mais relevantes do Brasil, a Movile com a Rapiddo. Mas de acordo com o que eu estou te falando, plataforma é uma oportunidade que já passou e deve haver algo de maior relevância. Durante uma palestra em Stanford conversei com um dos co-fundadores da <strong><a href="https://www.starship.xyz/">Starship</a></strong>, uma empresa que cria robôs de delivery. Dependendo como as coisas evoluírem, é possível que as empresas brasileiras tenham que importar esses robôs para se manterem competitivas, ou que elas sejam desmanchadas por startups de fora.
 
-&emsp; Falando agora sobre o mercado de AR / VR (realidade aumentada e realidade virtual). A startup Magic Leap já levantou USD 2 bi com investidores como Warner Bros, Morgan Stanley, etc. Existem alguns movimentos nessas áreas no Brasil, mas são em geral tímidos.
+<!-- &emsp; Falando agora sobre o mercado de AR / VR (realidade aumentada e realidade virtual). A startup Magic Leap já levantou USD 2 bi com investidores como Warner Bros, Morgan Stanley, etc. Existem alguns movimentos nessas áreas no Brasil, mas são em geral tímidos. -->
 
-&emsp; Começamos a falar de blockchain depois que o diversos unicórnios pelo mundo já haviam se formado.
+<!-- &emsp; Começamos a falar de blockchain depois que o diversos unicórnios pelo mundo já haviam se formado. -->
 
 &emsp; Colocando as coisas de uma forma visual, esse é um gráfico (qualitativo) que eu inventei que talvez ajude a visualizar as coisas. É como eu enxergo a evolução de uma tecnologia nova.
 
