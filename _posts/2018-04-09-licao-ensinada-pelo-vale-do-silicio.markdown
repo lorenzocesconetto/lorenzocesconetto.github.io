@@ -69,7 +69,7 @@ Vamos abrir os olhos para esse tipo de inovação depois que os grandes _players
 
 &emsp; O fato de possuírem um mercado interno pequeno, e uma educação fortemente voltada à tecnologia fez com que eles se tornassem uma potência tecnológica na Europa. O Skype por exemplo, foi fundado na Estônia. Assisti à uma palestra do Toomas Hendrik Ilves, ex-presidente do país, quando estava em Stanford, e ele recomendou esse <strong><a target="_blank" href="https://www.newyorker.com/magazine/2017/12/18/estonia-the-digital-republic">artigo</a></strong>. Vale a pena ler.
 
-&emsp; A Estônia permite que qualquer um aplique online para se tornar um cidadão do país, e isso é um ótimo exemplo que demonstra o momento incrível que estamos vivendo hoje, a tecnologia está derrubando fronteiras. Cryptomoedas derrubaram fronteiras econômicas, e é possível que AR/VR mude o nosso conceito de visitar um local. Governos estão se digitalizando, e em breve eles terão que competir um contra o outro por nós, que somos seus cidadãos.
+&emsp; A Estônia permite que qualquer um aplique online para se tornar um cidadão do país, e isso é um ótimo exemplo que demonstra o momento incrível que estamos vivendo hoje, a tecnologia está derrubando fronteiras. Cryptomoedas derrubaram fronteiras econômicas, e é possível que AR / VR (realidade aumentada e realidade virtual) mude o nosso conceito de visitar um local. Governos estão se digitalizando, e em breve eles terão que competir um contra o outro por nós, que somos seus cidadãos.
 
 ### Eslovênia
 
