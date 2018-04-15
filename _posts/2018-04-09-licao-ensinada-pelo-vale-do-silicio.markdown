@@ -104,9 +104,9 @@ Colocando as coisas de uma forma visual, esse é um gráfico (qualitativo) que e
 
 <img src="/assets/img/graph_tech_.png" class="pic-about" alt="Gráfico evolução tecnologia">
 
-__A:__ Surgimento da tecnologia e realização de testes iniciais. Primeiras empresas nascem empregando essa tecnologia para resolver problemas. Investidores do Vale procuram oportunidades nesse estágio para investir. Exemplos de movimentações no estagio __A__: Tim Draper comprando Bitcoins em 2014.
+__A:__ Surgimento da tecnologia e realização de testes iniciais. Primeiras empresas nascem empregando essa tecnologia para resolver problemas. Investidores do Vale procuram oportunidades nesse estágio para investir. Exemplos de movimentações no estagio __A__: Os gêmeos Winklevoss comprando Bitcoins em 2013.
 
-__B:__ Explosão midiática, muita especulação. Empresas passam a ter _valuations_ gordos (muitas vezes meramente especulativo), e possivelmente os seus modelos de negócio ainda são incertos. Ocorre uma febre das réplicas, e provavelmente os vencedores dessa geração de tech já nasceram. Ex: Febre das empresas ponto com no final dos anos 90.
+__B:__ Explosão midiática, muita especulação. Empresas passam a ter _valuations_ gordos (muitas vezes especulativo), e possivelmente os seus modelos de negócio ainda são incertos. Ocorre uma febre das réplicas, e provavelmente os vencedores dessa geração de tech já nasceram. Ex: Febre das empresas ponto com no final dos anos 90.
 
 __C:__ Nesse ponto, realmente existem clientes finais usando em peso a tecnologia (não apenas _early adopters_). Modelos de negócio já comprovados e gerando receita. Aproximadamente quando nascem empresas brasileiras no setor, e muito dificilmente nascem grandes vencedores. Exemplo desse período foram os anos prósperos para as empresas ponto com após a bolha.
 
