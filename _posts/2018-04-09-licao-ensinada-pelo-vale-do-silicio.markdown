@@ -11,7 +11,7 @@ published: true
 &emsp; O artigo é direcionado a todos que gostam do tema empreendedorismo. Recentemente passei um mês no Vale do Silício, e tirei uma lição valiosa de lá.
 
 &emsp; Primeiramente uma visão histórica das coisas.
-Existe uma teoria de que cada década guarda uma grande oportunidade de inovação durante seu período (aproximadamente). Uma tecnologia nova “destrava” várias possibilidades, coisas que até então eram impossíveis por conta de fatores econômicos ou técnicos, passam a ser realidade o que possibilita que empresas surjam, gerem valor para economia, e capturem de volta parte desse valor. 
+Existe uma teoria de que cada década guarda uma grande oportunidade de inovação durante seu período (o que vem sendo mais ou menos respeitado). Uma tecnologia nova “destrava” várias possibilidades, coisas que até então eram impossíveis por conta de fatores econômicos ou técnicos passam a ser realidade, o que possibilita que empresas surjam, gerem valor para economia, e capturem de volta parte desse valor.
 
 &emsp; Algumas vezes essa revolução não vem de algo novo, mas sim do processo de democratização do acesso a dada tecnologia.
 
@@ -36,7 +36,7 @@ Assim, fazendo uma retrospectiva histórica:
 
 &emsp; Olhando para o movimento do mercado __Brasileiro__ nesses períodos.
 
-- 80's: A IBM já operava no Brasil desde 1924, e nós éramos fortemente dependentes de tecnologias estrangeiras até meados dos anos 70. Somente em 1972 (48 anos depois) percebeu-se a importância estratégica de não dependermos de tecnologia de fora. Então, em 1977, depois de empresas como a Sun a IBM já eram gigantescas, instituímos uma reserva de mercado como uma tentativa de recuperar o tempo perdido. Acabou não dando certo, e o resto é história.
+- 80's: A IBM já operava no Brasil desde 1924, e nós éramos fortemente dependentes de tecnologias estrangeiras até meados dos anos 70. Somente em 1972 (48 anos depois) percebeu-se a importância estratégica de não dependermos de tecnologia de fora. Então, em 1977, depois que empresas como a Sun a IBM já eram gigantescas, instituímos uma reserva de mercado como uma tentativa de recuperar o tempo perdido. Acabou não dando certo, e o resto é história.
 
 - 90's: Começou-se a ver movimentos brasileiros mais relevantes já bem próximo do estouro da bolha, nos anos 99 e 2000. Apesar de uma defasagem menor, ainda estávamos cerca 5 anos atrás dos americanos.
 
@@ -46,7 +46,7 @@ Assim, fazendo uma retrospectiva histórica:
 
 _Obs: Existe um artigo bem legal que conta a história da reserva de mercado nos anos 70 e 80, e pode ser baixado em pdf <a target="_blank" href="http://www.scielo.br/scielo.php?script=sci_arttext&pid=S0104-59702003000200008" target="_">nesse link</a>._
 
-&emsp; Percebeu algo? No Brasil estamos sempre uma geração atrás. Provavelmente porque estamos tentando construir (imitar) coisas que já deram certo. O problema é que não olhamos pro futuro, olhamos pros casos de sucesso do passado. Devido a esse atraso, na maioria das vezes criamos negócios locais, e não globais. Juntando ao fato de termos um mercado interno relativamente grande, ficamos ainda mais conformados em criar negócios restritos ao nosso território.
+&emsp; Percebeu algo? No Brasil estamos sempre uma geração atrasado. Provavelmente porque estamos tentando construir (imitar) coisas que já deram certo. O problema é que não olhamos pro futuro, olhamos pros casos de sucesso do passado. Devido a esse atraso, na maioria das vezes criamos negócios locais, e não globais. Juntando ao fato de termos um mercado interno relativamente grande, ficamos ainda mais conformados em criar negócios restritos ao nosso território.
 
 &emsp; Não expandir globalmente significa não capturar valor lá fora e trazer pro país, e significa que empresas estrangeiras mais maduras entram no nosso mercado e capturam valor aqui e mandam pro seu país de origem. Dessa forma não conseguimos nem proteger o mercado nacional. Startup’s como a Uber entram e conquistam market share, as empresas brasileiras como a 99 ou a Easy não são capazes de impedir o avanço dessas empresas. O resultado disso é uma déficit no balanço da nossa economia. Já ouvi milhares de vezes que “o empreendedorismo é o que vai salvar o Brasil”. É esse tipo de empreendedorismo que vai salvar o país?
 
@@ -65,7 +65,7 @@ Vamos abrir os olhos para esse tipo de inovação depois que os grandes _players
 
 ### Estônia
 
-&emsp; A Estônia é um case interessante. Primeiramente, o país digitalizou a maior parte dos seus processos burocráticos, o que economiza a eles 2% do PIB anualmente. O mais fantástico porém, é que essa digitalização permite que empresas que operam 100% fora do país podem ser estonianas realizando todos os processos burocráticos remotamente. Dessa forma, o país oferece estrutura para essas companhias, e em contra partida captura parte do valor gerado por elas.
+&emsp; A Estônia é um _case_ interessante. Primeiramente, o país digitalizou a maior parte dos seus processos burocráticos, o que economiza a eles 2% do PIB anualmente. O mais fantástico porém, é que essa digitalização permite que empresas que operam 100% fora do país podem ser estonianas realizando todos os processos burocráticos remotamente. Dessa forma, o país oferece estrutura para essas companhias, e em contra partida captura parte do valor gerado por elas.
 
 &emsp; O fato de possuírem um mercado interno pequeno, e uma educação fortemente voltada à tecnologia fez com que eles se tornassem uma potência tecnológica na Europa. O Skype por exemplo, foi fundado na Estônia. Assisti à uma palestra do Toomas Hendrik Ilves, ex-presidente do país, quando estava em Stanford, e ele recomendou esse <strong><a target="_blank" href="https://www.newyorker.com/magazine/2017/12/18/estonia-the-digital-republic">artigo</a></strong>. Vale a pena ler.
 
