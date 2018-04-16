@@ -61,7 +61,7 @@ Vamos abrir os olhos para esse tipo de inovação depois que os grandes _players
 
 ### EUA
 
-&emsp; Claramente os EUA se preocupam com a entrada de capital Chinês. A exemplo disso, pode-se citar o caso da Broadcom (chinesa) que foi impedida comprar a Qualcomm (americana) o que seria uma transação de mais de USD 100 bi, ou ainda fato dos EUA estarem aprovando medidas protecionistas bem agressivas. Só para se ter ideia, aprox. 10% de todas as _venture deals_ nos EUA dos últimos 5 anos teve participação de capital Chinês (fonte <a href="https://www.youtube.com/watch?v=IY14NQEJXu0">nesse video</a>), o que é visto com maus olhos por eles obviamente.
+&emsp; Claramente os EUA se preocupam com a entrada de capital Chinês. A exemplo disso, pode-se citar o caso da Broadcom (chinesa) que foi impedida comprar a Qualcomm (americana) o que seria uma transação de mais de USD 100 bi, ou ainda fato dos EUA estarem aprovando medidas protecionistas bem agressivas. Só para se ter ideia, aprox. 10% de todas as _venture deals_ nos EUA dos últimos 5 anos teve participação de capital Chinês (fonte <a href="https://www.youtube.com/watch?v=IY14NQEJXu0">esse vídeo</a> em 3:40), o que é visto com maus olhos por eles obviamente.
 
 &emsp; Aqui no Brasil ainda estamos comemorando com isso. Aportes do Nubank e aquisição da 99 regadas a capital estrangeiro. As vendas não são boas para o Brasil no longo prazo. É esse tipo de empreendedorismo que vai salvar o país?
 
