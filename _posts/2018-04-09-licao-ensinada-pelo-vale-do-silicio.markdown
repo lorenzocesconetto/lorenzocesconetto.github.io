@@ -6,9 +6,9 @@ description:
 img: google_hq.JPG
 tags: [Empreendedorismo]
 author: Lorenzo Cesconetto # Add name author (optional)
-published: false
+published: true
 ---
-&emsp; O artigo é direcionado a todos que gostam do tema empreendedorismo. Recentemente passei um mês no Vale do Silício, e o objetivo aqui é compartilhar os aprendizados. Ficou um texto mais longo do que eu gostaria, mas por ser um assunto interconectado, acredito que valha a pena.
+&emsp; O artigo é direcionado a todos que gostam do tema empreendedorismo. Recentemente passei um mês no Vale do Silício, e o objetivo aqui é compartilhar os aprendizados. Ficou um texto mais longo do que eu gostaria, mas por ser um assunto interconectado acredito que valha a pena.
 
 &emsp; Primeiramente uma visão histórica das coisas.
 No Vale do Silício existe uma teoria de que cada década guarda uma grande oportunidade de inovação durante seu período (o que vem sendo mais ou menos respeitado), ouvi isso algumas vezes enquanto estive lá. Uma tecnologia nova “destrava” várias possibilidades, coisas que até então eram impossíveis por conta de fatores econômicos ou técnicos passam a ser realidade, o que possibilita que empresas surjam, gerem valor para economia, e capturem de volta parte desse valor.
@@ -55,11 +55,13 @@ _Obs: Existe um artigo bem legal que conta a história da reserva de mercado nos
 &emsp; Em geral, ainda construímos startups que são óbvias. Durante o tempo que passei fora, as startups que recebiam atenção eram realmente inovadoras, por exemplo a <strong><a target="_blank" href="https://vimeo.com/214439991">Gravity</a></strong>, uma empresa que constrói _jetpacks_, ou então a <strong><a href="http://madeinspace.us/">Made in Space</a></strong> uma empresa que faz impressões 3D no espaço. Podem parecer coisas fora da realidade por agora, mas é análogo a te apresentarem a idéia de crypto moeda há alguns anos atrás.
 Vamos abrir os olhos para esse tipo de inovação depois que os grandes _players_ de sucesso já estiverem se expandindo globalmente.
 
+<!-- Conector -->
+
 ## Visão Internacional
 
 ### EUA
 
-&emsp; Claramente os EUA se preocupam com a entrada de capital Chinês. A exemplo disso, pode-se citar o caso da Broadcom (chinesa) que foi impedida comprar a Qualcomm (americana) o que seria uma transação de mais de USD 100 bi, ou ainda fato dos EUA estarem aprovando medidas protecionistas bem agressivas. Só para se ter ideia, aprox. 10% de todas as _venture deals_ nos EUA teve participação de capital Chinês, o que é visto com maus olhos por eles obviamente. 
+&emsp; Claramente os EUA se preocupam com a entrada de capital Chinês. A exemplo disso, pode-se citar o caso da Broadcom (chinesa) que foi impedida comprar a Qualcomm (americana) o que seria uma transação de mais de USD 100 bi, ou ainda fato dos EUA estarem aprovando medidas protecionistas bem agressivas. Só para se ter ideia, aprox. 10% de todas as _venture deals_ nos EUA dos últimos 5 anos teve participação de capital Chinês (fonte <a href="https://www.youtube.com/watch?v=IY14NQEJXu0">nesse video</a>), o que é visto com maus olhos por eles obviamente.
 
 &emsp; Aqui no Brasil ainda estamos comemorando com isso. Aportes do Nubank e aquisição da 99 regadas a capital estrangeiro. As vendas não são boas para o Brasil no longo prazo. É esse tipo de empreendedorismo que vai salvar o país?
 
