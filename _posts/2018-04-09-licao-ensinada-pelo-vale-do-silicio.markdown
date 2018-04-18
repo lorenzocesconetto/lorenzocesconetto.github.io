@@ -10,7 +10,7 @@ published: true
 ---
 &emsp; O artigo é direcionado a todos que gostam do tema empreendedorismo. Recentemente passei um mês no Vale do Silício, e o objetivo aqui é compartilhar os aprendizados. Ficou um texto mais longo do que eu gostaria, mas por ser um assunto interconectado acredito que valha a pena.
 
-<img src="/assets/img/lorenzo_google.png" alt="Visiting Google's headquarters">
+<img class="pic" src="/assets/img/google_lorenzo.png" alt="Visiting Google's headquarters">
 <p class="subtitle-pic">Visita à sede do Google.</p>
 
 &emsp; Primeiramente uma visão histórica das coisas.
@@ -60,6 +60,9 @@ _Referência: Existe um artigo bem legal que conta a história da reserva de mer
 
 &emsp; Em geral, ainda construímos startups que são óbvias. Durante o tempo que passei fora, as startups que recebiam atenção eram realmente inovadoras, por exemplo a <strong><a target="_blank" href="https://vimeo.com/214439991">Gravity</a></strong>, uma empresa que constrói _jetpacks_, ou então a <strong><a href="http://madeinspace.us/">Made in Space</a></strong> uma empresa que faz impressões 3D no espaço. Podem parecer coisas fora da realidade por agora, mas é análogo a te apresentarem a idéia de crypto moeda há alguns anos atrás.
 Vamos abrir os olhos para esse tipo de inovação depois que os grandes _players_ de sucesso já estiverem se expandindo globalmente.
+
+<img class="pic" src="/assets/img/space_conference.JPG" alt="">
+<p class="subtitle-pic">Conferência de tecnologias aeroespaciais que participei.</p>
 
 ## Visão Internacional
 
