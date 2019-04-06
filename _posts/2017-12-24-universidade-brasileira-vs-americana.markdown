@@ -6,7 +6,7 @@ description: # Add post description (optional)
 img: university-lincoln.jpg # Add image post (optional)
 tags: [Universidade]
 author: Lorenzo Cesconetto # Add name author (optional)
-published: true
+published: false
 ---
 
 &emsp; &emsp; Esse post é direcionado à pessoas que estão escolhendo a universidade que farão graduação ou pós-graduação. O post será longo, e o objetivo aqui é te convencer a não optar por uma universidade no Brasil.

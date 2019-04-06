@@ -1,11 +1,11 @@
 title: Lorenzo Cesconetto
-email: lorenzo@lorenzocesconetto.com
+email: lorenzo@lorenzocesconetto.com.br
 description: > # this means to ignore newlines until "baseurl:"
   We write about entrepreneurship, university and life meaning. This blog is designed to help people find passion in life!
 permalink: ':title/'
 
 # baseurl: # the subpath of your site, e.g. /blog
-url: "http://lorenzocesconetto.com" # the base hostname & protocol for your site, e.g. http://example.com
+url: "http://lorenzocesconetto.com.br" # the base hostname & protocol for your site, e.g. http://example.com
 
 # Set Timezone in Sao Paulo
 timezone: America/Sao_Paulo
@@ -14,9 +14,6 @@ timezone: America/Sao_Paulo
 author: Lorenzo Cesconetto # add your name
 author-pic: lorenzo.jpg
 about-author: Hi! My name is Lorenzo Cesconetto. I’m a Brazilian entrepreneur and engineering student. This blog is designed to help people to make smarter decisions in life!
-
-# Contact links
-email: lorenzo@lorenzocesconetto.com # Add your Email address
 
 # phone: # Add your Phone number
 website: lorenzocesconetto.com # Add your website, do not add http://
