@@ -2,7 +2,7 @@
 layout: post
 title: Universidade Brasileira vs Americana
 date: 2017-12-24 18:13:10
-description: # Add post description (optional)
+description:
 img: university-lincoln.jpg # Add image post (optional)
 tags: [Universidade]
 author: Lorenzo Cesconetto # Add name author (optional)

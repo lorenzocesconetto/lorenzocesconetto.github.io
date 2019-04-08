@@ -6,7 +6,7 @@ description: My First Post # Add post description (optional)
 img: post-1.jpg # Add image post (optional)
 tags: [Universidade]
 author: Lorenzo Cesconetto # Add name author (optional)
-published: true # Shows or hides a post
+published: false
 ---
 
 &emsp; &emsp; O conteúdo desse post é direcionado à pessoas que estão decidindo sobre a universidade que atenderão e à pessoas que cursam universidade atualmente. Apresento aqui uma crítica às universidades brasileiras.
@@ -37,9 +37,9 @@ mas elas saem daqui na mesma posição em que entraram?
 >Grato,
 >...
 
-&emsp; &emsp; Diga-se de passagem, não recebi nenhuma resposta dele. 
-Eu discorro mais sobre o assunto de universidades no post sobre [universidade][post-universidade].
+&emsp; &emsp; Diga-se de passagem, não recebi nenhuma resposta dele.
 
 Entre em contato comigo pelo <a target="_blank" href="https://www.linkedin.com/in/lorenzo-cesconetto/">LinkedIn</a>.
 
-[post-universidade]: http://lorenzocesconetto/universidade
+
+
