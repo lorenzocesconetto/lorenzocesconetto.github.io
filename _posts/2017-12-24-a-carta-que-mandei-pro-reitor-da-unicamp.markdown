@@ -6,7 +6,7 @@ description: My First Post # Add post description (optional)
 img: post-1.jpg # Add image post (optional)
 tags: [Universidade]
 author: Lorenzo Cesconetto # Add name author (optional)
-published: false
+published: true
 ---
 
 &emsp; &emsp; O conteúdo desse post é direcionado à pessoas que estão decidindo sobre a universidade que atenderão e à pessoas que cursam universidade atualmente. Apresento aqui uma crítica às universidades brasileiras.

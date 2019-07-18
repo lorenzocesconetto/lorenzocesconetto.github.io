@@ -1,6 +1,7 @@
-_site
+_site/
 .sass-cache
 .jekyll-metadata
 node_modules/
 yarn.lock
 _Articles/
+_drafts/

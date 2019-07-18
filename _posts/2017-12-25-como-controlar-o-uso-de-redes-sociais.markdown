@@ -33,7 +33,7 @@ __Para bloquear sites no Mac ou Linux:__
 1. Digitar
 
     ```
-        sudo nano /etc/hosts
+    sudo nano /etc/hosts
     ```
 
     Depois pressione "enter", entre com a sua senha e pressione "enter" novamente.
