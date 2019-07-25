@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Linha de comanda para Ciência de Dados
+title: Linha de comando para Ciência de Dados
 date: 2019-07-04 21:31:57
 img: terminal-code.jpg
 tags: [Ciência de Dados]
@@ -8,13 +8,13 @@ author: Lorenzo Cesconetto
 published: true
 ---
 
-&emsp; &emsp; O conteúdo desse post é direcionado à pessoas **técnicas** na área de computação, não é preciso ter experiência prévia com de Ciência de Dados. Mas é recomendável conhecimento básico da linha de comando.
+&emsp; &emsp; O conteúdo desse post é direcionado à pessoas **técnicas** na área de computação, não é preciso ter experiência prévia com de Ciência de Dados. Mas é recomendável conhecimento básico do terminal unix.
 
-Porque diabos eu deveria utilizar a linha de comando? Primeiramente, os comandos em **Shell Script** são muito mais rápidos do que os comandos em Python ou R. Muitas vezes é mais rápido começar a limpeza dos dados pela linha de comando, e terminar em uma outra linguagem utilizando funções prontas mais elaboradas.
+Você deve estar se perguntando, porque diabos eu deveria utilizar a linha de comando? Primeiramente, os comandos em **Shell Script** para a manipulação de arquivos são muito mais rápidos do que os comandos em Python ou R. Além disso, pode ser conveniente começar a limpeza dos dados pela linha de comando, e terminar em uma outra linguagem utilizando funções mais complexas.
 
 > __Observação importante:__ Estou utilizando um MacBook OSX Mojave. Alguns comandos possuem uma implementação um pouco diferente da plataforma Unix original.
 
-Como é muito difícil memorizar todos os comandos "de primeira", recomendo ler o conteúdo enquanto executa os comandos na sua própria máquina, e depois salvar o link desse guia para realizar consultas sempre que precisar rodar algum dos comandos aqui listados (espero que isso te economize muito tempo de pesquisa e leitura no Google).
+Como é muito difícil memorizar todos os comandos "de primeira", recomendo ler o conteúdo desse _post_ enquanto executa os comandos ensinados na sua própria máquina, depois disso salve o link desse guia para realizar consultas quando não lembrar dos comandos (espero que isso te economize muito tempo de pesquisa no Google).
 
 Para criar um arquivo *teste.txt*, navegue até o diretório onde se deseje criar o arquivo, e digite no terminal:
 
@@ -31,15 +31,19 @@ nano teste.txt
 E copie e cole o seguinte conteúdo (assim nós dois teremos o mesmo arquivo para comparar os resultados):
 
 ```
-codigo_produto;preço;descricao;estoque;mês
-2;Maça;1,50;2;January
+codigo_produto;descricao;preço;estoque;mês
+2;Maça;01,50;2;January
+5;Uva;1,00;1;February
 3;Banana;2,00;4;March
-4;Pera;03,00;10;December
+4;Pera;3:00;10;December
+5;Uva;1,00;1;February
+6;Melão;0,50;0;November
+3;Banana;2,00;4;March
 5;Uva;1,00;1;February
 6;Melão;0,50;0;November
 ```
 <br>
-# Shell Prompt Commands
+# Unix Commands
 <br>
 Como _reminder_ inicial, o comando `man` permite que possamos acessar página de ajuda para qualquer comando. Então, para saber o que o comando **iconv** faz, basta digitar `man iconv`.
 
@@ -79,11 +83,16 @@ wc teste.txt
 ```
 
 O output do comando será:
-	
-| place_holder |
-| place_holder |
-| place_holder |
-| place_holder |
+
+<div class="alert alert-secondary" role="alert">
+  9      10     252 teste.txt
+</div>
+
+<pre>
+	<strong>
+		9      10     252 teste.txt
+	</strong>
+</pre>
 
 <br>
 
@@ -98,11 +107,9 @@ tail -n 1 teste.txt # Retorna a última linha
 
 O output do primeiro comando será:
 
-	
-place_holder |
-place_holder |
-place_holder |
-place_holder |
+|codigo_produto;descricao;preço;estoque;mês|
+|2;Maça;01,50;2;January|
+
 	
 Para obter pular as _n_ primeiras linhas do arquivo, utiliza-se o comando _tail_ com o sinal "+" junto ao número de linhas. Por exemplo:
 
