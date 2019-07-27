@@ -1,3 +1,27 @@
+/* Lorenzo Edit 24 de Julho 2019 */
+.alert {
+  position: relative;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+}
+
+.alert-secondary {
+  color: #383d41;
+  background-color: #e2e3e5;
+  border-color: #d6d8db;
+}
+
+.alert-secondary hr {
+  border-top-color: #c8cbcf;
+}
+
+.alert-secondary .alert-link {
+  color: #202326;
+}
+/* End Lorenzo Edit */
+
 /*Lorenzo Inicio*/
 /*Table begin*/
 table {

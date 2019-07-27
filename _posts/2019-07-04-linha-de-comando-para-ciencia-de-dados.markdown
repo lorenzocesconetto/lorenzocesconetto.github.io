@@ -5,8 +5,19 @@ date: 2019-07-04 21:31:57
 img: terminal-code.jpg
 tags: [Ciência de Dados]
 author: Lorenzo Cesconetto
-published: true
+published: false
 ---
+
+<!--
+
+OBSERVAÇOES:
+
+1) CRIAR SECAO DE FLAGS / DEFAULT PARA CADA COMANDO.
+2) COMEÇAR EXPLICANDO O COMANDO E DEPOIS SUA APLICAÇÃO EM CIENCIA DE DADOS.
+3) COLOCAR OS OUTPUTS.
+
+-->
+
 
 &emsp; &emsp; O conteúdo desse post é direcionado à pessoas **técnicas** na área de computação, não é preciso ter experiência prévia com de Ciência de Dados. Mas é recomendável conhecimento básico do terminal unix.
 
@@ -14,7 +25,7 @@ Você deve estar se perguntando, porque diabos eu deveria utilizar a linha de co
 
 > __Observação importante:__ Estou utilizando um MacBook OSX Mojave. Alguns comandos possuem uma implementação um pouco diferente da plataforma Unix original.
 
-Como é muito difícil memorizar todos os comandos "de primeira", recomendo ler o conteúdo desse _post_ enquanto executa os comandos ensinados na sua própria máquina, depois disso salve o link desse guia para realizar consultas quando não lembrar dos comandos (espero que isso te economize muito tempo de pesquisa no Google).
+Como é muito difícil memorizar todos os comandos "de primeira", recomendo ler o conteúdo desse _post_ enquanto executa os comandos ensinados na sua própria máquina, depois disso salve o link desse guia para realizar consultas quando não lembrar de alguma sintaxe (espero que isso te economize muito tempo de pesquisa no Google).
 
 Para criar um arquivo *teste.txt*, navegue até o diretório onde se deseje criar o arquivo, e digite no terminal:
 
@@ -58,13 +69,16 @@ Antes de aplicar o `iconv`, é interessante utilizar o comando `file -I` (na pla
 file -I teste.txt
 ```
 
-
 A saída deve ser algo do tipo:
 
+<div class="alert alert-secondary" role="alert">
+	teste.txt: text/plain; charset=utf-8
+</div>
 
-| teste.txt: text/plain; charset=utf-8 |
+Agora podemos fazer a conversão especificando as flags:
 
-Agora podemos fazer a conversão especificando as opções _-f_ (_from_) e _-t_ (_to_) que indicam __de qual__ e __para qual__ _encoding_ estamos convertendo respctivamente: 
+* _-f_: que indica __de qual__ _encoding_ vamos trasformar.
+* _-t_: que indica __para qual__ _encoding_ estamos convertendo (do inglês _to_).
 
 ```
 iconv -f UTF-8 -t ISO-8859-1 teste.txt
@@ -88,17 +102,14 @@ O output do comando será:
   9      10     252 teste.txt
 </div>
 
-<pre>
-	<strong>
-		9      10     252 teste.txt
-	</strong>
-</pre>
-
 <br>
 
 ### 3. head e tail
 
-Em projetos de Ciência de Dados é muito comum se deparar com arquivos *csv* (ou similares) que sejam muito grandes, o que impossibilita sua visualização por meio de editores de texto como o Sublime Text. Um comando rápido para visualizar as primeiras linhas (e descobrir que tipo de dados temos ali) do arquivo é o **head** (ou para visualizar as últimas **tail**):
+Em projetos de Ciência de Dados é muito comum se deparar com arquivos *csv* (ou similares) que sejam muito grandes, o que impossibilita sua visualização por meio de editores de texto. Um comando rápido para visualizar as primeiras linhas (e descobrir que tipo de dados temos ali) do arquivo é o **head** (ou para visualizar as últimas **tail**):
+
+Flags:
+* _-n:_ Especifica o número de linhas.
 
 ```
 head -n 2 teste.txt # Retorna as primeiras 2 linhas
@@ -107,11 +118,14 @@ tail -n 1 teste.txt # Retorna a última linha
 
 O output do primeiro comando será:
 
-|codigo_produto;descricao;preço;estoque;mês|
-|2;Maça;01,50;2;January|
+
+<div class="alert alert-secondary" role="alert">
+codigo_produto;descricao;preço;estoque;mês <br/>
+2;Maça;01,50;2;January
+</div>
 
 	
-Para obter pular as _n_ primeiras linhas do arquivo, utiliza-se o comando _tail_ com o sinal "+" junto ao número de linhas. Por exemplo:
+Para pular as _n_ primeiras linhas do arquivo, utiliza-se o comando _tail_ com o sinal "+" junto ao número de linhas. Por exemplo:
 
 ```
 tail -n +2 teste.txt # Retorna todas as linhas exceto a primeira
@@ -121,7 +135,13 @@ Nesse caso, o comando irá retornar as linhas até o final do arquivo a partir d
 <br>
 
 ### 4. cut
-Podemos selecionar as colunas de um arquivo com dados separados por caracter reservado, e.g., csv. No nosso caso, esse caracter é o ";". Esse comando é o **cut**, que tem como um das opções o *-d* que indica o delimitador (precisaremos escapar o caracter especial ; com uma contra barra), e a opção *-f* que indica quais colunas vamos selecionar (no código abaixo estamos selecionando as colunas de 1 à 3 e a coluna 5):
+Pode ser muito útil selecionar apenas as colunas relevantes de um arquivo antes de lê-lo em nosso programa. Quando temos um arquivo com dados separados por caracter reservado (ex: _csv_) podemos realizar essa seleção através do comando **cut**. No nosso caso, esse caracter é o ";". 
+
+Flags:
+* *-d:* indica o delimitador
+* *-f:* indica quais colunas vamos selecionar
+
+No código abaixo precisaremos escapar o caracter especial ; com uma contra barra, e iremos selecionar as colunas de 1 à 3 e a coluna 5.
 
 ```
 cut -d \; -f 1-3,5 teste.txt # Retorna as colunas 1, 2, 3 e 5
@@ -130,11 +150,11 @@ Note que a coluna 4 (estoque) é retirada
 <br>
 <br>
 ### 5. sed
-Uma operação bem comum na limpeza de dados é trocar as vírgulas que separam os número por pontos, por exemplo, de 1,50 para 1.50. No código abaixo, a _string_ `'s/,/./'` está explicitando uma substituição (daí o primeiro `s`) de `,` por `.`. É possível explicitar múltiplas substituições simultaneamente, basta finalizar cada uma com um `;`:
+Uma operação bem comum na limpeza de dados é trocar as vírgulas que separam os número por pontos, por exemplo, de 1,50 para 1.50, assim fica mais fácil para realizar o _parse_ para _float_. No código abaixo, a _string_ `'s/,/./'` está explicitando uma substituição (daí o primeiro `s`) de `,` por `.`. É possível explicitar múltiplas substituições simultaneamente, basta finalizar cada uma com um `;`:
 
 ```
-sed 's/,/./' teste.txt # Substitui , com .
-sed 's/,/./; s/:/./' teste.txt # Substitui , com . e : com .
+sed 's/,/./' teste.txt # Substitui "," com "."
+sed 's/,/./; s/:/./' teste.txt # Substitui "," e ":" por "."
 ```
 <br>
 ### 6. | (símbolo pipe)
@@ -144,7 +164,12 @@ cut -d \; -f 2 teste.txt | tail -n +2 # Retorna o nome das frutas
 ```
 <br>
 ### 7. sort
-O comando **sort** é bem útil para realizar fazer uma exploração inicial rápida. A flag *-n* deve ser especificada para realizar a ordenação de forma numérica (e não alfabética que é o _default_) e a opção *-r* implica na ordenação inversa (do maior para o menor, em ingês _reverse_):
+O comando **sort** ordena as linhas do arquivo de dados de acordo com os valores da coluna que quisermos, e é muitas vezes pré-requisito para que outros comando funcionem corretamente (por exemplo o _join_ que veremos mais adiante). 
+
+Flags:
+* *-n*: deve ser especificada para realizar a ordenação de forma numérica (e não alfabética que é o _default_). 
+* *-r:* implica na ordenação inversa, ou seja, do maior para o menor (do ingês _reverse_)
+* *-k:* especifica o índice da coluna a ser utilizada para a ordenação.
 
 ```
 sort -t \; teste.txt # Ordena a 1 coluna
@@ -154,7 +179,14 @@ sort -k 5 -t \; -M teste.txt # A opcao M faz o sorting com nome dos meses
 ```
 <br>
 ### 8. uniq
-O comando `uniq` realiza operações envolvendo a propriedade de repetição de linhas. Um detalhe importante desse comando, é que ele exige que o arquivo esteja já ordenado, pois ele realiza as suas operações comparando linhas consecutivas.
+O comando `uniq` realiza operações envolvendo a propriedade de repetição de linhas. Pode ser muito útil para "enxugar" um arquivo muito grande que apresente muitas repetições. Um detalhe importante desse comando, é que ele exige que o arquivo esteja já ordenado, pois ele realiza as suas operações comparando linhas consecutivas.
+
+Flags:
+* _Default:_ Retorna apenas as linhas únicas do arquivo.
+* _-c:_ Retorna cada linha com a contagem de quantas vezes apareceu.
+* _-d:_ Retorna apenas linhas com duas ou mais ocorrências.
+* _-u:_ Retorna apenas as linhas que são únicas.
+
 ```
 sort -k 1 -t \; teste.txt | uniq # Retorna as linhas do arquivo removendo repetições
 sort -t \; -k 1 teste.txt | uniq -c # Conta as ocorrências de cada linha
@@ -206,13 +238,16 @@ OPT303
 
 paste -d ',' courses.txt codes.txt dificulty.txt
 ```
-|Linear Algebra,2|
-|Deep Learning,1|
-|Discrete Optimization,3|
+<div class="alert alert-secondary" role="alert">
+Linear Algebra,2 <br>
+Deep Learning,1 <br>
+Discrete Optimization,3 <br>
+</div>
+
 <br>
 
 ### 12. join
-Esse comando é um pouco parecido com um _join_ de uma _query_ em SQL. O comando faz o _match_ linha a linha das tabelas onde os valores de uma determinada coluna são iguais em ambos os arquivos. Uma observação muito importante, é que os campos chave para o matching devem estar ordenados, caso contrário, o __join__ pode não retornar todos os matches. Então, na prática deve-se rodar o comando __sort__ em ambos os arquivos antes de realizar o _join_.
+Esse comando é um pouco parecido com um _join_ de uma _query_ em SQL. O comando faz o _match_ linha a linha das tabelas onde os valores de uma determinada coluna são iguais em ambos os arquivos. Uma observação muito importante: os campos chave para o matching devem estar ordenados, caso contrário, o __join__ pode não retornar todos os matches. Então, na prática deve-se rodar o comando __sort__ em ambos os arquivos antes de realizar o _join_.
 
 ```
 # arquivo_1.txt
@@ -234,34 +269,50 @@ join -a 1 -t , -1 1 -2 2 arquivo_1.txt arquivo_2.txt
 <br>
 
 ### 13. regex
-Expressões regulares (also known as _regex_) são uma forma de expressar uma seleção inteligente. Ela é capaz de encontrar padrões especificados de forma automatizada em um texto.
+Expressões regulares (also known as _regex_) é simplesmente uma sequencia de caracteres que definem um padrão de busca. Em outras palavras, uma forma de especificar para o computador como ele deve realizar uma busca em um texto. Talvez com o exemplo as coisas fiquem mais claras.
 
-Caracteres especiais, comumente chamados de _Wildcards_:
-	* `^`: Começo de palavra.
-	* `$`: Final de linha.
-	* `[aA]`: Qualquer um dos elementos dentro dos colchetes (nesse caso 'a' ou 'A').
-	* `.`: Representa um único caracter, qualquer que ele seja.
+Aqui, listamos alguns dos caracteres especiais mais importantes do _regex_ (comumente chamados de _Wildcards_):
+	* `^`: Indica começo de palavra.
+	* `$`: Indica final de linha.
+	* `[aA]`: Considera um _match_ se encontrar qualquer um dos elementos dentro dos colchetes (nesse caso 'a' ou 'A').
+	* `.`: Considera um único caracter (qualquer) para construir um _match_.
 	* `{n}`: Repete a expressão anterior _n_ vezes.
 	* `+`: Repete a expressão anterior uma ou mais vezes.
 	* `*`: Repete a expressão anterior zero ou mais vezes.
+	* `?`: Repete a expressão anterior zero ou uma vez.
+	* `\d`: Faz o _match_ para qualquer digito.
+
+O comando `grep` é o que processa as expressões regulares no shell script. O interessante de aprender expressões regulares é que a maioria das linguagens oferecem suporte para esse tipo de busca.
+
+Alguns exemplos (`grep` é explicado no próximo tópico):
+
+https://www.digitalocean.com/community/tutorials/using-grep-regular-expressions-to-search-for-text-patterns-in-linux
 
 ```
-[1-2]-?{aula}.*
+grep -Eo '\d+' myfile.txt  # retorna todos os numeros
+grep -Eo '\d+\s+anos' myfile.txt  # retorna
 ```
+Flags:
+* -E: Expressões regulares extendidas.
+* -o: Faz o output somente do _match_, e não da linha completa.
+Recomendo o site _<a target="_blank" href="https://regex101.com" target="_">regex101</a>_ para testar de forma iterativas suas expressões regulares.
+
 <br>
 
 ### 14. grep
-O comando grep (Global search for a regular expression and print) é utilizado para encontrar padrões específicos em textos, strings ou outputs. Ele retorna as partes do texto que contém o pedaço de texto que você deseja:
+O comando grep (Global search for a regular expression and print) é utilizado para encontrar padrões específicos em textos, strings ou outputs. Ele retorna as partes do texto que contém o pedaço de texto que você deseja. Para esse comando em específico, estou utilizando a implementação do _GNU_ dada que a implementação do _OSX Mojave_ não inclui algumas _flags_ importantes.
+
+_Flags:_
+* *-i:*
 
 ```
 ls | grep data  # retorna todos os arquivos cujo o nome contém 'data'
 grep -i uva teste.txt # ocorrencias de uva (-i torna a busca case insensitive) no teste
-grep -E '\d+\s?paginas' myfile
 ```
 <br>
 
-### 15. awk
-<br>
+<!-- ### 15. awk -->
+<!-- <br> -->
 
 ## Comandos Extras
 Por último, e talvez um pouco menos importantes (para um Cientista de Dados), trago aqui alguns comandos que podem ajudar no dia-a-dia:
