@@ -13,10 +13,10 @@ timezone: America/Sao_Paulo
 # Author settings
 author: Lorenzo Cesconetto # add your name
 author-pic: lorenzo.jpg
-about-author: Hi! My name is Lorenzo Cesconetto. I’m a Brazilian entrepreneur and engineering student. This blog is designed to help people to make smarter decisions in life!
+about-author: Hi! My name is Lorenzo. I write this blog posts to share some thoughts on career, technology and life!
 
 # phone: # Add your Phone number
-website: lorenzocesconetto.com # Add your website, do not add http://
+website: lorenzocesconetto.com.br # Add your website, do not add http://
 linkedin: /lorenzo-cesconetto/ # Add your Linkedin handle
 # github: #artemsheludko # Add your Github handle
 # twitter: #'@artemsheludko_' # Add your Twitter handle
