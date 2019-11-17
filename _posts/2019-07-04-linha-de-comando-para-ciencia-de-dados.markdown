@@ -302,7 +302,7 @@ cliente,saldo,salário <br>
 ### 13. regex
 Expressão regular (ou _regex_) é simplesmente uma sequencia de caracteres que definem um padrão de busca. Em outras palavras, uma forma de especificar para o computador como ele deve realizar uma busca em um texto. Aqui daremos somente breve introdução. 
 
-Para entender mais, recomendo o __<a target="_blank" href="{% post_url 2019-11-16-expressões-regulares-zero-to-hero %}" target="_"> tutorial de Regex: Zero to Hero</a>__, escrito por um amigo __ninja__ no assunto.
+Para entender mais, recomendo o __<a target="_blank" href="{% post_url 2019-11-16-expressoes-regulares-zero-to-hero %}" target="_"> tutorial de Regex: Zero to Hero</a>__, escrito por um amigo __ninja__ no assunto.
 
 Aqui, listamos alguns dos caracteres especiais mais importantes do _regex_ (comumente chamados de _Wildcards_):
 * `^`: Indica começo de linha.
