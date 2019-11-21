@@ -23,7 +23,7 @@ OBSERVAÇOES:
 
 &emsp; &emsp; O conteúdo desse post é direcionado à pessoas **técnicas** na área de computação, não é preciso ter experiência prévia com de Ciência de Dados. Mas é recomendável conhecimento básico do terminal unix.
 
-Você deve estar se perguntando, porque diabos eu deveria utilizar a linha de comando para Ciência de Dados? Primeiramente, os comandos em **Shell Script** para a manipulação de arquivos são muito mais rápidos do que os comandos em Python ou R. Além disso, pode ser conveniente começar a limpeza dos dados pela linha de comando, e terminar em uma outra linguagem utilizando funções mais complexas.
+Você deve estar se perguntando, porque diabos eu deveria utilizar a linha de comando para Ciência de Dados? Primeiramente, os comandos em **Shell Script** para a manipulação de arquivos são muito mais rápidos do que os comandos em Python ou R, e são muito eficientes em termos de memória. Além disso, pode ser conveniente começar a limpeza dos dados pela linha de comando, e terminar em uma outra linguagem utilizando funções mais complexas.
 
 > __Observação importante:__ Estou utilizando um MacBook OSX Mojave. Alguns comandos possuem uma implementação um pouco diferente da plataforma Unix original.
 
@@ -41,7 +41,7 @@ Depois disso, abra o arquivo no editor de texto _nano_ (ou o editor de sua prefe
 nano teste.txt
 ```
 
-E copie e cole o seguinte conteúdo (assim nós dois teremos o mesmo arquivo para comparar os resultados):
+Copie e cole o seguinte conteúdo (assim nós dois teremos o mesmo arquivo para comparar os resultados):
 
 ```
 codigo_produto;descricao;preço;estoque;mês
@@ -58,7 +58,7 @@ codigo_produto;descricao;preço;estoque;mês
 <br>
 # Unix Commands
 <br>
-Como _reminder_ inicial, o comando `man` (abreviação de _manual_) nos mostra a documentação de um comando. Por exemplo, para saber o que o comando **iconv** faz, basta digitar `man iconv`.
+Como _reminder_ inicial, o comando `man` (abreviação de _manual_) nos mostra a documentação de um comando. Por exemplo, para saber o que o comando `iconv` faz, basta digitar `man iconv`.
 
 <br>
 ### 1. iconv
@@ -92,7 +92,7 @@ Recomendo _<a target="_blank" href="https://www.youtube.com/watch?v=MijmeoH9LT4"
 
 ### 2. wc
 
-O comando **wc** (abreviação de _word count_), apesar do nome, retorna a contagem de linhas, palavras e bytes de um arquivo (nessa ordem). É muito útil para saber o número de observações que temos nos nossos dados sem precisar "abrir" o arquivo ("abrir" pode ser infactível se o arquivo for muito grande).
+O comando **wc** (abreviação de _word count_), apesar do nome, retorna a contagem de linhas, palavras e _bytes_ de um arquivo (nessa ordem). É muito útil para saber o número de observações que temos nos nossos dados sem precisar "abrir" o arquivo ("abrir" pode ser infactível se o arquivo for muito grande).
 
 ```
 wc teste.txt
@@ -108,7 +108,7 @@ O output do comando será:
 
 ### 3. head e tail
 
-Em projetos de Ciência de Dados é muito comum se deparar com arquivos *csv* (ou similares) que sejam muito grandes, o que impossibilita sua visualização por meio de editores de texto. Um comando rápido para visualizar as primeiras linhas (e descobrir que tipo de dados temos ali) do arquivo é o **head** (ou para visualizar as últimas **tail**):
+Em projetos de Ciência de Dados é muito comum se deparar com arquivos *csv* (ou similares) que sejam muito grandes, o que impossibilita sua visualização por meio de editores de texto. Um comando rápido para visualizar as primeiras linhas (e descobrir que tipo de dados temos ali) do arquivo é o `head` (ou para visualizar as últimas `tail`):
 
 Flags:
 * _-n:_ Especifica o número de linhas.
@@ -127,7 +127,7 @@ codigo_produto;descricao;preço;estoque;mês <br/>
 </div>
 
 	
-Para pular as _n_ primeiras linhas do arquivo, utiliza-se o comando _tail_ com o sinal "+" junto ao número de linhas. Por exemplo:
+Para pular as _n_ primeiras linhas do arquivo, utiliza-se o comando `tail` com o sinal "+" junto ao número de linhas. Por exemplo:
 
 ```
 tail -n +2 teste.txt # Retorna todas as linhas exceto a primeira
@@ -137,11 +137,11 @@ Nesse caso, o comando irá retornar as linhas até o final do arquivo a partir d
 <br>
 
 ### 4. cut
-Pode ser muito útil selecionar apenas as colunas relevantes de um arquivo antes de lê-lo em nosso programa (economia de memória, e tempo para leitura). Quando temos um arquivo com dados separados por caracter reservado (ex: _csv_) podemos realizar essa seleção através do comando **cut**. No nosso caso, esse caracter é o ";". 
+Pode ser muito útil selecionar apenas as colunas relevantes de um arquivo antes de lê-lo em nosso programa (economia de memória, e menor tempo para carregar os dados). Quando temos um arquivo com dados separados por caracter reservado (ex: _csv_) podemos realizar essa seleção através do comando **cut**. No nosso caso, esse caracter é o ";". 
 
 Flags:
-* *-d:* indica o delimitador
-* *-f:* indica quais colunas vamos selecionar
+* *-d:* indica o caracter delimitador.
+* *-f:* indica quais colunas vamos selecionar.
 
 No código abaixo precisaremos escapar o caracter especial ; com uma contra barra, e iremos selecionar as colunas de 1 à 3 e a coluna 5.
 
@@ -160,7 +160,7 @@ sed 's/,/./; s/:/./' teste.txt # Substitui "," e ":" por "."
 ```
 <br>
 ### 6. | (símbolo pipe)
-Para combinar múltiplos comandos, utiliza-se o caracter _pipe_, \|. Ele permite que se crie uma "linha de produção", onde cada comando passa o seu _output_ como _input_ para o próximo. No código abaixo, estamos tomando todas as descrições de produto excluindo o cabeçalho:
+Para combinar múltiplos comandos, utiliza-se o caracter _pipe_, `|`. Ele permite que se crie uma "linha de produção", onde cada comando passa o seu _output_ como _input_ para o próximo. No código abaixo, estamos tomando todas as descrições de produto excluindo o cabeçalho:
 ```
 cut -d \; -f 2 teste.txt | tail -n +2 # Retorna o nome das frutas
 ```
@@ -178,12 +178,14 @@ Melão
 
 <br>
 ### 7. sort
-O comando **sort** ordena as linhas do arquivo de dados de acordo com os valores da coluna que quisermos, e é muitas vezes pré-requisito para que outros comando funcionem corretamente (por exemplo o _join_ que veremos mais adiante). 
+O comando `sort` ordena as linhas do arquivo de dados de acordo com os valores da coluna que quisermos, e é muitas vezes pré-requisito para que outros comando funcionem corretamente (por exemplo o `join` que veremos mais adiante). 
 
 Flags:
+* *-t:* Especifica o caracter delimitador do arquivo.
 * *-n*: deve ser especificada para realizar a ordenação de forma numérica (e não alfabética que é o _default_). 
 * *-r:* implica na ordenação inversa, ou seja, do maior para o menor (do ingês _reverse_)
 * *-k:* especifica o índice da coluna a ser utilizada para a ordenação.
+* *-M:* Realiza a ordenação com os nomes dos meses do ano.
 
 ```
 sort -t \; teste.txt # Ordena a 1 coluna
@@ -193,7 +195,7 @@ sort -k 5 -t \; -M teste.txt # A opcao M faz o sorting com nome dos meses
 ```
 <br>
 ### 8. uniq
-O comando `uniq` realiza operações envolvendo a propriedade de repetição de linhas. Pode ser muito útil para "enxugar" um arquivo muito grande que apresente muitas repetições. Pode ser essencial para carregar um inteiro arquivos na memória. Um detalhe importante desse comando, é que ele exige que o arquivo esteja já ordenado, pois ele realiza as suas operações comparando linhas consecutivas.
+O comando `uniq` realiza operações envolvendo a propriedade de repetição de linhas. Pode ser muito útil para "enxugar" um arquivo muito grande que apresente muitas repetições, ou até para tornar possível carregar o arquivo inteiro na memória. Um detalhe importante desse comando, é que ele exige que o arquivo esteja já ordenado, pois ele realiza as suas operações comparando linhas consecutivas.
 
 Flags:
 * _Default:_ Retorna apenas as linhas únicas do arquivo.
@@ -216,11 +218,11 @@ Você já deve estar se perguntando, e se eu quisesse salvar o _output_ do meu c
 cat "Frutas únicas" > new_file.txt # Cria o arquivo e escreve na primeira linha
 cut -d \; -f 2 teste.txt | tail -n +2 | uniq >> new_file.txt # Append de frutas únicas
 ```
-Faça o teste sem utilizar __>>__. Você verá que a primeira linha, "Frutas únicas", não estará mais lá.
+Faça o teste sem utilizar `>>`. Você verá que a primeira linha, "Frutas únicas", não estará mais lá.
 <br>
 
 ### 10. echo
-O `echo` é um comando simples que pega os inputs passados (argumentos) e os retorna como _standard outputs_, assim é possível utilizar essa saída como entrada de outras funções. Alguns exemplos de uso:
+O `echo` é um comando simples que pega os _inputs_ passados (argumentos) e os retorna como _standard outputs_, assim é possível utilizar essa saída como entrada de outras funções. Alguns exemplos de uso:
 
 ```
 echo some text > some_file.txt  # escreve "some text" em um novo arquivo
@@ -230,7 +232,7 @@ echo $PATH # imprime a variavel global PATH
 <br>
 
 ### 11. paste
-O comando __paste__ é utilizado para juntar dois arquivos em um __lateralmente__. Abaixo um exemplo:
+O comando `paste` é utilizado para juntar dois arquivos em um __lateralmente__. Abaixo um exemplo:
 
 Flags:
 * _-d:_ Indica qual o delimitador a ser utilizado, por _default_ o _tab_ é utilizado.
@@ -262,12 +264,12 @@ Discrete Optimization,OPT303,3<br>
 <br>
 
 ### 12. join
-Esse comando é um pouco parecido com um _join_ de uma _query_ em SQL. O comando faz o _match_ linha a linha das tabelas onde os valores de uma determinada coluna são iguais em ambos os arquivos. Uma observação muito importante: os campos chave para o matching devem estar ordenados, caso contrário, o __join__ pode não retornar todos os matches. Então, na prática deve-se rodar o comando __sort__ em ambos os arquivos antes de realizar o _join_.
+Esse comando é um pouco parecido com um _join_ de uma _query_ em SQL. O comando faz o _match_ linha a linha das tabelas onde os valores de uma determinada coluna são iguais em ambos os arquivos. Uma observação muito importante: os campos chave para o _matching_ __devem estar ordenados__, caso contrário, o `join` pode não retornar todos os matches. Então, na prática deve-se rodar o comando `sort` em ambos os arquivos antes de realizar o `join`.
 
 Flags:
 * _-t:_ Especifica o caracter delimitador do _input_ e do _output_.
 * _-a:_ Retorna as linhas sem _match_ do arquivo cujo índice foi especificado.
-* _-1:_ Utilizar _-index_ para especificar qual a coluna de _join_ do arquivo de índice correspondente.
+* _-1 -2 ... :_ Utilizar _-index_ para especificar qual a coluna de _join_ do arquivo de índice correspondente (deve ficar mais claro com o exemplo abaixo).
 
 ```
 # arquivo_1.txt
@@ -296,6 +298,13 @@ cliente,saldo,salário <br>
 3,500,30000 <br>
 </div>
 
+<div class="alert alert-secondary" role="alert">
+cliente,saldo,salário <br>
+1,100,15000 <br>
+2,300,10000 <br>
+3,500,30000 <br>
+4,700 <br>
+</div>
 
 <br>
 
@@ -307,13 +316,13 @@ Para entender mais, recomendo o __<a target="_blank" href="{% post_url 2019-11-1
 Aqui, listamos alguns dos caracteres especiais mais importantes do _regex_ (comumente chamados de _Wildcards_):
 * `^`: Indica começo de linha.
 * `$`: Indica final de linha.
-* `[aA]`: Considera um _match_ se encontrar qualquer um dos elementos dentro dos colchetes (nesse caso 'a' ou 'A').
+* `[aA]`: Considera um _match_ se encontrar qualquer um dos elementos dentro dos colchetes (nesse caso "a" ou "A").
 * `.`: Considera um caracter qualquer, exceto quebra de linha, para construir um _match_.
 * `{n}`: Repete a expressão anterior _n_ vezes.
 * `+`: Repete a expressão anterior uma ou mais vezes.
 * `*`: Repete a expressão anterior zero ou mais vezes.
 * `?`: Repete a expressão anterior zero ou uma vez.
-* `\d`: Faz o _match_ para qualquer digito.
+* `\d`: Faz o _match_ para qualquer digito (um algarismo 0-9).
 
 O comando `grep` é o que busca as expressões regulares em textos no **Shell Script**. O interessante de aprender expressões regulares é que a maioria das linguagens oferecem suporte para esse tipo de busca.
 
@@ -321,7 +330,7 @@ Vamos ver alguns exemplos na próxima seção.
 <br>
 
 ### 14. grep
-O comando grep (_Global search for a Regular Expression and Print_) é utilizado para encontrar padrões específicos em textos, strings ou outputs. Ele retorna as partes do texto que contém o texto que você buscou. Para esse comando em específico, estou utilizando a implementação do _GNU_ dada que a implementação do _OSX Mojave_ não inclui algumas _flags_ importantes.
+O comando grep (_Global search for a Regular Expression and Print_) é utilizado para encontrar padrões específicos em textos, _strings_ ou _outputs_. Ele retorna as partes do texto que contém o texto que você buscou. Para esse comando em específico, estou utilizando a implementação do _GNU_ dada que a implementação do _OSX Mojave_ não inclui algumas _flags_ importantes.
 
 Flags:
 * _-i:_ Busca _case insensitive_.
@@ -343,7 +352,7 @@ Por último, trago aqui alguns comandos que podem ajudar no dia-a-dia:
 
 1. __tr__
 
-	O comando __tr__ (abreviação de _translate_) pode fazer diversos tipos de modificações no arquivo.
+	O comando `tr` (abreviação de _translate_) pode fazer diversos tipos de modificações no arquivo.
 	```
 	tr ';' '*' < teste.txt  # Substitui ; por *
 	tr '[A-Z]' '[a-z]' < teste.txt  # converte letras para minusculas
@@ -378,12 +387,6 @@ __Fim!!!__ Espero que esse _post_ sirva como um apoio rápido para muitos Cienti
 
 ## Fontes:
 - Documentação de cada comando, acessado pelo comando `man`
-- https://www.rootusers.com/17-bash-history-command-examples-in-linux/
-- https://medium.com/@kadek/command-line-tricks-for-data-scientists-c98e0abe5da
-
-
-
-
-
+- <a target="_blank" href="https://www.rootusers.com/17-bash-history-command-examples-in-linux/" target="_"> https://www.rootusers.com/17-bash-history-command-examples-in-linux/</a>
 
 
