@@ -1,0 +1,44 @@
+---
+title: "Lorenzo Cesconetto"
+image: profile.jpg
+about:
+  template: trestles
+  links:
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/lorenzo-cesconetto/
+      target: "_blank"
+    - icon: twitter-x
+      text: Twitter / X
+      href: https://x.com/l_cesconetto
+      target: "_blank"
+    - icon: github
+      text: GitHub
+      href: https://github.com/lorenzocesconetto
+      target: "_blank"
+
+---
+
+## Who I am
+
+I'm a software engineer based in Brazil. I have a wide variety of experiences, from Backend, DevOps and Frontend to Data Science, Machine Learning (ML) and Artificial Intelligence (AI).
+
+I am passionate about the intersection of Computer Science, Mathematics and AI.
+
+I am particularly attracted to NLP applications.
+
+## Why I started this blog
+
+I enjoy diving very deep when learning new things. I can only truly understand a new concept once I fully understand its inner workings.
+
+I believe there are other like-minded people around the world. If you're one of them, hopefully you'll find my content insightful.
+
+Most AI content is rather on the internet is rather superficial, so I decided to share my way of seeing the world.
+
+Besides that:
+
+- Share knowledge with the world
+- Connect with other like-minded folks
+- Document my learnings
+- Force myself to write things down
+

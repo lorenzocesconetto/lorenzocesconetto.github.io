@@ -1,0 +1,17 @@
+---
+title: "AI Blog"
+listing:
+  contents: posts
+  sort: "date desc"
+  type: table
+  categories: true
+  sort-ui: false
+  filter-ui: false
+  table-hover: true
+  fields: [title, reading-time]
+page-layout: full
+title-block-banner: false
+---
+
+
+I document my learnings in Machine Learning and Artificial Intelligence. Enjoy :)

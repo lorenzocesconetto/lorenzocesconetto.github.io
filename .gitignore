@@ -1,0 +1,8 @@
+_site
+.quarto
+_freeze
+/.quarto/
+todo.md
+.jupyter_cache
+.vdoc.*
+.DS_Store
