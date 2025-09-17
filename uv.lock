@@ -173,6 +173,9 @@ requires-dist = [
     { name = "seaborn", specifier = ">=0.13.2" },
 ]
 
+[package.metadata.requires-dev]
+dev = []
+
 [[package]]
 name = "certifi"
 version = "2025.8.3"

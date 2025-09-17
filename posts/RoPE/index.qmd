@@ -3,6 +3,10 @@ title: "RoPE clearly explained"
 author: "Lorenzo Cesconetto"
 date: "2025-09-16"
 categories: [Transformers]
+format:
+  html:
+    code-fold: true
+jupyter: python3
 ---
 
 # Introduction
@@ -100,9 +104,65 @@ That's correct, but here's why it still works:
 2. Although some dimensions grow closer, others that rotate more slowly continue growing farther apart.
 3. RoPE isn't perfect -- due to its rotational nature, local maxima do occur. See the chart from the original authors:
 
-![Source: ROFORMER: ENHANCED TRANSFORMER WITH ROTARY POSITION EMBEDDING](./RoPE-decay.png)
+![Theoretical curve provided by the authors Source: ROFORMER: ENHANCED TRANSFORMER WITH ROTARY POSITION EMBEDDING](./RoPE-decay.png)
 
-One idea that occurred to me: clipping the rotation angle. I wonder if newer papers have explored this approach. I've seen this being applied to other techniques, but not to RoPE.
+The theoretical curve has some crazy bumps, but in practice I found it to be much more behaved:
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+def rope_angle_between(q, k, d, base=10000.0):
+    q = np.asarray(q, dtype=np.float64)
+    k = np.asarray(k, dtype=np.float64)
+
+    D = len(k)
+    i = np.arange(0, D // 2, dtype=np.float64)
+    thetas = np.power(base, -2.0 * i / D)
+
+    angles = d * thetas
+    cos_t = np.cos(angles)
+    sin_t = np.sin(angles)
+
+    q_even = q[0::2]
+    q_odd = q[1::2]
+
+    q_rot_even = cos_t * q_even - sin_t * q_odd
+    q_rot_odd = sin_t * q_even + cos_t * q_odd
+
+    b_rot = np.empty_like(q)
+    b_rot[0::2] = q_rot_even
+    b_rot[1::2] = q_rot_odd
+
+    dot = float(np.dot(k, b_rot))
+    na = float(np.linalg.norm(k))
+    nb = float(np.linalg.norm(b_rot))
+    cosine = dot / (na * nb)
+    return cosine
+
+
+rng = np.random.default_rng(42)
+D = 10_000  # even dimension
+vec_a = rng.normal(size=D)
+vec_b = vec_a  # initially equal (very close)
+
+max_d = 500
+ds = np.arange(max_d + 1)
+angles = np.array([rope_angle_between(vec_a, vec_b, int(d)) for d in ds])
+
+plt.figure(figsize=(8, 4.5))
+plt.plot(ds, angles, lw=1.2)
+plt.xlabel("Relative distance")
+plt.ylabel("Cosine similarity")
+plt.title("Cosine similarity between RoPE-rotated vectors vs relative distance")
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+```
+
+Some ideas that occurred to me: clipping the rotation angle so the similarity is a strictly decreasing function (or even picking something other than sin/cos). I wonder if newer papers have explored this approach. I've seen clipping being applied to other techniques, but not to RoPE. Anyways, let's keep moving forward...
+
+Bare in mind that cosine similarity tends to grow (although slowly) as the distance grows a lot past our base (10,000 in this case). A simple solution here is to increase the base, or even let techniques like local attention take care of it.
 
 > **Bottom line: The LLM learns to encode long-range and short-range meaning influences in different dimensions of the hidden state.**
 
