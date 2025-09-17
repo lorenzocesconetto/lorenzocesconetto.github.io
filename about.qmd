@@ -21,7 +21,7 @@ about:
 
 ## Who I am
 
-I'm a software engineer based in Brazil. I have a wide variety of experiences, from Backend, DevOps and Frontend to Data Science, Machine Learning (ML) and Artificial Intelligence (AI).
+I'm a software engineer based in Brazil. I have a wide variety of experiences, from Backend and DevOps to Data Science, Machine Learning (ML) and Artificial Intelligence (AI).
 
 I am passionate about the intersection of Computer Science, Mathematics and AI.
 
@@ -33,11 +33,10 @@ I enjoy diving very deep when learning new things. I can only truly understand a
 
 I believe there are other like-minded people around the world. If you're one of them, hopefully you'll find my content insightful.
 
-Most AI content is rather on the internet is rather superficial, so I decided to share my way of seeing the world.
+Most AI content on the internet is rather superficial, so I decided to share my way of seeing the world.
 
 Besides that:
 
-- Share knowledge with the world
 - Connect with other like-minded folks
 - Document my learnings
 - Force myself to write things down

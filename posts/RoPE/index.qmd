@@ -1,5 +1,5 @@
 ---
-title: "Rotary Position Embedding (RoPE)"
+title: "RoPE clearly explained"
 author: "Lorenzo Cesconetto"
 date: "2025-09-16"
 categories: [Transformers]
@@ -7,9 +7,9 @@ categories: [Transformers]
 
 # Introduction
 
-There are plenty of good resources explaining the transformer architecture online, but **Rotary Position Embedding** (introduced in this [paper](https://arxiv.org/pdf/2104.09864)) is often poorly explained or skipped entirely.
+There are plenty of good resources explaining the transformer architecture online, but **Rotary Position Embedding** (RoPE) is often poorly explained or skipped entirely.
 
-The mathematical operations are straightforward—mostly matrix multiplications. The challenging part is understanding the intuition, visualizing what it does to vectors, and grasping why it works. That's exactly what I'll provide here.
+RoPE was first introduced in this [paper](https://arxiv.org/pdf/2104.09864), and while the mathematical operations involved are relatively straightforward -- primarily rotation matrix and matrix multiplications -- the real challenge lies in understanding the intuition behind how it works. I'll try to provide a way to visualize what it's doing to vectors and explain why this approach is so effective.
 
 *I assume you have a basic understanding of transformers and the attention mechanism throughout this post.*
 
@@ -19,7 +19,7 @@ Since transformers lack inherent understanding of order and distances, researche
 
 - Tokens closer to each other should attend with higher weights, while distant tokens should attend with lower weights.
 
-- Position within a sequence shouldn't matter—if two words are close to each other, they should attend to each other with higher weights regardless of whether they appear at the beginning or end of a long sequence.
+- Position within a sequence shouldn't matter -- if two words are close to each other, they should attend to each other with higher weights regardless of whether they appear at the beginning or end of a long sequence.
 
 - To accomplish these goals, **relative positional embeddings** are far more useful than absolute position embeddings.
 
@@ -29,9 +29,9 @@ If you understand these concepts, you're already halfway there.
 
 # Before RoPE
 
-The original positional embeddings from *[Attention is All You Need](https://arxiv.org/pdf/1706.03762)* used predefined values (defined by a formula) added to semantic embeddings. While the formula made sense, and RoPE does something similar, mixing semantics and position was confusing—not just for humans, but for LLMs too. Later research confirmed that LLMs were memorizing (overfitting) rather than generalizing positions, causing rapid deterioration when sequence lengths exceeded training data.
+The original positional embeddings from *[Attention is All You Need](https://arxiv.org/pdf/1706.03762)* used predefined values (defined by a formula) added to semantic embeddings. While the formula made sense, and RoPE does something similar, mixing semantics and position was confusing-not just for humans, but for LLMs too. Later research confirmed that LLMs were memorizing (overfitting) rather than generalizing positions, causing rapid deterioration when sequence lengths exceeded training data.
 
-One strategy that proved successful in early deep learning was: when unsure how to compute useful features for a neural network, let the network learn them itself! That's what models like GPT-3 did—they learned their own position embeddings. However, providing too much freedom increases overfitting risks and, in this case, creates hard limits on context windows.
+One strategy that proved successful in early deep learning was: when unsure how to compute useful features for a neural network, let the network learn them itself! That's what models like GPT-3 did -- they learned their own position embeddings. However, providing too much freedom increases overfitting risks and, in this case, creates hard limits on context windows.
 
 The best approaches focused on modifying the attention mechanism so that nearby tokens receive higher attention weights while distant tokens receive lower weights. The goal was to cleverly modify $Q$ and $K$ so their dot products would reflect proximity while preserving hidden states.
 
@@ -41,7 +41,7 @@ RoPE modifies $Q$ and $K$ by applying rotations to them.
 
 Let $q$ be the query projection of a token and $k$ be the key projection of another. For tokens that are close in the text, minimal rotation is applied, while distant tokens undergo larger rotational transformations.
 
-Imagine two identical projection vectors—any rotation would make them more distant from each other. That's exactly what we want.
+Imagine two identical projection vectors -- any rotation would make them more distant from each other. That's exactly what we want.
 
 ![RoPE Rotation Animation](./rope_basic_rotation.gif)
 
@@ -67,7 +67,7 @@ Rotation increases as the token's absolute position $m$ increases.
 
 I know what you're thinking: "$m$ is absolute position, but didn't you say relative positions matter most?"
 
-Here's the magic: consider a 2D plane where you rotate one vector by $\alpha$ and another by $\beta$. The angular difference between them becomes $\alpha - \beta$. Their absolute values don't matter—only the distance does. So for two tokens at positions $m$ and $n$, the rotation modifies the angle between them proportionally to $m-n$.
+Here's the magic: consider a 2D plane where you rotate one vector by $\alpha$ and another by $\beta$. The angular difference between them becomes $\alpha - \beta$. Their absolute values don't matter -- only the distance does. So for two tokens at positions $m$ and $n$, the rotation modifies the angle between them proportionally to $m-n$.
 
 ![Relative distance after rotation](rope_rotation_visualization.png)
 
@@ -77,7 +77,7 @@ Here's the magic: consider a 2D plane where you rotate one vector by $\alpha$ an
 
 Instead of applying uniform rotation across all hidden state dimensions, RoPE processes two dimensions at a time, applying different rotation angles to each pair. In other words, it breaks the long vector into multiple pairs that can be rotated in 2D by different angles.
 
-We rotate hidden state dimensions differently—rotation is higher when $i$ is low (vector beginning) and lower when $i$ is high (vector end).
+We rotate hidden state dimensions differently -- rotation is higher when $i$ is low (vector beginning) and lower when $i$ is high (vector end).
 
 Understanding this operation is straightforward; understanding why we need it requires more explanation:
 
@@ -90,7 +90,7 @@ Understanding this operation is straightforward; understanding why we need it re
 
 ![Two vectors encoding information in $x$ and $y$ become very far apart (nearby tokens where one shouldn't attend to the other).](./rope_high_xy_rotation_2.gif)
 
-This structure captures complicated nuances in human language—pretty cool, right?
+This structure captures complicated nuances in human language -- pretty cool, right?
 
 Once again, I know what you're thinking: "after too much rotation, they start getting close again".
 
@@ -98,7 +98,7 @@ That's correct, but here's why it still works:
 
 1. We're visualizing in 3D, but this actually happens in much higher dimensions.
 2. Although some dimensions grow closer, others that rotate more slowly continue growing farther apart.
-3. RoPE isn't perfect—due to its rotational nature, local maxima do occur. See the chart from the original authors:
+3. RoPE isn't perfect -- due to its rotational nature, local maxima do occur. See the chart from the original authors:
 
 ![Source: ROFORMER: ENHANCED TRANSFORMER WITH ROTARY POSITION EMBEDDING](./RoPE-decay.png)
 
@@ -120,7 +120,7 @@ When $i=1 \Rightarrow \theta=1$ (high) and when $i=d/2 \Rightarrow \theta \appro
 # Conclusion
 
 - We should find clever ways to inject knowledge into LLMs rather than letting them learn everything independently.
-    - We do this by providing the right operations a neural network needs to process data—attention and convolutions are great examples.
+    - We do this by providing the right operations a neural network needs to process data -- attention and convolutions are great examples.
 - Closed-form equations can extend indefinitely since you don't need to learn each position embedding.
     - This is why RoPE provides excellent sequence length flexibility.
 - The most important property: attention weights decrease as relative distances increase.
