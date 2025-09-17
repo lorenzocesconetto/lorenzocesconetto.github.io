@@ -1,0 +1,7 @@
+.about-image {
+  border-radius: 200px !important;
+}
+
+figcaption.quarto-float-caption-bottom.quarto-float-caption.quarto-float-fig {
+  text-align: center;
+}
