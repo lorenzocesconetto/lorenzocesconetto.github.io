@@ -9,7 +9,7 @@
 <meta name="author" content="Lorenzo Cesconetto">
 <meta name="dcterms.date" content="2025-09-16">
 
-<title>Rotary Position Embedding (RoPE) – Lorenzo Cesconetto</title>
+<title>RoPE clearly explained – Lorenzo Cesconetto</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -329,7 +329,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Rotary Position Embedding (RoPE)</h1>
+<h1 class="title">RoPE clearly explained</h1>
   <div class="quarto-categories">
     <div class="quarto-category">Transformers</div>
   </div>
@@ -363,8 +363,8 @@ window.Quarto = {
 
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
-<p>There are plenty of good resources explaining the transformer architecture online, but <strong>Rotary Position Embedding</strong> (introduced in this <a href="https://arxiv.org/pdf/2104.09864">paper</a>) is often poorly explained or skipped entirely.</p>
-<p>The mathematical operations are straightforward—mostly matrix multiplications. The challenging part is understanding the intuition, visualizing what it does to vectors, and grasping why it works. That’s exactly what I’ll provide here.</p>
+<p>There are plenty of good resources explaining the transformer architecture online, but <strong>Rotary Position Embedding</strong> (RoPE) is often poorly explained or skipped entirely.</p>
+<p>RoPE was first introduced in this <a href="https://arxiv.org/pdf/2104.09864">paper</a>, and while the mathematical operations involved are relatively straightforward – primarily rotation matrix and matrix multiplications – the real challenge lies in understanding the intuition behind how it works. I’ll try to provide a way to visualize what it’s doing to vectors and explain why this approach is so effective.</p>
 <p><em>I assume you have a basic understanding of transformers and the attention mechanism throughout this post.</em></p>
 </section>
 <section id="rope-intuition" class="level1">
@@ -372,7 +372,7 @@ window.Quarto = {
 <p>Since transformers lack inherent understanding of order and distances, researchers developed positional embeddings. Here’s what positional embeddings should accomplish:</p>
 <ul>
 <li><p>Tokens closer to each other should attend with higher weights, while distant tokens should attend with lower weights.</p></li>
-<li><p>Position within a sequence shouldn’t matter—if two words are close to each other, they should attend to each other with higher weights regardless of whether they appear at the beginning or end of a long sequence.</p></li>
+<li><p>Position within a sequence shouldn’t matter – if two words are close to each other, they should attend to each other with higher weights regardless of whether they appear at the beginning or end of a long sequence.</p></li>
 <li><p>To accomplish these goals, <strong>relative positional embeddings</strong> are far more useful than absolute position embeddings.</p></li>
 </ul>
 <p><strong>Key insight</strong>: LLMs should focus on relative positions, which is what truly matters.</p>
@@ -380,15 +380,15 @@ window.Quarto = {
 </section>
 <section id="before-rope" class="level1">
 <h1>Before RoPE</h1>
-<p>The original positional embeddings from <em><a href="https://arxiv.org/pdf/1706.03762">Attention is All You Need</a></em> used predefined values (defined by a formula) added to semantic embeddings. While the formula made sense, and RoPE does something similar, mixing semantics and position was confusing—not just for humans, but for LLMs too. Later research confirmed that LLMs were memorizing (overfitting) rather than generalizing positions, causing rapid deterioration when sequence lengths exceeded training data.</p>
-<p>One strategy that proved successful in early deep learning was: when unsure how to compute useful features for a neural network, let the network learn them itself! That’s what models like GPT-3 did—they learned their own position embeddings. However, providing too much freedom increases overfitting risks and, in this case, creates hard limits on context windows.</p>
+<p>The original positional embeddings from <em><a href="https://arxiv.org/pdf/1706.03762">Attention is All You Need</a></em> used predefined values (defined by a formula) added to semantic embeddings. While the formula made sense, and RoPE does something similar, mixing semantics and position was confusing-not just for humans, but for LLMs too. Later research confirmed that LLMs were memorizing (overfitting) rather than generalizing positions, causing rapid deterioration when sequence lengths exceeded training data.</p>
+<p>One strategy that proved successful in early deep learning was: when unsure how to compute useful features for a neural network, let the network learn them itself! That’s what models like GPT-3 did – they learned their own position embeddings. However, providing too much freedom increases overfitting risks and, in this case, creates hard limits on context windows.</p>
 <p>The best approaches focused on modifying the attention mechanism so that nearby tokens receive higher attention weights while distant tokens receive lower weights. The goal was to cleverly modify <span class="math inline">\(Q\)</span> and <span class="math inline">\(K\)</span> so their dot products would reflect proximity while preserving hidden states.</p>
 </section>
 <section id="rotation-intuition" class="level1">
 <h1>Rotation Intuition</h1>
 <p>RoPE modifies <span class="math inline">\(Q\)</span> and <span class="math inline">\(K\)</span> by applying rotations to them.</p>
 <p>Let <span class="math inline">\(q\)</span> be the query projection of a token and <span class="math inline">\(k\)</span> be the key projection of another. For tokens that are close in the text, minimal rotation is applied, while distant tokens undergo larger rotational transformations.</p>
-<p>Imagine two identical projection vectors—any rotation would make them more distant from each other. That’s exactly what we want.</p>
+<p>Imagine two identical projection vectors – any rotation would make them more distant from each other. That’s exactly what we want.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="./rope_basic_rotation.gif" class="img-fluid figure-img"></p>
@@ -412,7 +412,7 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="token-absolute-position-m">Token Absolute Position <span class="math inline">\(m\)</span></h3>
 <p>Rotation increases as the token’s absolute position <span class="math inline">\(m\)</span> increases.</p>
 <p>I know what you’re thinking: “<span class="math inline">\(m\)</span> is absolute position, but didn’t you say relative positions matter most?”</p>
-<p>Here’s the magic: consider a 2D plane where you rotate one vector by <span class="math inline">\(\alpha\)</span> and another by <span class="math inline">\(\beta\)</span>. The angular difference between them becomes <span class="math inline">\(\alpha - \beta\)</span>. Their absolute values don’t matter—only the distance does. So for two tokens at positions <span class="math inline">\(m\)</span> and <span class="math inline">\(n\)</span>, the rotation modifies the angle between them proportionally to <span class="math inline">\(m-n\)</span>.</p>
+<p>Here’s the magic: consider a 2D plane where you rotate one vector by <span class="math inline">\(\alpha\)</span> and another by <span class="math inline">\(\beta\)</span>. The angular difference between them becomes <span class="math inline">\(\alpha - \beta\)</span>. Their absolute values don’t matter – only the distance does. So for two tokens at positions <span class="math inline">\(m\)</span> and <span class="math inline">\(n\)</span>, the rotation modifies the angle between them proportionally to <span class="math inline">\(m-n\)</span>.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="rope_rotation_visualization.png" class="img-fluid figure-img"></p>
@@ -426,7 +426,7 @@ window.Quarto = {
 <section id="hidden-state-index-i" class="level3">
 <h3 class="anchored" data-anchor-id="hidden-state-index-i">Hidden State Index <span class="math inline">\(i\)</span></h3>
 <p>Instead of applying uniform rotation across all hidden state dimensions, RoPE processes two dimensions at a time, applying different rotation angles to each pair. In other words, it breaks the long vector into multiple pairs that can be rotated in 2D by different angles.</p>
-<p>We rotate hidden state dimensions differently—rotation is higher when <span class="math inline">\(i\)</span> is low (vector beginning) and lower when <span class="math inline">\(i\)</span> is high (vector end).</p>
+<p>We rotate hidden state dimensions differently – rotation is higher when <span class="math inline">\(i\)</span> is low (vector beginning) and lower when <span class="math inline">\(i\)</span> is high (vector end).</p>
 <p>Understanding this operation is straightforward; understanding why we need it requires more explanation:</p>
 <ul>
 <li>It allows the model to choose what should have <strong>shorter or longer ranges of influence</strong>.
@@ -448,13 +448,13 @@ window.Quarto = {
 <figcaption>Two vectors encoding information in <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> become very far apart (nearby tokens where one shouldn’t attend to the other).</figcaption>
 </figure>
 </div>
-<p>This structure captures complicated nuances in human language—pretty cool, right?</p>
+<p>This structure captures complicated nuances in human language – pretty cool, right?</p>
 <p>Once again, I know what you’re thinking: “after too much rotation, they start getting close again”.</p>
 <p>That’s correct, but here’s why it still works:</p>
 <ol type="1">
 <li>We’re visualizing in 3D, but this actually happens in much higher dimensions.</li>
 <li>Although some dimensions grow closer, others that rotate more slowly continue growing farther apart.</li>
-<li>RoPE isn’t perfect—due to its rotational nature, local maxima do occur. See the chart from the original authors:</li>
+<li>RoPE isn’t perfect – due to its rotational nature, local maxima do occur. See the chart from the original authors:</li>
 </ol>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -483,7 +483,7 @@ window.Quarto = {
 <ul>
 <li>We should find clever ways to inject knowledge into LLMs rather than letting them learn everything independently.
 <ul>
-<li>We do this by providing the right operations a neural network needs to process data—attention and convolutions are great examples.</li>
+<li>We do this by providing the right operations a neural network needs to process data – attention and convolutions are great examples.</li>
 </ul></li>
 <li>Closed-form equations can extend indefinitely since you don’t need to learn each position embedding.
 <ul>
