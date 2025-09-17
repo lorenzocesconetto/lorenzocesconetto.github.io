@@ -4,6 +4,10 @@ image: profile.jpg
 about:
   template: trestles
   links:
+    - icon: youtube
+      text: YouTube
+      href: https://www.youtube.com/@lorenzocesconetto
+      target: "_blank"
     - icon: linkedin
       text: LinkedIn
       href: https://www.linkedin.com/in/lorenzo-cesconetto/

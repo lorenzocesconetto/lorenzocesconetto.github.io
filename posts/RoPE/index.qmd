@@ -101,8 +101,8 @@ Once again, I know what you're thinking: "after too much rotation, they start ge
 That's correct, but here's why it still works:
 
 1. We're visualizing in 3D, but this actually happens in much higher dimensions.
-2. Although some dimensions grow closer, others that rotate more slowly continue growing farther apart.
-3. RoPE isn't perfect -- due to its rotational nature, local maxima do occur. See the chart from the original authors:
+2. Although some dimensions grow closer, others that rotate more slowly continue growing farther apart. Hence the importance of rotating dimensions by different angles.
+3. RoPE isn't perfect -- due to its rotational nature, local maxima do occur. See the theoretical chart from the original authors:
 
 ![Theoretical curve provided by the authors Source: ROFORMER: ENHANCED TRANSFORMER WITH ROTARY POSITION EMBEDDING](./RoPE-decay.png)
 
