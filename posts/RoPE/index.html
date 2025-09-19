@@ -503,7 +503,7 @@ window.Quarto = {
 </figure>
 </div>
 <p>The theoretical curve has some crazy bumps, but in practice I found it to be much more behaved:</p>
-<div id="56cb1b72" class="cell" data-execution_count="2">
+<div id="48f7033c" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -558,15 +558,46 @@ window.Quarto = {
 <span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="index_files/figure-html/cell-2-output-1.png" width="758" height="422" class="figure-img"></p>
+<figcaption>Distances from zero to 500</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <p>Some ideas that occurred to me: clipping the rotation angle so the similarity is a strictly decreasing function (or even picking something other than sin/cos). I wonder if newer papers have explored this approach. I’ve seen clipping being applied to other techniques, but not to RoPE. Anyways, let’s keep moving forward…</p>
 <p>Bare in mind that cosine similarity tends to grow (although slowly) as the distance grows a lot past our base (10,000 in this case). A simple solution here is to increase the base, or even let techniques like local attention take care of it.</p>
+<div id="33b9831a" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">42</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>D <span class="op">=</span> <span class="dv">10_000</span>  <span class="co"># even dimension</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>vec_a <span class="op">=</span> rng.normal(size<span class="op">=</span>D)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>vec_b <span class="op">=</span> vec_a  <span class="co"># initially equal (very close)</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>max_d <span class="op">=</span> <span class="dv">50_000</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>ds <span class="op">=</span> np.arange(max_d <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>angles <span class="op">=</span> np.array([rope_angle_between(vec_a, vec_b, <span class="bu">int</span>(d)) <span class="cf">for</span> d <span class="kw">in</span> ds])</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">4.5</span>))</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>plt.plot(ds, angles, lw<span class="op">=</span><span class="fl">1.2</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Relative distance"</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Cosine similarity"</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Cosine similarity between RoPE-rotated vectors vs relative distance"</span>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-3-output-1.png" width="758" height="422" class="figure-img"></p>
+<figcaption>Expanding to 50k distance</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <blockquote class="blockquote">
 <p><strong>Bottom line: The LLM learns to encode long-range and short-range meaning influences in different dimensions of the hidden state.</strong></p>
 </blockquote>
