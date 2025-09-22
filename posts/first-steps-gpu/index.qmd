@@ -5,6 +5,7 @@ date: "2025-09-21"
 categories: [GPU]
 ---
 
+![Image from [Intel](https://www.intel.com.br/content/www/br/pt/products/docs/discrete-gpus/data-center-gpu/what-is-data-center-gpu.html)](./intel.jpeg)
 
 # Part 1/4: Understanding the Host and Device Paradigm
 
@@ -59,7 +60,7 @@ This means you are launching two separate instances of your Python script. On a 
 
 ## Communication: Blocking vs. Non-Blocking
 
-To work together, these ranks must exchange data. This can happen directly between GPUs, bypassing the CPU's main memory, though the CPU processes still orchestrate the communication. Ideally, the GPUs are connected with a high-speed interconnect like NVLink or InfiniBand.
+To work together, these ranks must exchange data. This can happen directly between GPUs, bypassing the CPU's main memory, though the CPU still does some orchestration. Ideally, the GPUs are connected with a high-speed interconnect like NVLink or InfiniBand (we'll be covered in detail in a future post).
 
 PyTorch provides two foundational methods for this communication, which we will explore in more detail in later posts.
 
