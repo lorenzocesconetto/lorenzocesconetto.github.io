@@ -14,4 +14,4 @@ title-block-banner: false
 ---
 
 
-I document my learnings in Machine Learning and Artificial Intelligence. Enjoy :)
+Here's where I document and share some of my learnings in Machine Learning and Artificial Intelligence :)

@@ -1,0 +1,82 @@
+---
+title: "AI in Multiple GPUs with PyTorch (1/4)"
+author: "Lorenzo Cesconetto"
+date: "2025-09-21"
+categories: [GPU]
+---
+
+
+# Part 1/4: Understanding the Host and Device Paradigm
+
+This guide explains the foundational concepts of how a CPU and a discrete graphics card (GPU) work together. It's a high-level introduction designed to help you build a mental model of the host-device paradigm.
+
+*For integrated GPUs, such as those found in Apple Silicon chips, the architecture is slightly different, so we will not cover it in this post.*
+
+## The Big Picture: The Host and The Device
+
+The most important concept to grasp is the relationship between the **Host** and the **Device**.
+
+*   **The Host:** This is your **CPU**. It runs the operating system and executes your Python script line by line. The Host is the commander; it's in charge of the overall logic and tells the Device what to do.
+*   **The Device:** This is your **GPU**. It's a powerful but specialized coprocessor designed for massively parallel computations. The Device is the accelerator; it doesn't do anything until the Host gives it a task.
+
+Your program always starts on the CPU. When you want the GPU to perform a task, like multiplying two large matrices, the CPU sends the instructions and the data over to the GPU.
+
+## The CPU-GPU Interaction
+
+The Host talks to the Device through a queuing system.
+
+1.  **CPU Initiates Commands:** Your script, running on the CPU, encounters a line of code intended for the GPU (e.g., `tensor.to('cuda')`).
+2.  **Commands are Queued:** The CPU doesn't wait. It simply places this command onto a special to-do list for the GPU called a **CUDA Stream**.
+3.  **Asynchronous Execution:** As soon as the command is enqueued, the CPU is free to move on to the next line of your script. This is called **asynchronous execution**, and it's a key to achieving high performance. While the GPU is busy crunching numbers, the CPU can work on other tasks, like preparing the next batch of data.
+
+## PyTorch Tensors
+
+PyTorch is a powerful framework that abstracts away many details, but this abstraction can sometimes obscure what is happening under the hood.
+
+When you create a PyTorch tensor, it has two parts: metadata (like its shape and data type) and the actual numerical data. So when you run something like this `t = torch.randn(100, 100, device=device)`, the tensor's metadata is managed by the CPU, while its data is stored in the GPU's VRAM.
+
+This distinction is important. When you run `print(t.shape)`, the CPU can immediately access this information because the metadata is already in its own RAM. But what happens if you run `print(t)`, which requires the actual data living in VRAM?
+
+## Host-Device Synchronization
+
+Accessing GPU data from the CPU can trigger a **Host-Device Synchronization**, a common performance bottleneck. This occurs whenever the CPU needs a result from the GPU that isn't yet available in the CPU's RAM.
+
+For example, consider the line `print(gpu_tensor)`. The CPU cannot print the tensor's values until the GPU has finished all pending calculations on it. When the script reaches this line, the CPU is forced to **block**, i.e. it stops and waits for the GPU to finish. Only after the GPU completes its work and copies the data from its VRAM to the CPU's RAM can the CPU proceed.
+
+As another example, what's the difference between `torch.randn(100, 100).to(device)` and `torch.randn(100, 100, device=device)`? The first method is less efficient because it creates the data on the CPU and then transfers it to the GPU. The second method is more efficient because it creates the tensor directly on the GPU; the CPU only sends the creation command.
+
+These synchronization points can severely impact performance. Effective GPU programming involves minimizing them to ensure both the Host and Device stay as busy as possible. After all, you want your GPUs to go *brrrrr*.
+
+## Scaling Up: Distributed Computing and Ranks
+
+Training large models, such as Large Language Models (LLMs), often requires more compute power than a single GPU can offer. Coordinating work across multiple GPUs brings you into the world of distributed computing.
+
+In this context, a new and important concept emerges: the **Rank**.
+
+*   Each **rank** is a CPU process which gets assigned a single device (GPU) and a unique ID. If you launch a training script across two GPUs, you will create two processes: one with `rank=0` and another with `rank=1`.
+
+This means you are launching two separate instances of your Python script. On a single machine with multiple GPUs (a single node), these processes run on the same CPU but remain independent, without sharing memory or state. `Rank 0` commands its assigned GPU (`cuda:0`), while `Rank 1` commands its GPU (`cuda:1`). Although both ranks run the same code, you can use the rank ID to assign different tasks to each process, like having each one process a different portion of the data.
+
+## Communication: Blocking vs. Non-Blocking
+
+To work together, these ranks must exchange data. This can happen directly between GPUs, bypassing the CPU's main memory, though the CPU processes still orchestrate the communication. Ideally, the GPUs are connected with a high-speed interconnect like NVLink or InfiniBand.
+
+PyTorch provides two foundational methods for this communication, which we will explore in more detail in later posts.
+
+### Synchronous (Blocking) Communication
+
+*   **Behavior:** When you call `torch.distributed.send()`, your process **stops and waits** until the data has been safely copied to a communication buffer. This method is simple and reliable.
+
+### Asynchronous (Non-Blocking) Communication
+
+*   **Behavior:** When you call `torch.distributed.isend()`, the call returns **immediately**, and the send operation happens in the background. This allows your CPU to continue with other tasks, a technique known as **overlapping computation with communication**.
+
+The asynchronous API is more complex because you must ensure you don't modify data while it is being sent. However, mastering it is the key to unlocking maximum performance in large-scale distributed training.
+
+In this post, you learned about:
+- The Host/Device relationship
+- Asynchronous execution
+- Host-Device synchronization
+- Communication patterns
+
+In the next blog post, we will dive deeper into the communication capabilities of the `torch.distributed` module.
