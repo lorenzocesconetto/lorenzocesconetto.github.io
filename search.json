@@ -28,6 +28,55 @@
     "text": "Todo\n\nCreate first post (Distributed Training intro)\n\n\n\nOptimizations for later:\n\ni18n\nEmail subscription\n\n\n\nDone:\n\nTable listing of posts\nOpen links on a new tab\nDark/Light theme\nUpdate About page\nFooter\nHow to execute python code and show figs?\nCenter Fig Caption"
   },
   {
+    "objectID": "posts/first-steps-gpu/index.html",
+    "href": "posts/first-steps-gpu/index.html",
+    "title": "AI in Multiple GPUs with PyTorch (1/4)",
+    "section": "",
+    "text": "Image from Intel"
+  },
+  {
+    "objectID": "posts/first-steps-gpu/index.html#the-big-picture-the-host-and-the-device",
+    "href": "posts/first-steps-gpu/index.html#the-big-picture-the-host-and-the-device",
+    "title": "AI in Multiple GPUs with PyTorch (1/4)",
+    "section": "The Big Picture: The Host and The Device",
+    "text": "The Big Picture: The Host and The Device\nThe most important concept to grasp is the relationship between the Host and the Device.\n\nThe Host: This is your CPU. It runs the operating system and executes your Python script line by line. The Host is the commander; it’s in charge of the overall logic and tells the Device what to do.\nThe Device: This is your GPU. It’s a powerful but specialized coprocessor designed for massively parallel computations. The Device is the accelerator; it doesn’t do anything until the Host gives it a task.\n\nYour program always starts on the CPU. When you want the GPU to perform a task, like multiplying two large matrices, the CPU sends the instructions and the data over to the GPU."
+  },
+  {
+    "objectID": "posts/first-steps-gpu/index.html#the-cpu-gpu-interaction",
+    "href": "posts/first-steps-gpu/index.html#the-cpu-gpu-interaction",
+    "title": "AI in Multiple GPUs with PyTorch (1/4)",
+    "section": "The CPU-GPU Interaction",
+    "text": "The CPU-GPU Interaction\nThe Host talks to the Device through a queuing system.\n\nCPU Initiates Commands: Your script, running on the CPU, encounters a line of code intended for the GPU (e.g., tensor.to('cuda')).\nCommands are Queued: The CPU doesn’t wait. It simply places this command onto a special to-do list for the GPU called a CUDA Stream.\nAsynchronous Execution: As soon as the command is enqueued, the CPU is free to move on to the next line of your script. This is called asynchronous execution, and it’s a key to achieving high performance. While the GPU is busy crunching numbers, the CPU can work on other tasks, like preparing the next batch of data."
+  },
+  {
+    "objectID": "posts/first-steps-gpu/index.html#pytorch-tensors",
+    "href": "posts/first-steps-gpu/index.html#pytorch-tensors",
+    "title": "AI in Multiple GPUs with PyTorch (1/4)",
+    "section": "PyTorch Tensors",
+    "text": "PyTorch Tensors\nPyTorch is a powerful framework that abstracts away many details, but this abstraction can sometimes obscure what is happening under the hood.\nWhen you create a PyTorch tensor, it has two parts: metadata (like its shape and data type) and the actual numerical data. So when you run something like this t = torch.randn(100, 100, device=device), the tensor’s metadata is managed by the CPU, while its data is stored in the GPU’s VRAM.\nThis distinction is important. When you run print(t.shape), the CPU can immediately access this information because the metadata is already in its own RAM. But what happens if you run print(t), which requires the actual data living in VRAM?"
+  },
+  {
+    "objectID": "posts/first-steps-gpu/index.html#host-device-synchronization",
+    "href": "posts/first-steps-gpu/index.html#host-device-synchronization",
+    "title": "AI in Multiple GPUs with PyTorch (1/4)",
+    "section": "Host-Device Synchronization",
+    "text": "Host-Device Synchronization\nAccessing GPU data from the CPU can trigger a Host-Device Synchronization, a common performance bottleneck. This occurs whenever the CPU needs a result from the GPU that isn’t yet available in the CPU’s RAM.\nFor example, consider the line print(gpu_tensor). The CPU cannot print the tensor’s values until the GPU has finished all pending calculations on it. When the script reaches this line, the CPU is forced to block, i.e. it stops and waits for the GPU to finish. Only after the GPU completes its work and copies the data from its VRAM to the CPU’s RAM can the CPU proceed.\nAs another example, what’s the difference between torch.randn(100, 100).to(device) and torch.randn(100, 100, device=device)? The first method is less efficient because it creates the data on the CPU and then transfers it to the GPU. The second method is more efficient because it creates the tensor directly on the GPU; the CPU only sends the creation command.\nThese synchronization points can severely impact performance. Effective GPU programming involves minimizing them to ensure both the Host and Device stay as busy as possible. After all, you want your GPUs to go brrrrr."
+  },
+  {
+    "objectID": "posts/first-steps-gpu/index.html#scaling-up-distributed-computing-and-ranks",
+    "href": "posts/first-steps-gpu/index.html#scaling-up-distributed-computing-and-ranks",
+    "title": "AI in Multiple GPUs with PyTorch (1/4)",
+    "section": "Scaling Up: Distributed Computing and Ranks",
+    "text": "Scaling Up: Distributed Computing and Ranks\nTraining large models, such as Large Language Models (LLMs), often requires more compute power than a single GPU can offer. Coordinating work across multiple GPUs brings you into the world of distributed computing.\nIn this context, a new and important concept emerges: the Rank.\n\nEach rank is a CPU process which gets assigned a single device (GPU) and a unique ID. If you launch a training script across two GPUs, you will create two processes: one with rank=0 and another with rank=1.\n\nThis means you are launching two separate instances of your Python script. On a single machine with multiple GPUs (a single node), these processes run on the same CPU but remain independent, without sharing memory or state. Rank 0 commands its assigned GPU (cuda:0), while Rank 1 commands its GPU (cuda:1). Although both ranks run the same code, you can use the rank ID to assign different tasks to each process, like having each one process a different portion of the data."
+  },
+  {
+    "objectID": "posts/first-steps-gpu/index.html#communication-blocking-vs.-non-blocking",
+    "href": "posts/first-steps-gpu/index.html#communication-blocking-vs.-non-blocking",
+    "title": "AI in Multiple GPUs with PyTorch (1/4)",
+    "section": "Communication: Blocking vs. Non-Blocking",
+    "text": "Communication: Blocking vs. Non-Blocking\nTo work together, these ranks must exchange data. This can happen directly between GPUs, bypassing the CPU’s main memory, though the CPU still does some orchestration. Ideally, the GPUs are connected with a high-speed interconnect like NVLink or InfiniBand (we’ll be covered in detail in a future post).\nPyTorch provides two foundational methods for this communication, which we will explore in more detail in later posts.\n\nSynchronous (Blocking) Communication\n\nBehavior: When you call torch.distributed.send(), your process stops and waits until the data has been safely copied to a communication buffer. This method is simple and reliable.\n\n\n\nAsynchronous (Non-Blocking) Communication\n\nBehavior: When you call torch.distributed.isend(), the call returns immediately, and the send operation happens in the background. This allows your CPU to continue with other tasks, a technique known as overlapping computation with communication.\n\nThe asynchronous API is more complex because you must ensure you don’t modify data while it is being sent. However, mastering it is the key to unlocking maximum performance in large-scale distributed training.\nIn this post, you learned about: - The Host/Device relationship - Asynchronous execution - Host-Device synchronization - Communication patterns\nIn the next blog post, we will dive deeper into the communication capabilities of the torch.distributed module."
+  },
+  {
     "objectID": "posts/RoPE/index.html",
     "href": "posts/RoPE/index.html",
     "title": "RoPE clearly explained",
@@ -39,6 +88,6 @@
     "href": "index.html",
     "title": "AI Blog",
     "section": "",
-    "text": "Here’s where I document and share some of my learnings in Machine Learning and Artificial Intelligence :)\n\n\n\n\n\n\n\n\n\n\nTitle\n\n\n\nReading Time\n\n\n\n\n\n\n\n\nRoPE clearly explained\n\n\n8 min\n\n\n\n\n\n\nNo matching items"
+    "text": "Here’s where I document and share some of my learnings in Machine Learning and Artificial Intelligence :)\n\n\n\n\n\n\n\n\n\n\nTitle\n\n\n\nReading Time\n\n\n\n\n\n\n\n\nAI in Multiple GPUs with PyTorch (1/4)\n\n\n5 min\n\n\n\n\n\n\nRoPE clearly explained\n\n\n8 min\n\n\n\n\n\n\nNo matching items"
   }
 ]

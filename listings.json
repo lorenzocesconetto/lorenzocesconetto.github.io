@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/first-steps-gpu/index.html",
       "/posts/RoPE/index.html"
     ]
   }
