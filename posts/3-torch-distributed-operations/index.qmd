@@ -69,6 +69,9 @@ Every collective operation function supports both sync and async operations thro
 These operations involve one rank sending data to all other ranks in the group.
 
 * **`dist.broadcast(tensor, src)`**: Copies a tensor from a single source rank (`src`) to all other ranks. Every process ends up with an identical copy of the tensor.
+
+![Broadcast. Source: [NVIDIA](https://developer.nvidia.com/blog/fast-multi-gpu-collectives-nccl/)](https://developer-blogs.nvidia.com/wp-content/uploads/2016/04/image04.png)
+
 * **`dist.scatter(tensor, scatter_list, src)`**: Distributes chunks of data from a source rank across all ranks. The `scatter_list` on the source rank contains multiple tensors, and each rank (including the source) receives one tensor from this list into its `tensor` variable.
 
     ```python
@@ -79,11 +82,16 @@ These operations involve one rank sending data to all other ranks in the group.
     print(f'Rank {rank} received: {output}')
     ```
 
+![Scatter. Source: [Medium](https://medium.com/@tugrul_acikgoz/nccl-collective-communication-pattern-basics-4efe3c7e6190)](https://miro.medium.com/v2/resize:fit:1400/1*bTgdxwx_SLm57X55L1mJjQ.png)
+
 ### All-to-One Collectives
 
 These operations gather data from all ranks and consolidate it onto a single destination rank.
 
 * **`dist.reduce(tensor, dst, op)`**: Takes a tensor from each rank, applies a reduction operation (like `SUM`, `MAX`, `MIN`), and stores the final result on the destination rank (`dst`) only.
+
+![Reduce. Source: [Medium](https://medium.com/@tugrul_acikgoz/nccl-collective-communication-pattern-basics-4efe3c7e6190)](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*gWmSoDx8uGA_vPM1fR8MQw.png)
+
 * **`dist.gather(tensor, gather_list, dst)`**: Gathers a tensor from every rank into a list of tensors on the destination rank. The `gather_list` must be a list of correctly sized tensors on the destination and `None` everywhere else.
 
     ```python
@@ -96,17 +104,26 @@ These operations gather data from all ranks and consolidate it onto a single des
 
 The variable `world_size` is the total number of ranks. It can be obtained with `torch.distributed.get_world_size()`. But don't worry about implementation details for now, the most important thing is to grasp the concepts.
 
+![Gather. Source: [Medium](https://medium.com/@tugrul_acikgoz/nccl-collective-communication-pattern-basics-4efe3c7e6190)](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*WCtTuDLQwjTT3co8gTSUrQ.png)
+
 ### All-to-All Collectives
 
 In these operations, every rank both sends and receives data from all other ranks.
 
 * **`dist.all_reduce(tensor, op)`**: Same as `reduce`, but the result is stored on *every* rank instead of just one destination.
 
+![All Reduce. Source: [NVIDIA](https://developer.nvidia.com/blog/fast-multi-gpu-collectives-nccl/)](https://developer-blogs.nvidia.com/wp-content/uploads/2016/04/image01.png)
+
 * **`dist.all_gather(tensor_list, tensor)`**: Same as `gather`, but the gathered list of tensors is available on *every* rank.
+
+![All Gather. Source: [NVIDIA](https://developer.nvidia.com/blog/fast-multi-gpu-collectives-nccl/)](https://developer-blogs.nvidia.com/wp-content/uploads/2016/04/image00.png)
+
 
 * **`dist.all_gather_into_tensor(output_tensor, input_tensor)`**: A more efficient version of `all_gather`. It gathers tensors from all ranks into a single, stacked `output_tensor` on every rank.
 
 * **`dist.reduce_scatter(output, input_list)`**: Performs a reduce operation on a list of tensors and then scatters the results. Each rank receives a different part of the reduced output.
+
+![Reduce Scatter. Source: [NVIDIA](https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/usage/collectives.html)](https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/_images/reducescatter.png)
 
 # Synchronization
 
@@ -117,3 +134,14 @@ The two most frequently used operations are `request.wait()` and `torch.cuda.syn
 * `request.wait()`: This is used for asynchronous operations. It synchronizes CUDA streams for that **specific** operation, ensuring the default stream waits for the communication to complete before proceeding. For GPU collectives, it does **not** block the host CPU thread, it only blocks the currently active CUDA stream (if you're not familiar with streams, don't worry about it for now, just understand that the GPU is blocked). For CPU collectives, it will block the host process until the operation is completed.
 
 * `torch.cuda.synchronize()`: This is a more forceful command that pauses the host CPU thread until **all** previously queued tasks on the GPU have finished. It guarantees that the GPU is completely idle before the CPU moves on, but it can create performance bottlenecks if used improperly. Whenever you need to perform benchmark measurements, you should use this to ensure you capture the exact moment the GPUs are done.
+
+# Conclusion
+
+In this post you learned about:
+
+- Point-to-Point Operations
+- Sync and Async in NCCL
+- Collective operations
+- Synchronization methods
+
+**In the next post we'll dive into some inter-GPU Networking and Hardware concepts!**
