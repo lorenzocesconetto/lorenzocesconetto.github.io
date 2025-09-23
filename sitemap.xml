@@ -1,23 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://lorenzocesconetto.github.io/blog-lorenzo/about.html</loc>
-    <lastmod>2025-09-17T18:44:31.204Z</lastmod>
+    <loc>https://lorenzocesconetto.github.io/blog-lorenzo/tmp.html</loc>
+    <lastmod>2025-09-23T19:41:33.549Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lorenzocesconetto.github.io/blog-lorenzo/index.html</loc>
+    <lastmod>2025-09-22T13:34:16.416Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lorenzocesconetto.github.io/blog-lorenzo/posts/3-torch-distributed-operations/index.html</loc>
+    <lastmod>2025-09-23T19:41:27.693Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lorenzocesconetto.github.io/blog-lorenzo/posts/2-first-steps-gpu/index.html</loc>
+    <lastmod>2025-09-22T13:35:14.389Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lorenzocesconetto.github.io/blog-lorenzo/posts/1-RoPE/index.html</loc>
+    <lastmod>2025-09-19T14:05:08.408Z</lastmod>
   </url>
   <url>
     <loc>https://lorenzocesconetto.github.io/blog-lorenzo/todo.html</loc>
     <lastmod>2025-09-09T13:29:48.817Z</lastmod>
   </url>
   <url>
-    <loc>https://lorenzocesconetto.github.io/blog-lorenzo/posts/first-steps-gpu/index.html</loc>
-    <lastmod>2025-09-22T13:35:14.389Z</lastmod>
-  </url>
-  <url>
-    <loc>https://lorenzocesconetto.github.io/blog-lorenzo/posts/RoPE/index.html</loc>
-    <lastmod>2025-09-19T14:05:08.408Z</lastmod>
-  </url>
-  <url>
-    <loc>https://lorenzocesconetto.github.io/blog-lorenzo/index.html</loc>
-    <lastmod>2025-09-22T13:34:16.416Z</lastmod>
+    <loc>https://lorenzocesconetto.github.io/blog-lorenzo/about.html</loc>
+    <lastmod>2025-09-17T18:44:31.204Z</lastmod>
   </url>
 </urlset>
