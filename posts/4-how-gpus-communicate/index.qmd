@@ -76,7 +76,7 @@ Linear scaling is the holy grail of distributed computing. In simple terms, it m
 
 ### The Importance of Compute-Communication Overlap
 
-When a GPU sits idle waiting for data to be transferred before it can be processed, you're wasting resources. Communication operations should overlap with computation as much as possible. When that's not possible, we call that the communication an "exposed operation".
+When a GPU sits idle waiting for data to be transferred before it can be processed, you're wasting resources. Communication operations should overlap with computation as much as possible. When that's not possible, we call that communication an "exposed operation".
 
 ### Intra-Node vs. Inter-Node: The Performance Cliff
 
