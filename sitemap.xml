@@ -14,19 +14,19 @@
   </url>
   <url>
     <loc>https://lorenzocesconetto.github.io/blog-lorenzo/posts/3-torch-distributed-operations/index.html</loc>
-    <lastmod>2025-10-01T14:07:08.176Z</lastmod>
-  </url>
-  <url>
-    <loc>https://lorenzocesconetto.github.io/blog-lorenzo/posts/2-first-steps-gpu/index.html</loc>
-    <lastmod>2025-10-01T14:06:18.869Z</lastmod>
-  </url>
-  <url>
-    <loc>https://lorenzocesconetto.github.io/blog-lorenzo/posts/4-multi-gpu-communication/index.html</loc>
-    <lastmod>2025-10-01T21:33:12.136Z</lastmod>
+    <lastmod>2025-10-01T21:51:58.480Z</lastmod>
   </url>
   <url>
     <loc>https://lorenzocesconetto.github.io/blog-lorenzo/posts/1-RoPE/index.html</loc>
     <lastmod>2025-09-19T14:05:08.408Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lorenzocesconetto.github.io/blog-lorenzo/posts/2-first-steps-gpu/index.html</loc>
+    <lastmod>2025-10-01T21:52:04.357Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lorenzocesconetto.github.io/blog-lorenzo/posts/4-how-gpus-communicate/index.html</loc>
+    <lastmod>2025-10-01T21:51:46.833Z</lastmod>
   </url>
   <url>
     <loc>https://lorenzocesconetto.github.io/blog-lorenzo/todo.html</loc>

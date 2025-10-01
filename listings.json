@@ -2,7 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
-      "/posts/4-multi-gpu-communication/index.html",
+      "/posts/4-how-gpus-communicate/index.html",
       "/posts/3-torch-distributed-operations/index.html",
       "/posts/2-first-steps-gpu/index.html",
       "/posts/1-RoPE/index.html"
