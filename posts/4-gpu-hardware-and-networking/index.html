@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Lorenzo Cesconetto">
-<meta name="dcterms.date" content="2025-09-23">
+<meta name="dcterms.date" content="2025-10-01">
 
-<title>AI in Multiple GPUs with PyTorch (2/6) – Lorenzo Cesconetto</title>
+<title>AI in Multiple GPUs with PyTorch (3/6) – Lorenzo Cesconetto</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,41 +21,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -346,7 +311,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">AI in Multiple GPUs with PyTorch (2/6)</h1>
+<h1 class="title">AI in Multiple GPUs with PyTorch (3/6)</h1>
   <div class="quarto-categories">
     <div class="quarto-category">GPU</div>
   </div>
@@ -366,7 +331,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">September 23, 2025</p>
+      <p class="date">October 1, 2025</p>
     </div>
   </div>
   
@@ -378,178 +343,116 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="part-26-point-to-point-and-collective-operations" class="level1">
-<h1>Part 2/6: Point-to-Point and Collective Operations</h1>
+<section id="part-36-gpu-communication-fundamentals" class="level1">
+<h1>Part 3/6: GPU Communication Fundamentals</h1>
 <hr>
-<p>This article is part of a series about distributed AI across multiple GPUs:</p>
+<p>This article is part of a series on distributed AI across multiple GPUs:</p>
 <ul>
-<li><a href="../../posts/2-first-steps-gpu/index.html">Part 1: Understanding the Host and Device Paradigm</a></li>
-<li><strong>Part 2: Point-to-Point and Collective Operations</strong> (this article)</li>
-<li><a href="../4-gpu-hardware-and-networking/index.qmd">Part 3: GPU Communication Fundamentals</a></li>
-<li>Part 4: Data Parallelism <em>(coming soon)</em></li>
-<li>Part 5: ZeRO <em>(coming soon)</em></li>
+<li><a href="../../posts/2-first-steps-gpu/index.html">Part 1: Understanding the Host and Device Paradigm</a><br>
+</li>
+<li><a href="../../posts/3-torch-distributed-operations/index.html">Part 2: Point-to-Point and Collective Operations</a><br>
+</li>
+<li><strong>Part 3: GPU Communication Fundamentals</strong> (this article)<br>
+</li>
+<li>Part 4: Data Parallelism <em>(coming soon)</em><br>
+</li>
+<li>Part 5: ZeRO <em>(coming soon)</em><br>
+</li>
 <li>Part 6: Tensor Parallelism <em>(coming soon)</em></li>
 </ul>
-<p>In the previous post, we established the host-device paradigm and introduced the concept of ranks for multi-GPU training. Now, we’ll explore the specific communication patterns provided by PyTorch’s <code>torch.distributed</code> module to coordinate work and exchange data between these ranks. These operations, known as <strong>collectives</strong>, are the building blocks of distributed training.</p>
-<p>Although PyTorch exposes these operations, it ultimately calls a backend framework that actually implements the communication. For NVIDIA GPUs, it’s <code>NCCL</code> (NVIDIA Collective Communications Library), while for AMD it’s RCCL (ROCm Communication Collectives Library).</p>
-<p><code>NCCL</code> implements multi-GPU and multi-node communication primitives optimized for NVIDIA GPUs and networking. It automatically detects the current topology (communication channels like PCIe, NVLink, InfiniBand) and selects the most efficient one.</p>
-<blockquote class="blockquote">
-<p>Since NVIDIA GPUs are the most common, we’ll focus on the <code>NCCL</code> backend for this post.</p>
-</blockquote>
-<blockquote class="blockquote">
-<p>For brevity, the code presented below only provides the main arguments of each method instead of all available arguments.</p>
-</blockquote>
 </section>
-<section id="point-to-point-one-to-one" class="level1">
-<h1>Point-to-Point (One-to-One)</h1>
-<hr>
-<p>These operations are not considered <strong>collectives</strong>, but they are foundational communication primitives. They facilitate direct data transfer between two specific ranks and are fundamental for tasks where one GPU needs to send specific information to another.</p>
-<ul>
-<li><strong>Synchronous (Blocking)</strong>: The program waits for the operation to be enqueued before proceeding. For CPU tensors, the rank process is blocked until the transfer is completed. For GPU tensors, it blocks only until the operation is submitted to the GPU’s command queue.
-<ul>
-<li><code>dist.send(tensor, dst)</code>: Sends a tensor to a specified destination rank.</li>
-<li><code>dist.recv(tensor, src)</code>: Receives a tensor from a source rank. The receiving tensor must be pre-allocated with the correct shape and <code>dtype</code>.</li>
-</ul></li>
-<li><strong>Asynchronous (Non-Blocking)</strong>: The program initiates the transfer and immediately continues with other tasks. This allows for overlapping communication with computation. Both operations return a <code>request</code> object that can be used to track the status.
-<ul>
-<li><code>dist.isend(tensor, dst)</code>: Initiates an asynchronous send operation.</li>
-<li><code>dist.irecv(tensor, src)</code>: Initiates an asynchronous receive operation.</li>
-<li><code>request.wait()</code>: Blocks execution until the specific asynchronous operation is complete.</li>
-</ul></li>
-</ul>
-<section id="major-gotchas-in-nccl" class="level3">
-<h3 class="anchored" data-anchor-id="major-gotchas-in-nccl">Major “Gotchas” in NCCL</h3>
-<p>While <code>send</code> and <code>recv</code> are labeled “synchronous,” their behavior in NCCL can be confusing, so let me clarify things before you get confused when running your tests. A synchronous call on a CUDA tensor blocks the host CPU thread only until the data transfer kernel is launched on the GPU, <strong>not</strong> until the transfer is complete. The CPU is then free to enqueue other tasks. Asynchronous operations are generally preferred as they make this overlap explicit.</p>
-<p>There is an exception: the very first call to <code>dist.recv()</code> in a process is truly blocking and waits for the transfer to finish, likely due to internal NCCL warm-up procedures. Subsequent calls will only block until the operation is enqueued.</p>
-<p>Consider this example where <code>rank 1</code> hangs because the CPU tries to access a tensor that the GPU has not yet received:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> rank <span class="op">==</span> <span class="dv">0</span>:</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>   t <span class="op">=</span> torch.tensor([<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>], dtype<span class="op">=</span>torch.float32).to(device)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>   <span class="co"># dist.send(t, dst=1) # No send operation is performed</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>: <span class="co"># rank == 1 (assuming only 2 ranks)</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>   t <span class="op">=</span> torch.empty(<span class="dv">3</span>, dtype<span class="op">=</span>torch.float32).to(device)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>   dist.recv(t, src<span class="op">=</span><span class="dv">0</span>) <span class="co"># Blocks only until enqueued (after first run)</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>   <span class="bu">print</span>(<span class="st">"This WILL print if NCCL is warmed-up"</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>   <span class="bu">print</span>(t) <span class="co"># CPU needs data from GPU, causing a block</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>   <span class="bu">print</span>(<span class="st">"This will NOT print"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>The CPU process at <code>rank 1</code> gets stuck on <code>print(t)</code> because it triggers a host-device synchronization to access the tensor’s data, which never arrives.</p>
-<blockquote class="blockquote">
-<p>If you run this code multiple times, notice that <code>This WILL print if NCCL is warmed-up</code> will not get printed in the following executions, since the CPU is still stuck at <code>print(t)</code> from the previous run.</p>
-</blockquote>
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>Before exploring advanced parallelism techniques, it’s important to understand the backbone of multi-GPU setups: how GPUs actually communicate with each other.</p>
 </section>
+<section id="the-communication-stack" class="level1">
+<h1>The Communication Stack</h1>
+<section id="pcie" class="level3">
+<h3 class="anchored" data-anchor-id="pcie">PCIe</h3>
+<p>PCIe (Peripheral Component Interconnect Express) connects GPUs to the CPU and motherboard via independent point-to-point lanes.</p>
+<p>Bandwidth per GPU (using 16 lanes):</p>
+<ul>
+<li>Gen4 x16: ~32 GB/s<br>
+</li>
+<li>Gen5 x16: ~64 GB/s<br>
+</li>
+<li>Gen6 x16: ~128 GB/s</li>
+</ul>
+<p>CPUs in modern servers usually provide up to 128 PCIe lanes. With GPUs requiring 16 lanes each, you’ll typically see 8 GPUs per node—both bandwidth and physical constraints make scaling beyond that impractical.</p>
 </section>
-<section id="collectives" class="level1">
-<h1>Collectives</h1>
-<hr>
-<p>Every collective operation function supports both sync and async operations through the <code>async_op</code> argument. It defaults to False, meaning synchronous operations.</p>
-<section id="one-to-all-collectives" class="level3">
-<h3 class="anchored" data-anchor-id="one-to-all-collectives">One-to-All Collectives</h3>
-<p>These operations involve one rank sending data to all other ranks in the group.</p>
+<section id="nvlink" class="level3">
+<h3 class="anchored" data-anchor-id="nvlink">NVLink</h3>
+<p>NVLink provides direct GPU-to-GPU communication inside a server, bypassing the CPU. It creates fast, direct memory pathways between GPUs.</p>
+<p>Bandwidth highlights:</p>
 <ul>
-<li><strong><code>dist.broadcast(tensor, src)</code></strong>: Copies a tensor from a single source rank (<code>src</code>) to all other ranks. Every process ends up with an identical copy of the tensor.</li>
+<li>NVLink 3 (A100): ~600 GB/s per GPU<br>
+</li>
+<li>NVLink 4 (H100): ~900 GB/s per GPU<br>
+</li>
+<li>NVLink 5 (Blackwell): Up to 1.8 TB/s per GPU</li>
 </ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://developer-blogs.nvidia.com/wp-content/uploads/2016/04/image04.png" class="img-fluid figure-img"></p>
-<figcaption>Broadcast. Source: <a href="https://developer.nvidia.com/blog/fast-multi-gpu-collectives-nccl/">NVIDIA</a></figcaption>
-</figure>
-</div>
-<ul>
-<li><p><strong><code>dist.scatter(tensor, scatter_list, src)</code></strong>: Distributes chunks of data from a source rank across all ranks. The <code>scatter_list</code> on the source rank contains multiple tensors, and each rank (including the source) receives one tensor from this list into its <code>tensor</code> variable.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The scatter_list must be None for all non-source ranks.</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>scatter_list <span class="op">=</span> <span class="va">None</span> <span class="cf">if</span> rank <span class="op">!=</span> <span class="dv">0</span> <span class="cf">else</span> [torch.tensor([i, i<span class="op">+</span><span class="dv">1</span>]).to(device) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">4</span>,<span class="dv">2</span>)]</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>output <span class="op">=</span> torch.empty(<span class="dv">2</span>, dtype<span class="op">=</span>torch.int64).to(device)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>dist.scatter(output, scatter_list, src<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Rank </span><span class="sc">{</span>rank<span class="sc">}</span><span class="ss"> received: </span><span class="sc">{</span>output<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
-</ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://miro.medium.com/v2/resize:fit:1400/1*bTgdxwx_SLm57X55L1mJjQ.png" class="img-fluid figure-img"></p>
-<figcaption>Scatter. Source: <a href="https://medium.com/@tugrul_acikgoz/nccl-collective-communication-pattern-basics-4efe3c7e6190">Medium</a></figcaption>
-</figure>
-</div>
+<p>The catch: if an H100 with 900 GB/s must talk to 7 other GPUs in an 8-GPU server, that bandwidth is split into ~128 GB/s per connection. That’s exactly why NVSwitch exists.</p>
 </section>
-<section id="all-to-one-collectives" class="level3">
-<h3 class="anchored" data-anchor-id="all-to-one-collectives">All-to-One Collectives</h3>
-<p>These operations gather data from all ranks and consolidate it onto a single destination rank.</p>
+<section id="nvswitch" class="level3">
+<h3 class="anchored" data-anchor-id="nvswitch">NVSwitch</h3>
+<p>NVSwitch acts as a central hub for GPU communication. Unlike point-to-point NVLink connections, NVSwitch makes bandwidth effectively independent of the number of peers. With it, all GPUs in a node can communicate at full speed simultaneously—making the network “non-blocking.”</p>
+<p>Recent generations:</p>
 <ul>
-<li><strong><code>dist.reduce(tensor, dst, op)</code></strong>: Takes a tensor from each rank, applies a reduction operation (like <code>SUM</code>, <code>MAX</code>, <code>MIN</code>), and stores the final result on the destination rank (<code>dst</code>) only.</li>
+<li>1st Gen: Up to 16 V100 GPUs per server<br>
+</li>
+<li>2nd Gen: Still 16 GPUs, but faster and lower-latency<br>
+</li>
+<li>3rd Gen: Built for H100s, scales up to 256 GPUs</li>
 </ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://miro.medium.com/v2/resize:fit:1400/format:webp/1*gWmSoDx8uGA_vPM1fR8MQw.png" class="img-fluid figure-img"></p>
-<figcaption>Reduce. Source: <a href="https://medium.com/@tugrul_acikgoz/nccl-collective-communication-pattern-basics-4efe3c7e6190">Medium</a></figcaption>
-</figure>
-</div>
-<ul>
-<li><p><strong><code>dist.gather(tensor, gather_list, dst)</code></strong>: Gathers a tensor from every rank into a list of tensors on the destination rank. The <code>gather_list</code> must be a list of correctly sized tensors on the destination and <code>None</code> everywhere else.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The gather_list must be None for all non-destination ranks.</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>gather_list <span class="op">=</span> <span class="va">None</span> <span class="cf">if</span> rank <span class="op">!=</span> <span class="dv">0</span> <span class="cf">else</span> [torch.zeros(<span class="dv">3</span>, dtype<span class="op">=</span>torch.int64).to(device) <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(world_size)]</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> torch.tensor([<span class="dv">0</span><span class="op">+</span>rank, <span class="dv">1</span><span class="op">+</span>rank, <span class="dv">2</span><span class="op">+</span>rank], dtype<span class="op">=</span>torch.int64).to(device)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>dist.gather(t, gather_list, dst<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'After op, Rank </span><span class="sc">{</span>rank<span class="sc">}</span><span class="ss"> has: </span><span class="sc">{</span>gather_list<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
-</ul>
-<p>The variable <code>world_size</code> is the total number of ranks. It can be obtained with <code>torch.distributed.get_world_size()</code>. But don’t worry about implementation details for now, the most important thing is to grasp the concepts.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://miro.medium.com/v2/resize:fit:1400/format:webp/1*WCtTuDLQwjTT3co8gTSUrQ.png" class="img-fluid figure-img"></p>
-<figcaption>Gather. Source: <a href="https://medium.com/@tugrul_acikgoz/nccl-collective-communication-pattern-basics-4efe3c7e6190">Medium</a></figcaption>
-</figure>
-</div>
+<p>NVSwitch started as an intra-node technology but now extends across nodes, enabling large GPU clusters with near-local NVLink performance.</p>
 </section>
-<section id="all-to-all-collectives" class="level3">
-<h3 class="anchored" data-anchor-id="all-to-all-collectives">All-to-All Collectives</h3>
-<p>In these operations, every rank both sends and receives data from all other ranks.</p>
+<section id="infiniband" class="level3">
+<h3 class="anchored" data-anchor-id="infiniband">InfiniBand</h3>
+<p>For communication <em>between</em> servers, InfiniBand is the go-to technology. It’s slower than NVLink but essential for scaling to hundreds or thousands of GPUs. Crucially, it supports GPU-Direct RDMA, which lets network cards read GPU memory directly—avoiding wasteful CPU involvement.</p>
+<p>Bandwidth per port:</p>
 <ul>
-<li><strong><code>dist.all_reduce(tensor, op)</code></strong>: Same as <code>reduce</code>, but the result is stored on <em>every</em> rank instead of just one destination.</li>
+<li>HDR: ~25 GB/s<br>
+</li>
+<li>NDR: ~50 GB/s<br>
+</li>
+<li>NDR200: ~100 GB/s</li>
 </ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://developer-blogs.nvidia.com/wp-content/uploads/2016/04/image01.png" class="img-fluid figure-img"></p>
-<figcaption>All Reduce. Source: <a href="https://developer.nvidia.com/blog/fast-multi-gpu-collectives-nccl/">NVIDIA</a></figcaption>
-</figure>
-</div>
-<ul>
-<li><strong><code>dist.all_gather(tensor_list, tensor)</code></strong>: Same as <code>gather</code>, but the gathered list of tensors is available on <em>every</em> rank.</li>
-</ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://developer-blogs.nvidia.com/wp-content/uploads/2016/04/image00.png" class="img-fluid figure-img"></p>
-<figcaption>All Gather. Source: <a href="https://developer.nvidia.com/blog/fast-multi-gpu-collectives-nccl/">NVIDIA</a></figcaption>
-</figure>
-</div>
-<ul>
-<li><p><strong><code>dist.all_gather_into_tensor(output_tensor, input_tensor)</code></strong>: A more efficient version of <code>all_gather</code>. It gathers tensors from all ranks into a single, stacked <code>output_tensor</code> on every rank.</p></li>
-<li><p><strong><code>dist.reduce_scatter(output, input_list)</code></strong>: Performs a reduce operation on a list of tensors and then scatters the results. Each rank receives a different part of the reduced output.</p></li>
-</ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/_images/reducescatter.png" class="img-fluid figure-img"></p>
-<figcaption>Reduce Scatter. Source: <a href="https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/usage/collectives.html">NVIDIA</a></figcaption>
-</figure>
-</div>
+<p>Still, it’s significantly slower than NVLink due to protocol overhead and extra PCIe traversals.</p>
 </section>
 </section>
-<section id="synchronization" class="level1">
-<h1>Synchronization</h1>
-<hr>
-<p>The two most frequently used operations are <code>request.wait()</code> and <code>torch.cuda.synchronize()</code>. It’s crucial to understand the difference between these two:</p>
-<ul>
-<li><p><code>request.wait()</code>: This is used for asynchronous operations. It synchronizes CUDA streams for that <strong>specific</strong> operation, ensuring the default stream waits for the communication to complete before proceeding. For GPU collectives, it does <strong>not</strong> block the host CPU thread, it only blocks the currently active CUDA stream (if you’re not familiar with streams, don’t worry about it for now, just understand that the GPU is blocked). For CPU collectives, it will block the host process until the operation is completed.</p></li>
-<li><p><code>torch.cuda.synchronize()</code>: This is a more forceful command that pauses the host CPU thread until <strong>all</strong> previously queued tasks on the GPU have finished. It guarantees that the GPU is completely idle before the CPU moves on, but it can create performance bottlenecks if used improperly. Whenever you need to perform benchmark measurements, you should use this to ensure you capture the exact moment the GPUs are done.</p></li>
-</ul>
+<section id="key-design-principles" class="level1">
+<h1>Key Design Principles</h1>
+<section id="linear-scaling" class="level3">
+<h3 class="anchored" data-anchor-id="linear-scaling">Linear Scaling</h3>
+<p>Linear scaling means that doubling GPUs should double throughput (or halve training time). While ideal, it’s hard to achieve in practice because communication overhead grows with each added device.</p>
+</section>
+<section id="compute-communication-overlap" class="level3">
+<h3 class="anchored" data-anchor-id="compute-communication-overlap">Compute-Communication Overlap</h3>
+<p>If GPUs wait idly for data transfers, you’re losing efficiency. The best case is overlapping communication with computation so neither resource is left unused. Any communication gap where the GPU can’t compute is an “exposed operation,” and avoiding these is critical.</p>
+</section>
+<section id="intra-node-vs.-inter-node" class="level3">
+<h3 class="anchored" data-anchor-id="intra-node-vs.-inter-node">Intra-Node vs.&nbsp;Inter-Node</h3>
+<p>Scaling within a single node (up to 8 GPUs in modern servers) often gets you close to linear scaling since intra-node communication is fast and efficient. But once you add multiple nodes, overhead, latency, and bandwidth limits kick in. Past this “performance cliff,” each extra GPU delivers less incremental benefit.</p>
+</section>
 </section>
 <section id="conclusion" class="level1">
 <h1>Conclusion</h1>
-<p>In this post you learned about:</p>
+<p>With a solid grasp of GPU communication fundamentals, you can design smarter distributed AI workloads by:</p>
 <ul>
-<li>Point-to-Point Operations</li>
-<li>Sync and Async in NCCL</li>
-<li>Collective operations</li>
-<li>Synchronization methods</li>
+<li>Accounting for communication costs in your setup<br>
+</li>
+<li>Estimating latency and throughput realistically<br>
+</li>
+<li>Making scaling choices that balance performance and efficiency</li>
 </ul>
-<p><strong>In the <a href="../4-gpu-hardware-and-networking/index.qmd">next blog post</a> we’ll dive into some inter-GPU communication!</strong></p>
+<section id="references" class="level3">
+<h3 class="anchored" data-anchor-id="references">References</h3>
+<ol type="1">
+<li><a href="https://developer.nvidia.com/blog/nvidia-nvlink-and-nvidia-nvswitch-supercharge-large-language-model-inference/">NVIDIA Blog</a></li>
+</ol>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -638,7 +541,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/lorenzocesconetto\.github\.io\/blog-lorenzo\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

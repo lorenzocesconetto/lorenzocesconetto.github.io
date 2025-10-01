@@ -6,10 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Lorenzo Cesconetto">
-<meta name="dcterms.date" content="2025-09-23">
 
-<title>AI in Multiple GPUs with PyTorch (2/6) – Lorenzo Cesconetto</title>
+<title>notes – Lorenzo Cesconetto</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -22,63 +20,28 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
-<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../../">
-<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../../site_libs/quarto-html/popper.min.js"></script>
-<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-befe23ebd2f54d8af2c8a89d1a1611f1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-ec7ccfbb941a833fdbb8fb4bea212431.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-a3a3163c528fce66c8cbb601af61b2ca.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-befe23ebd2f54d8af2c8a89d1a1611f1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-ec7ccfbb941a833fdbb8fb4bea212431.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-a3a3163c528fce66c8cbb601af61b2ca.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -107,8 +70,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<link rel="stylesheet" href="../../styles.css">
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="nav-fixed fullcontent quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
@@ -287,7 +279,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../../index.html">
+    <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">Lorenzo Cesconetto</span>
     </a>
   </div>
@@ -298,13 +290,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../opensource.html"> 
+    <a class="nav-link" href="./opensource.html"> 
 <span class="menu-text">Projects</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../about.html"> 
+    <a class="nav-link" href="./about.html"> 
 <span class="menu-text">About me</span></a>
   </li>  
   <li class="nav-item compact">
@@ -341,215 +333,53 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">AI in Multiple GPUs with PyTorch (2/6)</h1>
-  <div class="quarto-categories">
-    <div class="quarto-category">GPU</div>
-  </div>
-  </div>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
 
 
-<div class="quarto-title-meta">
-
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Lorenzo Cesconetto </p>
-          </div>
-  </div>
-    
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">September 23, 2025</p>
-    </div>
-  </div>
-  
-    
-  </div>
-  
 
 
-</header>
-
-
-<section id="part-26-point-to-point-and-collective-operations" class="level1">
-<h1>Part 2/6: Point-to-Point and Collective Operations</h1>
-<hr>
-<p>This article is part of a series about distributed AI across multiple GPUs:</p>
-<ul>
-<li><a href="../../posts/2-first-steps-gpu/index.html">Part 1: Understanding the Host and Device Paradigm</a></li>
-<li><strong>Part 2: Point-to-Point and Collective Operations</strong> (this article)</li>
-<li><a href="../4-gpu-hardware-and-networking/index.qmd">Part 3: GPU Communication Fundamentals</a></li>
-<li>Part 4: Data Parallelism <em>(coming soon)</em></li>
-<li>Part 5: ZeRO <em>(coming soon)</em></li>
-<li>Part 6: Tensor Parallelism <em>(coming soon)</em></li>
-</ul>
-<p>In the previous post, we established the host-device paradigm and introduced the concept of ranks for multi-GPU training. Now, we’ll explore the specific communication patterns provided by PyTorch’s <code>torch.distributed</code> module to coordinate work and exchange data between these ranks. These operations, known as <strong>collectives</strong>, are the building blocks of distributed training.</p>
-<p>Although PyTorch exposes these operations, it ultimately calls a backend framework that actually implements the communication. For NVIDIA GPUs, it’s <code>NCCL</code> (NVIDIA Collective Communications Library), while for AMD it’s RCCL (ROCm Communication Collectives Library).</p>
-<p><code>NCCL</code> implements multi-GPU and multi-node communication primitives optimized for NVIDIA GPUs and networking. It automatically detects the current topology (communication channels like PCIe, NVLink, InfiniBand) and selects the most efficient one.</p>
-<blockquote class="blockquote">
-<p>Since NVIDIA GPUs are the most common, we’ll focus on the <code>NCCL</code> backend for this post.</p>
-</blockquote>
-<blockquote class="blockquote">
-<p>For brevity, the code presented below only provides the main arguments of each method instead of all available arguments.</p>
-</blockquote>
+<section id="notes" class="level1">
+<h1>Notes</h1>
+<section id="prompts" class="level2">
+<h2 class="anchored" data-anchor-id="prompts">Prompts</h2>
+<p>Help me improve the blog post below. It should provide a smooth reading experience, sound natural and idiomatic to american ears, and be succinct. The tone should not be super formal. Make sure to enclose the blog post in ```.</p>
 </section>
-<section id="point-to-point-one-to-one" class="level1">
-<h1>Point-to-Point (One-to-One)</h1>
-<hr>
-<p>These operations are not considered <strong>collectives</strong>, but they are foundational communication primitives. They facilitate direct data transfer between two specific ranks and are fundamental for tasks where one GPU needs to send specific information to another.</p>
+<section id="sections" class="level2">
+<h2 class="anchored" data-anchor-id="sections">Sections:</h2>
 <ul>
-<li><strong>Synchronous (Blocking)</strong>: The program waits for the operation to be enqueued before proceeding. For CPU tensors, the rank process is blocked until the transfer is completed. For GPU tensors, it blocks only until the operation is submitted to the GPU’s command queue.
+<li>Open Source contributions</li>
+<li>Noticeable repos / projects</li>
+</ul>
+</section>
+<section id="posts" class="level2">
+<h2 class="anchored" data-anchor-id="posts">Posts</h2>
 <ul>
-<li><code>dist.send(tensor, dst)</code>: Sends a tensor to a specified destination rank.</li>
-<li><code>dist.recv(tensor, src)</code>: Receives a tensor from a source rank. The receiving tensor must be pre-allocated with the correct shape and <code>dtype</code>.</li>
+<li><p>Which layers to quantize?</p>
+<ul>
+<li>Unsloth has shown that heavily quantizing the MoE layers is fine, but lightly quantize Attention and shared experts</li>
 </ul></li>
-<li><strong>Asynchronous (Non-Blocking)</strong>: The program initiates the transfer and immediately continues with other tasks. This allows for overlapping communication with computation. Both operations return a <code>request</code> object that can be used to track the status.
+<li><p>Why GPUs will not get much faster?</p>
 <ul>
-<li><code>dist.isend(tensor, dst)</code>: Initiates an asynchronous send operation.</li>
-<li><code>dist.irecv(tensor, src)</code>: Initiates an asynchronous receive operation.</li>
-<li><code>request.wait()</code>: Blocks execution until the specific asynchronous operation is complete.</li>
+<li>We’ve been cutting down on the Mantissa because the time is given by: <span class="math inline">\(Exponent + Matissa^2\)</span></li>
+<li>There’s not much we can cut down anymore, since we’re already working with Float 4</li>
+</ul></li>
+<li><p>Learn torch.compile(). It’s not just wrapping a function in it, there are many many options (arguments) available.</p></li>
+<li><p>Llama CPP: https://podcasts.apple.com/br/podcast/the-changelog-software-development-open-source/id341623264?l=en-GB&amp;i=1000605475678</p></li>
+<li><p>vLLM vs Llama.cpp comparison / bench</p>
+<ul>
+<li>https://www.arsturn.com/blog/vllm-vs-ollama-vs-llama-cpp-production-use</li>
+<li>Which Performs Better for LLMs, VLLM or Llama.cpp? https://freedium.cfd/https://medium.com/<span class="citation" data-cites="tam.tamanna18/which-performs-better-for-llms-vllm-or-llama-cpp-eff62b5e25da">@tam.tamanna18/which-performs-better-for-llms-vllm-or-llama-cpp-eff62b5e25da</span></li>
+</ul></li>
+<li><p>Paged Attention &amp; Continuos Batching</p>
+<ul>
+<li>https://rishirajacharya.com/how-vllm-does-it</li>
+<li>https://blog.vllm.ai/2023/06/20/vllm.html</li>
 </ul></li>
 </ul>
-<section id="major-gotchas-in-nccl" class="level3">
-<h3 class="anchored" data-anchor-id="major-gotchas-in-nccl">Major “Gotchas” in NCCL</h3>
-<p>While <code>send</code> and <code>recv</code> are labeled “synchronous,” their behavior in NCCL can be confusing, so let me clarify things before you get confused when running your tests. A synchronous call on a CUDA tensor blocks the host CPU thread only until the data transfer kernel is launched on the GPU, <strong>not</strong> until the transfer is complete. The CPU is then free to enqueue other tasks. Asynchronous operations are generally preferred as they make this overlap explicit.</p>
-<p>There is an exception: the very first call to <code>dist.recv()</code> in a process is truly blocking and waits for the transfer to finish, likely due to internal NCCL warm-up procedures. Subsequent calls will only block until the operation is enqueued.</p>
-<p>Consider this example where <code>rank 1</code> hangs because the CPU tries to access a tensor that the GPU has not yet received:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> rank <span class="op">==</span> <span class="dv">0</span>:</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>   t <span class="op">=</span> torch.tensor([<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>], dtype<span class="op">=</span>torch.float32).to(device)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>   <span class="co"># dist.send(t, dst=1) # No send operation is performed</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>: <span class="co"># rank == 1 (assuming only 2 ranks)</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>   t <span class="op">=</span> torch.empty(<span class="dv">3</span>, dtype<span class="op">=</span>torch.float32).to(device)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>   dist.recv(t, src<span class="op">=</span><span class="dv">0</span>) <span class="co"># Blocks only until enqueued (after first run)</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>   <span class="bu">print</span>(<span class="st">"This WILL print if NCCL is warmed-up"</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>   <span class="bu">print</span>(t) <span class="co"># CPU needs data from GPU, causing a block</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>   <span class="bu">print</span>(<span class="st">"This will NOT print"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>The CPU process at <code>rank 1</code> gets stuck on <code>print(t)</code> because it triggers a host-device synchronization to access the tensor’s data, which never arrives.</p>
-<blockquote class="blockquote">
-<p>If you run this code multiple times, notice that <code>This WILL print if NCCL is warmed-up</code> will not get printed in the following executions, since the CPU is still stuck at <code>print(t)</code> from the previous run.</p>
-</blockquote>
-</section>
-</section>
-<section id="collectives" class="level1">
-<h1>Collectives</h1>
-<hr>
-<p>Every collective operation function supports both sync and async operations through the <code>async_op</code> argument. It defaults to False, meaning synchronous operations.</p>
-<section id="one-to-all-collectives" class="level3">
-<h3 class="anchored" data-anchor-id="one-to-all-collectives">One-to-All Collectives</h3>
-<p>These operations involve one rank sending data to all other ranks in the group.</p>
-<ul>
-<li><strong><code>dist.broadcast(tensor, src)</code></strong>: Copies a tensor from a single source rank (<code>src</code>) to all other ranks. Every process ends up with an identical copy of the tensor.</li>
-</ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://developer-blogs.nvidia.com/wp-content/uploads/2016/04/image04.png" class="img-fluid figure-img"></p>
-<figcaption>Broadcast. Source: <a href="https://developer.nvidia.com/blog/fast-multi-gpu-collectives-nccl/">NVIDIA</a></figcaption>
-</figure>
-</div>
-<ul>
-<li><p><strong><code>dist.scatter(tensor, scatter_list, src)</code></strong>: Distributes chunks of data from a source rank across all ranks. The <code>scatter_list</code> on the source rank contains multiple tensors, and each rank (including the source) receives one tensor from this list into its <code>tensor</code> variable.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The scatter_list must be None for all non-source ranks.</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>scatter_list <span class="op">=</span> <span class="va">None</span> <span class="cf">if</span> rank <span class="op">!=</span> <span class="dv">0</span> <span class="cf">else</span> [torch.tensor([i, i<span class="op">+</span><span class="dv">1</span>]).to(device) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">4</span>,<span class="dv">2</span>)]</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>output <span class="op">=</span> torch.empty(<span class="dv">2</span>, dtype<span class="op">=</span>torch.int64).to(device)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>dist.scatter(output, scatter_list, src<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Rank </span><span class="sc">{</span>rank<span class="sc">}</span><span class="ss"> received: </span><span class="sc">{</span>output<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
-</ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://miro.medium.com/v2/resize:fit:1400/1*bTgdxwx_SLm57X55L1mJjQ.png" class="img-fluid figure-img"></p>
-<figcaption>Scatter. Source: <a href="https://medium.com/@tugrul_acikgoz/nccl-collective-communication-pattern-basics-4efe3c7e6190">Medium</a></figcaption>
-</figure>
-</div>
-</section>
-<section id="all-to-one-collectives" class="level3">
-<h3 class="anchored" data-anchor-id="all-to-one-collectives">All-to-One Collectives</h3>
-<p>These operations gather data from all ranks and consolidate it onto a single destination rank.</p>
-<ul>
-<li><strong><code>dist.reduce(tensor, dst, op)</code></strong>: Takes a tensor from each rank, applies a reduction operation (like <code>SUM</code>, <code>MAX</code>, <code>MIN</code>), and stores the final result on the destination rank (<code>dst</code>) only.</li>
-</ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://miro.medium.com/v2/resize:fit:1400/format:webp/1*gWmSoDx8uGA_vPM1fR8MQw.png" class="img-fluid figure-img"></p>
-<figcaption>Reduce. Source: <a href="https://medium.com/@tugrul_acikgoz/nccl-collective-communication-pattern-basics-4efe3c7e6190">Medium</a></figcaption>
-</figure>
-</div>
-<ul>
-<li><p><strong><code>dist.gather(tensor, gather_list, dst)</code></strong>: Gathers a tensor from every rank into a list of tensors on the destination rank. The <code>gather_list</code> must be a list of correctly sized tensors on the destination and <code>None</code> everywhere else.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The gather_list must be None for all non-destination ranks.</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>gather_list <span class="op">=</span> <span class="va">None</span> <span class="cf">if</span> rank <span class="op">!=</span> <span class="dv">0</span> <span class="cf">else</span> [torch.zeros(<span class="dv">3</span>, dtype<span class="op">=</span>torch.int64).to(device) <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(world_size)]</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> torch.tensor([<span class="dv">0</span><span class="op">+</span>rank, <span class="dv">1</span><span class="op">+</span>rank, <span class="dv">2</span><span class="op">+</span>rank], dtype<span class="op">=</span>torch.int64).to(device)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>dist.gather(t, gather_list, dst<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'After op, Rank </span><span class="sc">{</span>rank<span class="sc">}</span><span class="ss"> has: </span><span class="sc">{</span>gather_list<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
-</ul>
-<p>The variable <code>world_size</code> is the total number of ranks. It can be obtained with <code>torch.distributed.get_world_size()</code>. But don’t worry about implementation details for now, the most important thing is to grasp the concepts.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://miro.medium.com/v2/resize:fit:1400/format:webp/1*WCtTuDLQwjTT3co8gTSUrQ.png" class="img-fluid figure-img"></p>
-<figcaption>Gather. Source: <a href="https://medium.com/@tugrul_acikgoz/nccl-collective-communication-pattern-basics-4efe3c7e6190">Medium</a></figcaption>
-</figure>
-</div>
-</section>
-<section id="all-to-all-collectives" class="level3">
-<h3 class="anchored" data-anchor-id="all-to-all-collectives">All-to-All Collectives</h3>
-<p>In these operations, every rank both sends and receives data from all other ranks.</p>
-<ul>
-<li><strong><code>dist.all_reduce(tensor, op)</code></strong>: Same as <code>reduce</code>, but the result is stored on <em>every</em> rank instead of just one destination.</li>
-</ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://developer-blogs.nvidia.com/wp-content/uploads/2016/04/image01.png" class="img-fluid figure-img"></p>
-<figcaption>All Reduce. Source: <a href="https://developer.nvidia.com/blog/fast-multi-gpu-collectives-nccl/">NVIDIA</a></figcaption>
-</figure>
-</div>
-<ul>
-<li><strong><code>dist.all_gather(tensor_list, tensor)</code></strong>: Same as <code>gather</code>, but the gathered list of tensors is available on <em>every</em> rank.</li>
-</ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://developer-blogs.nvidia.com/wp-content/uploads/2016/04/image00.png" class="img-fluid figure-img"></p>
-<figcaption>All Gather. Source: <a href="https://developer.nvidia.com/blog/fast-multi-gpu-collectives-nccl/">NVIDIA</a></figcaption>
-</figure>
-</div>
-<ul>
-<li><p><strong><code>dist.all_gather_into_tensor(output_tensor, input_tensor)</code></strong>: A more efficient version of <code>all_gather</code>. It gathers tensors from all ranks into a single, stacked <code>output_tensor</code> on every rank.</p></li>
-<li><p><strong><code>dist.reduce_scatter(output, input_list)</code></strong>: Performs a reduce operation on a list of tensors and then scatters the results. Each rank receives a different part of the reduced output.</p></li>
-</ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/_images/reducescatter.png" class="img-fluid figure-img"></p>
-<figcaption>Reduce Scatter. Source: <a href="https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/usage/collectives.html">NVIDIA</a></figcaption>
-</figure>
-</div>
-</section>
-</section>
-<section id="synchronization" class="level1">
-<h1>Synchronization</h1>
-<hr>
-<p>The two most frequently used operations are <code>request.wait()</code> and <code>torch.cuda.synchronize()</code>. It’s crucial to understand the difference between these two:</p>
-<ul>
-<li><p><code>request.wait()</code>: This is used for asynchronous operations. It synchronizes CUDA streams for that <strong>specific</strong> operation, ensuring the default stream waits for the communication to complete before proceeding. For GPU collectives, it does <strong>not</strong> block the host CPU thread, it only blocks the currently active CUDA stream (if you’re not familiar with streams, don’t worry about it for now, just understand that the GPU is blocked). For CPU collectives, it will block the host process until the operation is completed.</p></li>
-<li><p><code>torch.cuda.synchronize()</code>: This is a more forceful command that pauses the host CPU thread until <strong>all</strong> previously queued tasks on the GPU have finished. It guarantees that the GPU is completely idle before the CPU moves on, but it can create performance bottlenecks if used improperly. Whenever you need to perform benchmark measurements, you should use this to ensure you capture the exact moment the GPUs are done.</p></li>
-</ul>
-</section>
-<section id="conclusion" class="level1">
-<h1>Conclusion</h1>
-<p>In this post you learned about:</p>
-<ul>
-<li>Point-to-Point Operations</li>
-<li>Sync and Async in NCCL</li>
-<li>Collective operations</li>
-<li>Synchronization methods</li>
-</ul>
-<p><strong>In the <a href="../4-gpu-hardware-and-networking/index.qmd">next blog post</a> we’ll dive into some inter-GPU communication!</strong></p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

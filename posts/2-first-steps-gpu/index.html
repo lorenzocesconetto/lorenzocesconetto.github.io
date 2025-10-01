@@ -9,7 +9,7 @@
 <meta name="author" content="Lorenzo Cesconetto">
 <meta name="dcterms.date" content="2025-09-21">
 
-<title>AI in Multiple GPUs with PyTorch (1/4) – Lorenzo Cesconetto</title>
+<title>AI in Multiple GPUs with PyTorch (1/6) – Lorenzo Cesconetto</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -261,6 +261,12 @@ ul.task-list li input[type="checkbox"] {
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../opensource.html"> 
+<span class="menu-text">Projects</span></a>
+  </li>  
+</ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
     <a class="nav-link" href="../../about.html"> 
@@ -305,7 +311,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">AI in Multiple GPUs with PyTorch (1/4)</h1>
+<h1 class="title">AI in Multiple GPUs with PyTorch (1/6)</h1>
   <div class="quarto-categories">
     <div class="quarto-category">GPU</div>
   </div>
@@ -337,14 +343,18 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="./intel.jpeg" class="img-fluid figure-img"></p>
-<figcaption>Image from <a href="https://www.intel.com.br/content/www/br/pt/products/docs/discrete-gpus/data-center-gpu/what-is-data-center-gpu.html">Intel</a></figcaption>
-</figure>
-</div>
-<section id="part-14-understanding-the-host-and-device-paradigm" class="level1">
-<h1>Part 1/4: Understanding the Host and Device Paradigm</h1>
+<section id="part-16-understanding-the-host-and-device-paradigm" class="level1">
+<h1>Part 1/6: Understanding the Host and Device Paradigm</h1>
+<hr>
+<p>This article is part of a series about distributed AI across multiple GPUs:</p>
+<ul>
+<li><strong>Part 1: Understanding the Host and Device Paradigm</strong> (this article)</li>
+<li><a href="../../posts/3-torch-distributed-operations/index.html">Part 2: Point-to-Point and Collective Operations</a></li>
+<li><a href="../4-gpu-hardware-and-networking/index.qmd">Part 3: GPU Communication Fundamentals</a></li>
+<li>Part 4: Data Parallelism <em>(coming soon)</em></li>
+<li>Part 5: ZeRO <em>(coming soon)</em></li>
+<li>Part 6: Tensor Parallelism <em>(coming soon)</em></li>
+</ul>
 <p>This guide explains the foundational concepts of how a CPU and a discrete graphics card (GPU) work together. It’s a high-level introduction designed to help you build a mental model of the host-device paradigm.</p>
 <p><em>For integrated GPUs, such as those found in Apple Silicon chips, the architecture is slightly different, so we will not cover it in this post.</em></p>
 <section id="the-big-picture-the-host-and-the-device" class="level2">
@@ -404,7 +414,7 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 <p>The asynchronous API is more complex because you must ensure you don’t modify data while it is being sent. However, mastering it is the key to unlocking maximum performance in large-scale distributed training.</p>
 <p>In this post, you learned about: - The Host/Device relationship - Asynchronous execution - Host-Device synchronization - Communication patterns</p>
-<p>In the next blog post, we will dive deeper into the communication capabilities of the <code>torch.distributed</code> module.</p>
+<p>In the <a href="../../posts/3-torch-distributed-operations/index.html">next blog post</a>, we will dive deeper into the communication capabilities of the <code>torch.distributed</code> module.</p>
 
 
 </section>
