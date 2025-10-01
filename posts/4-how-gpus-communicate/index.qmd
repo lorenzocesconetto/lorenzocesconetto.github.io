@@ -5,7 +5,7 @@ date: "2025-10-01"
 categories: [GPU]
 ---
 
-# Part 3/6: GPU Communication Fundamentals
+# Part 3/6: How GPUs Communicate
 
 ---
 
@@ -13,7 +13,7 @@ This article is part of a series about distributed AI across multiple GPUs:
 
 - [Part 1: Understanding the Host and Device Paradigm](../2-first-steps-gpu/index.qmd)
 - [Part 2: Point-to-Point and Collective Operations](../3-torch-distributed-operations/index.qmd)
-- **Part 3: GPU Communication Fundamentals** (this article)
+- **Part 3: How GPUs Communicate** (this article)
 - Part 4: Data Parallelism *(coming soon)*
 - Part 5: ZeRO *(coming soon)*
 - Part 6: Tensor Parallelism *(coming soon)*

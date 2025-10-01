@@ -13,7 +13,7 @@ This article is part of a series about distributed AI across multiple GPUs:
 
 - **Part 1: Understanding the Host and Device Paradigm** (this article)
 - [Part 2: Point-to-Point and Collective Operations](../3-torch-distributed-operations/index.qmd)
-- [Part 3: GPU Communication Fundamentals](../4-gpu-hardware-and-networking/index.qmd)
+- [Part 3: How GPUs Communicate](../4-gpu-hardware-and-networking/index.qmd)
 - Part 4: Data Parallelism *(coming soon)*
 - Part 5: ZeRO *(coming soon)*
 - Part 6: Tensor Parallelism *(coming soon)*
