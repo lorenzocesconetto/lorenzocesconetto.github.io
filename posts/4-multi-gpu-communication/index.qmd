@@ -1,0 +1,99 @@
+---
+title: "AI in Multiple GPUs with PyTorch (3/6)"
+author: "Lorenzo Cesconetto"
+date: "2025-10-01"
+categories: [GPU]
+---
+
+# Part 3/6: GPU Communication Fundamentals
+
+---
+
+This article is part of a series about distributed AI across multiple GPUs:
+
+- [Part 1: Understanding the Host and Device Paradigm](../2-first-steps-gpu/index.qmd)
+- [Part 2: Point-to-Point and Collective Operations](../3-torch-distributed-operations/index.qmd)
+- **Part 3: GPU Communication Fundamentals** (this article)
+- Part 4: Data Parallelism *(coming soon)*
+- Part 5: ZeRO *(coming soon)*
+- Part 6: Tensor Parallelism *(coming soon)*
+
+# Introduction
+
+Before diving into advanced parallelism techniques, we need to understand the key technologies that enable GPUs to communicate with each other.
+
+# The Communication Stack
+
+### PCIe
+
+PCIe (Peripheral Component Interconnect Express) connects expansion cards like GPUs to the motherboard using independent point-to-point serial lanes. Here's what different PCIe generations offer for a GPU using 16 lanes:
+
+- **Gen4 x16**: ~32 GB/s bidirectional  
+- **Gen5 x16**: ~64 GB/s bidirectional
+- **Gen6 x16**: ~128 GB/s bidirectional (FYI 16 lanes x 8Gb/s/lane = 128 GB/s)
+
+Modern server CPUs typically offer up to 128 PCIe lanes, and modern GPUs need 16 lanes for optimal bandwidth. This is why you usually see 8 GPUs per server. Power consumption, and physical space in server chassis also makes it impractical to go beyond 8 GPUs in a single node.
+
+### NVLink
+
+NVLink enables direct GPU-to-GPU communication within the same server (node), bypassing the CPU entirely. This NVIDIA-proprietary interconnect creates a direct memory-to-memory pathway between GPUs with huge bandwidth:
+
+- **NVLink 3 (A100)**: ~600 GB/s per GPU
+- **NVLink 4 (H100)**: ~900 GB/s per GPU  
+- **NVLink 5 (Blackwell)**: Up to 1.8 TB/s per GPU
+
+However, there's a catch. In a server with 8x H100s, each GPU needs to communicate with 7 others, splitting that 900 GB/s into seven point-to-point connections of about 128 GB/s each. That's where NVSwitch comes in.
+
+### NVSwitch
+
+NVSwitch acts as a central hub for GPU communication, dynamically routing (switching if you will) data between GPUs as needed. With NVSwitch, every Hopper GPU can communicate at 900 GB/s with all other Hopper GPUs simultaneously, i.e. peak bandwidth doesn't depend on how many GPUs are communicating. This is what makes NVSwitch "non-blocking". Each GPU connects to several NVSwitch chips via multiple NVLink connections, ensuring maximum bandwidth.
+
+While NVSwitch started as an intra-node solution, it's been extended to interconnect multiple nodes, creating GPU clusters that support up to 256 GPUs with all-to-all communication at near-local NVLink speeds.
+
+The generations of NVSwitch are:
+
+- **First-Generation**: Supports up to 16 GPUs per server (compatible with Tesla V100)
+- **Second-Generation**: Also supports up to 16 GPUs with improved bandwidth and lower latency
+- **Third-Generation**: Designed for H100 GPUs, supports up to 256 GPUs
+
+### InfiniBand
+
+InfiniBand handles inter-node communication. While much slower (and cheaper) than NVSwitch, it's commonly used in datacenters to scale to thousands of GPUs. Modern InfiniBand supports GPU-Direct RDMA, letting network adapters access GPU memory directly without CPU involvement (no expensive copying to host RAM).
+
+Current InfiniBand speeds include:
+
+- **HDR**: ~25 GB/s per port
+- **NDR**: ~50 GB/s per port
+- **NDR200**: ~100 GB/s per port
+
+These speeds are significantly slower than intra-node NVLink due to network protocol overhead and the need for two PCIe traversals (once at the sender and once at the receiver).
+
+# Key Design Principles
+
+### Understanding Linear Scaling
+
+Linear scaling is the holy grail of distributed computing. In simple terms, it means doubling your GPUs should either double your throughput or halve your training time. That happens when each GPU operates at full capacity. However, perfect linear scaling is rare in AI workloads because communication requirements grow with the number of devices, and it's usually impossible to achieve perfect compute-communication overlap (explained next).
+
+### The Importance of Compute-Communication Overlap
+
+When a GPU sits idle waiting for data to be transferred before it can be processed, you're wasting resources. Communication operations should overlap with computation as much as possible. When that's not possible, we call that the communication an "exposed operation".
+
+### Intra-Node vs. Inter-Node: The Performance Cliff
+
+Modern server-grade motherboards support up to 8 GPUs. Within this range, you can often achieve near-linear scaling thanks to high-bandwidth, low-latency intra-node communication.
+
+Once you scale beyond 8 GPUs and start using multiple nodes with InfiniBand, performance usually degrades faster. Inter-node communication introduces network protocol overhead, higher latency, and bandwidth limitations. This transition is where diminishing returns become much more pronounced. Each new additional GPU ends up operating at a fraction of its maximum capacity.
+
+## Conclusion
+
+Now that you read this blog post and learned the communication fundamentals, you'll be able to make much more informed decisions when designing AI workloads:
+
+- Account for communication requirements when defining your topology
+- Estimate latency and throughput bottlenecks
+- Make smart scaling decisions based on your specific needs
+
+**In the next blog post, we'll dive into Data Parallelism.**
+
+### References
+
+1. [NVIDIA Blog](https://developer.nvidia.com/blog/nvidia-nvlink-and-nvidia-nvswitch-supercharge-large-language-model-inference/)

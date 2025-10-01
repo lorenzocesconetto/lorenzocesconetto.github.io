@@ -6,3 +6,5 @@ todo.md
 .jupyter_cache
 .vdoc.*
 .DS_Store
+notes.md
+*.quarto_ipynb

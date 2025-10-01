@@ -4,6 +4,9 @@ project:
 website:
   title: "Lorenzo Cesconetto"
   navbar:
+    left:
+      - href: opensource.qmd
+        text: Projects
     right:
       - href: about.qmd
         text: About me
