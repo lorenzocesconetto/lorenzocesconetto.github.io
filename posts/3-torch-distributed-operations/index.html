@@ -390,6 +390,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Part 5: ZeRO <em>(coming soon)</em></li>
 <li>Part 6: Tensor Parallelism <em>(coming soon)</em></li>
 </ul>
+</section>
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
 <p>In the previous post, we established the host-device paradigm and introduced the concept of ranks for multi-GPU training. Now, we’ll explore the specific communication patterns provided by PyTorch’s <code>torch.distributed</code> module to coordinate work and exchange data between these ranks. These operations, known as <strong>collectives</strong>, are the building blocks of distributed training.</p>
 <p>Although PyTorch exposes these operations, it ultimately calls a backend framework that actually implements the communication. For NVIDIA GPUs, it’s <code>NCCL</code> (NVIDIA Collective Communications Library), while for AMD it’s RCCL (ROCm Communication Collectives Library).</p>
 <p><code>NCCL</code> implements multi-GPU and multi-node communication primitives optimized for NVIDIA GPUs and networking. It automatically detects the current topology (communication channels like PCIe, NVLink, InfiniBand) and selects the most efficient one.</p>
