@@ -18,7 +18,7 @@ This article is part of a series about distributed AI across multiple GPUs:
 - Part 5: ZeRO *(coming soon)*
 - Part 6: Tensor Parallelism *(coming soon)*
 
-
+# Introduction
 
 This guide explains the foundational concepts of how a CPU and a discrete graphics card (GPU) work together. It's a high-level introduction designed to help you build a mental model of the host-device paradigm.
 

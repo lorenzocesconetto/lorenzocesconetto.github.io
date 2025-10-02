@@ -18,6 +18,7 @@ This article is part of a series about distributed AI across multiple GPUs:
 - Part 5: ZeRO *(coming soon)*
 - Part 6: Tensor Parallelism *(coming soon)*
 
+# Introduction
 
 In the previous post, we established the host-device paradigm and introduced the concept of ranks for multi-GPU training. Now, we'll explore the specific communication patterns provided by PyTorch's `torch.distributed` module to coordinate work and exchange data between these ranks. These operations, known as **collectives**, are the building blocks of distributed training.
 

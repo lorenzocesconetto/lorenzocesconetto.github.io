@@ -32,7 +32,7 @@ PCIe (Peripheral Component Interconnect Express) connects expansion cards like G
 - **Gen5 x16**: ~64 GB/s bidirectional
 - **Gen6 x16**: ~128 GB/s bidirectional (FYI 16 lanes x 8Gb/s/lane = 128 GB/s)
 
-Modern server CPUs typically offer up to 128 PCIe lanes, and modern GPUs need 16 lanes for optimal bandwidth. This is why you usually see 8 GPUs per server. Power consumption, and physical space in server chassis also makes it impractical to go beyond 8 GPUs in a single node.
+High-end server CPUs typically offer 128 PCIe lanes, and modern GPUs need 16 lanes for optimal bandwidth. This is why you usually see 8 GPUs per server (128 = 16 x 8). Power consumption, and physical space in server chassis also makes it impractical to go beyond 8 GPUs in a single node.
 
 ### NVLink
 
