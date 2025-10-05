@@ -6,7 +6,7 @@ website:
   navbar:
     left:
       - href: opensource.qmd
-        text: Projects
+        text: Projects & Contributions
     right:
       - href: about.qmd
         text: About me
