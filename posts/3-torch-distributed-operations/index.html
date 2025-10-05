@@ -9,7 +9,7 @@
 <meta name="author" content="Lorenzo Cesconetto">
 <meta name="dcterms.date" content="2025-09-23">
 
-<title>AI in Multiple GPUs with PyTorch (2/6) – Lorenzo Cesconetto</title>
+<title>(2/6) AI in Multiple GPUs: Point-to-Point and Collective Operations – Lorenzo Cesconetto</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -299,7 +299,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
     <a class="nav-link" href="../../opensource.html"> 
-<span class="menu-text">Projects</span></a>
+<span class="menu-text">Projects &amp; Contributions</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
@@ -346,7 +346,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">AI in Multiple GPUs with PyTorch (2/6)</h1>
+<h1 class="title">(2/6) AI in Multiple GPUs: Point-to-Point and Collective Operations</h1>
   <div class="quarto-categories">
     <div class="quarto-category">GPU</div>
   </div>
@@ -448,7 +448,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="one-to-all-collectives">One-to-All Collectives</h3>
 <p>These operations involve one rank sending data to all other ranks in the group.</p>
 <ul>
-<li><strong><code>dist.broadcast(tensor, src)</code></strong>: Copies a tensor from a single source rank (<code>src</code>) to all other ranks. Every process ends up with an identical copy of the tensor.</li>
+<li><strong><code>dist.broadcast(tensor, src)</code></strong>: Copies a tensor from a single source rank (<code>src</code>) to all other ranks. Every process ends up with an identical copy of the tensor. The <code>tensor</code> has two purposes, (1) when the rank of the process matches the <code>src</code>, the <code>tensor</code> is the data being sent (2) otherwise <code>tensor</code> is used to save the received data.</li>
 </ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
