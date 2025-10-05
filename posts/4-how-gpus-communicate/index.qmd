@@ -1,5 +1,5 @@
 ---
-title: "AI in Multiple GPUs with PyTorch (3/6)"
+title: "(3/6) AI in Multiple GPUs: How GPUs Communicate"
 author: "Lorenzo Cesconetto"
 date: "2025-10-01"
 categories: [GPU]

@@ -1,5 +1,5 @@
 ---
-title: "AI in Multiple GPUs with PyTorch (1/6)"
+title: "(1/6) AI in Multiple GPUs: Understanding the Host and Device Paradigm"
 author: "Lorenzo Cesconetto"
 date: "2025-09-21"
 categories: [GPU]
