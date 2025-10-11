@@ -42,6 +42,14 @@ NVLink enables direct GPU-to-GPU communication within the same server (node), by
 - **NVLink 4 (H100)**: ~900 GB/s per GPU  
 - **NVLink 5 (Blackwell)**: Up to 1.8 TB/s per GPU
 
+![Source: [Medium](https://medium.com/riselab/ai-and-memory-wall-2cb4265cb0b8)](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*Qty8oEjinArM-wIAly_ZdA.png)
+
+> **Note: on NVLink for CPU-GPU communication**
+> 
+> Certain CPU architectures support NVLink as a PCIe replacement, dramatically accelerating CPU-GPU communication by overcoming the PCIe bottleneck in data transfers, such as moving training batches from CPU to GPU. This CPU-GPU NVLink capability makes CPU-offloading (a technique that saves VRAM by storing data in RAM instead) practical for real-world AI applications. Since scaling RAM is typically more cost-effective than scaling VRAM, this approach offers significant economic advantages.
+>
+> CPUs with NVLink support include IBM POWER8, POWER9, and NVIDIA Grace.
+
 However, there's a catch. In a server with 8x H100s, each GPU needs to communicate with 7 others, splitting that 900 GB/s into seven point-to-point connections of about 128 GB/s each. That's where NVSwitch comes in.
 
 ### NVSwitch

@@ -31,16 +31,6 @@ I am passionate about the intersection of Computer Science, Mathematics and AI.
 
 I am particularly attracted to NLP applications.
 
-## Prizes
-
-- Brazilian National Physics Olympics: Gold Medal
-- Ranked #1 in my major on the UNICAMP entrance exam
-- UNICAMP Challenge: 1st place
-- Starting Point Competition: 2nd place
-- Awarded full scholarship to attend Draper University
-- ITA Challenge - Object Detection Hackathon: 1st place
-- My previous startup, Buscamed, was awarded government equity-free funding
-
 ## Why I started this blog
 
 I enjoy diving very deep when learning new things. I can only truly understand a new concept once I fully understand its inner workings.
@@ -55,3 +45,12 @@ Besides that:
 - Document my learnings
 - Force myself to write things down
 
+## Prizes & Awards
+
+- Brazilian National Physics Olympics: Gold Medal
+- Ranked #1 in my major on the UNICAMP entrance exam
+- UNICAMP Challenge: 1st place
+- Starting Point Competition: 2nd place
+- Awarded full scholarship to attend Draper University
+- ITA Challenge - Object Detection Hackathon: 1st place
+- My previous startup, Buscamed, was awarded government equity-free funding

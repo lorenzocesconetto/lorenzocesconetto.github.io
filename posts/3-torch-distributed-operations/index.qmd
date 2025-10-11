@@ -79,7 +79,15 @@ Every collective operation function supports both sync and async operations thro
 
 These operations involve one rank sending data to all other ranks in the group.
 
-* **`dist.broadcast(tensor, src)`**: Copies a tensor from a single source rank (`src`) to all other ranks. Every process ends up with an identical copy of the tensor.
+* **`dist.broadcast(tensor, src)`**: Copies a tensor from a single source rank (`src`) to all other ranks. Every process ends up with an identical copy of the tensor. The `tensor` has two purposes, (1) when the rank of the process matches the `src`, the `tensor` is the data being sent (2) otherwise `tensor` is used to save the received data.
+
+    ```python
+    if rank == 0: # source rank
+      tensor = torch.tensor([1,2,3], dtype=torch.int64, device=device)
+    else: # destination ranks
+      tensor = torch.empty(3, dtype=torch.int64, device=device)
+    torch.distributed.broadcast(tensor, src=0)
+    ```
 
 ![Broadcast. Source: [NVIDIA](https://developer.nvidia.com/blog/fast-multi-gpu-collectives-nccl/)](https://developer-blogs.nvidia.com/wp-content/uploads/2016/04/image04.png)
 
@@ -156,3 +164,6 @@ In this post you learned about:
 - Synchronization methods
 
 **In the [next blog post](../4-gpu-hardware-and-networking/index.qmd) we'll dive into some inter-GPU communication!**
+
+## References
+- [PyTorch Docs](https://docs.pytorch.org/docs/stable/distributed.html)
