@@ -448,7 +448,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="one-to-all-collectives">One-to-All Collectives</h3>
 <p>These operations involve one rank sending data to all other ranks in the group.</p>
 <ul>
-<li><strong><code>dist.broadcast(tensor, src)</code></strong>: Copies a tensor from a single source rank (<code>src</code>) to all other ranks. Every process ends up with an identical copy of the tensor. The <code>tensor</code> has two purposes, (1) when the rank of the process matches the <code>src</code>, the <code>tensor</code> is the data being sent (2) otherwise <code>tensor</code> is used to save the received data.</li>
+<li><p><strong><code>dist.broadcast(tensor, src)</code></strong>: Copies a tensor from a single source rank (<code>src</code>) to all other ranks. Every process ends up with an identical copy of the tensor. The <code>tensor</code> has two purposes, (1) when the rank of the process matches the <code>src</code>, the <code>tensor</code> is the data being sent (2) otherwise <code>tensor</code> is used to save the received data.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> rank <span class="op">==</span> <span class="dv">0</span>: <span class="co"># source rank</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  tensor <span class="op">=</span> torch.tensor([<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>], dtype<span class="op">=</span>torch.int64, device<span class="op">=</span>device)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>: <span class="co"># destination ranks</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  tensor <span class="op">=</span> torch.empty(<span class="dv">3</span>, dtype<span class="op">=</span>torch.int64, device<span class="op">=</span>device)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>torch.distributed.broadcast(tensor, src<span class="op">=</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
 </ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -458,11 +463,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <ul>
 <li><p><strong><code>dist.scatter(tensor, scatter_list, src)</code></strong>: Distributes chunks of data from a source rank across all ranks. The <code>scatter_list</code> on the source rank contains multiple tensors, and each rank (including the source) receives one tensor from this list into its <code>tensor</code> variable.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The scatter_list must be None for all non-source ranks.</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>scatter_list <span class="op">=</span> <span class="va">None</span> <span class="cf">if</span> rank <span class="op">!=</span> <span class="dv">0</span> <span class="cf">else</span> [torch.tensor([i, i<span class="op">+</span><span class="dv">1</span>]).to(device) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">4</span>,<span class="dv">2</span>)]</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>output <span class="op">=</span> torch.empty(<span class="dv">2</span>, dtype<span class="op">=</span>torch.int64).to(device)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>dist.scatter(output, scatter_list, src<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Rank </span><span class="sc">{</span>rank<span class="sc">}</span><span class="ss"> received: </span><span class="sc">{</span>output<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The scatter_list must be None for all non-source ranks.</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>scatter_list <span class="op">=</span> <span class="va">None</span> <span class="cf">if</span> rank <span class="op">!=</span> <span class="dv">0</span> <span class="cf">else</span> [torch.tensor([i, i<span class="op">+</span><span class="dv">1</span>]).to(device) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">4</span>,<span class="dv">2</span>)]</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>output <span class="op">=</span> torch.empty(<span class="dv">2</span>, dtype<span class="op">=</span>torch.int64).to(device)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>dist.scatter(output, scatter_list, src<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Rank </span><span class="sc">{</span>rank<span class="sc">}</span><span class="ss"> received: </span><span class="sc">{</span>output<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
 </ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -477,6 +482,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li><strong><code>dist.reduce(tensor, dst, op)</code></strong>: Takes a tensor from each rank, applies a reduction operation (like <code>SUM</code>, <code>MAX</code>, <code>MIN</code>), and stores the final result on the destination rank (<code>dst</code>) only.</li>
 </ul>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://miro.medium.com/v2/resize:fit:1400/format:webp/1*gWmSoDx8uGA_vPM1fR8MQw.png" class="img-fluid figure-img"></p>
@@ -485,11 +491,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <ul>
 <li><p><strong><code>dist.gather(tensor, gather_list, dst)</code></strong>: Gathers a tensor from every rank into a list of tensors on the destination rank. The <code>gather_list</code> must be a list of correctly sized tensors on the destination and <code>None</code> everywhere else.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The gather_list must be None for all non-destination ranks.</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>gather_list <span class="op">=</span> <span class="va">None</span> <span class="cf">if</span> rank <span class="op">!=</span> <span class="dv">0</span> <span class="cf">else</span> [torch.zeros(<span class="dv">3</span>, dtype<span class="op">=</span>torch.int64).to(device) <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(world_size)]</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> torch.tensor([<span class="dv">0</span><span class="op">+</span>rank, <span class="dv">1</span><span class="op">+</span>rank, <span class="dv">2</span><span class="op">+</span>rank], dtype<span class="op">=</span>torch.int64).to(device)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>dist.gather(t, gather_list, dst<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'After op, Rank </span><span class="sc">{</span>rank<span class="sc">}</span><span class="ss"> has: </span><span class="sc">{</span>gather_list<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The gather_list must be None for all non-destination ranks.</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>gather_list <span class="op">=</span> <span class="va">None</span> <span class="cf">if</span> rank <span class="op">!=</span> <span class="dv">0</span> <span class="cf">else</span> [torch.zeros(<span class="dv">3</span>, dtype<span class="op">=</span>torch.int64).to(device) <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(world_size)]</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> torch.tensor([<span class="dv">0</span><span class="op">+</span>rank, <span class="dv">1</span><span class="op">+</span>rank, <span class="dv">2</span><span class="op">+</span>rank], dtype<span class="op">=</span>torch.int64).to(device)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>dist.gather(t, gather_list, dst<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'After op, Rank </span><span class="sc">{</span>rank<span class="sc">}</span><span class="ss"> has: </span><span class="sc">{</span>gather_list<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
 </ul>
 <p>The variable <code>world_size</code> is the total number of ranks. It can be obtained with <code>torch.distributed.get_world_size()</code>. But don’t worry about implementation details for now, the most important thing is to grasp the concepts.</p>
 <div class="quarto-figure quarto-figure-center">
@@ -551,8 +557,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Synchronization methods</li>
 </ul>
 <p><strong>In the <a href="../4-gpu-hardware-and-networking/index.qmd">next blog post</a> we’ll dive into some inter-GPU communication!</strong></p>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<ul>
+<li><a href="https://docs.pytorch.org/docs/stable/distributed.html">PyTorch Docs</a></li>
+</ul>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

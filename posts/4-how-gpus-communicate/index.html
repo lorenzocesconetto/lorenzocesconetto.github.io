@@ -382,13 +382,17 @@ ul.task-list li input[type="checkbox"] {
 </li>
 <li><strong>NVLink 5 (Blackwell)</strong>: Up to 1.8 TB/s per GPU</li>
 </ul>
-<p>NVLink can even replace PCIe if your CPU supports it, which makes GPU-CPU communication much faster. The PCIe is often a bottle neck when transferring data (e.g.&nbsp;training batch) from CPU to GPU. This technology can actually make CPU-offloading (a technique that saves VRAM by off-loading data to the host’s RAM) technique efficient enough to be used in practice. Scaling RAM is usually cheaper than scaling VRAM.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src=".png" class="img-fluid figure-img"></p>
-<figcaption>chart by …</figcaption>
+<p><img src="https://miro.medium.com/v2/resize:fit:1400/format:webp/1*Qty8oEjinArM-wIAly_ZdA.png" class="img-fluid figure-img"></p>
+<figcaption>Source: <a href="https://medium.com/riselab/ai-and-memory-wall-2cb4265cb0b8">Medium</a></figcaption>
 </figure>
 </div>
+<blockquote class="blockquote">
+<p><strong>Note: on NVLink for CPU-GPU communication</strong></p>
+<p>Certain CPU architectures support NVLink as a PCIe replacement, dramatically accelerating CPU-GPU communication by overcoming the PCIe bottleneck in data transfers, such as moving training batches from CPU to GPU. This CPU-GPU NVLink capability makes CPU-offloading (a technique that saves VRAM by storing data in RAM instead) practical for real-world AI applications. Since scaling RAM is typically more cost-effective than scaling VRAM, this approach offers significant economic advantages.</p>
+<p>CPUs with NVLink support include IBM POWER8, POWER9, and NVIDIA Grace.</p>
+</blockquote>
 <p>However, there’s a catch. In a server with 8x H100s, each GPU needs to communicate with 7 others, splitting that 900 GB/s into seven point-to-point connections of about 128 GB/s each. That’s where NVSwitch comes in.</p>
 </section>
 <section id="nvswitch" class="level3">
