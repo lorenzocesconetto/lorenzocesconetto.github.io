@@ -67,7 +67,7 @@ def training_loop(
 ):
     for i, batch in enumerate(dataloader):
         output = model(batch)
-        output.loss.backward()
+        output.loss.backward() # Gradients get accumulated (summed)
 
         # Only update weights after `grad_accum_steps` micro-batches
         if i % grad_accum_steps == 0:
@@ -90,6 +90,7 @@ With DDP, multiple GPUs work together to process a larger effective batch size. 
 
 This lets us train with much larger effective batch sizes, leading to more stable training and potentially faster convergence with little to none extra time.
 
+![Source: [Medium](https://medium.com/@yashdoza21/scaling-model-training-across-multiple-gpus-efficient-strategies-with-pytorch-ddp-and-fsdp-d744be462667)](https://miro.medium.com/v2/resize:fit:1200/1*zbgdxY4VN_uola6kQWzlzw.png)
 
 # Implementing DDP from scratch in PyTorch
 
