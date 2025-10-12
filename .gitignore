@@ -8,3 +8,4 @@ todo.md
 .DS_Store
 notes.md
 *.quarto_ipynb
+tmp.*

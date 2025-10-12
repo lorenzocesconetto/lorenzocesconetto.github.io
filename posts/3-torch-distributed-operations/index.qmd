@@ -11,10 +11,10 @@ categories: [GPU]
 
 This article is part of a series about distributed AI across multiple GPUs:
 
-- [Part 1: Understanding the Host and Device Paradigm](../2-first-steps-gpu/index.qmd)
+- [Part 1: Understanding the Host and Device Paradigm](../2-first-steps-gpu/)
 - **Part 2: Point-to-Point and Collective Operations** (this article)
-- [Part 3: How GPUs Communicate](../4-gpu-hardware-and-networking/index.qmd)
-- Part 4: Data Parallelism *(coming soon)*
+- [Part 3: How GPUs Communicate](../4-gpu-hardware-and-networking/)
+- [Part 4: Gradient Accumulation & Distributed Data Parallelism (DDP)](../5-ddp/)
 - Part 5: ZeRO *(coming soon)*
 - Part 6: Tensor Parallelism *(coming soon)*
 
@@ -54,6 +54,7 @@ There is an exception: the very first call to `dist.recv()` in a process is trul
 Consider this example where `rank 1` hangs because the CPU tries to access a tensor that the GPU has not yet received:
 
 ```python
+rank = torch.distributed.get_rank()
 if rank == 0:
    t = torch.tensor([1,2,3], dtype=torch.float32).to(device)
    # dist.send(t, dst=1) # No send operation is performed
@@ -82,6 +83,7 @@ These operations involve one rank sending data to all other ranks in the group.
 * **`dist.broadcast(tensor, src)`**: Copies a tensor from a single source rank (`src`) to all other ranks. Every process ends up with an identical copy of the tensor. The `tensor` has two purposes, (1) when the rank of the process matches the `src`, the `tensor` is the data being sent (2) otherwise `tensor` is used to save the received data.
 
     ```python
+    rank = torch.distributed.get_rank()
     if rank == 0: # source rank
       tensor = torch.tensor([1,2,3], dtype=torch.int64, device=device)
     else: # destination ranks
@@ -108,6 +110,13 @@ These operations involve one rank sending data to all other ranks in the group.
 These operations gather data from all ranks and consolidate it onto a single destination rank.
 
 * **`dist.reduce(tensor, dst, op)`**: Takes a tensor from each rank, applies a reduction operation (like `SUM`, `MAX`, `MIN`), and stores the final result on the destination rank (`dst`) only.
+
+    ```python
+    rank = torch.distributed.get_rank()
+    tensor = torch.tensor([rank+1, rank+2, rank+3], device=device)
+    torch.distributed.all_reduce(tensor, op=torch.distributed.ReduceOp.SUM)
+    print(tensor)
+    ```
 
 ![Reduce. Source: [Medium](https://medium.com/@tugrul_acikgoz/nccl-collective-communication-pattern-basics-4efe3c7e6190)](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*gWmSoDx8uGA_vPM1fR8MQw.png)
 
@@ -156,14 +165,14 @@ The two most frequently used operations are `request.wait()` and `torch.cuda.syn
 
 # Conclusion
 
-In this post you learned about:
+Congratulations for reading all the way to the end! In this post you learned about:
 
 - Point-to-Point Operations
 - Sync and Async in NCCL
 - Collective operations
 - Synchronization methods
 
-**In the [next blog post](../4-gpu-hardware-and-networking/index.qmd) we'll dive into some inter-GPU communication!**
+**In the [next blog post](../4-gpu-hardware-and-networking/) we'll dive into PCIe, NVLink and other mechanisms that enable communication in a distributed setting!**
 
 ## References
 - [PyTorch Docs](https://docs.pytorch.org/docs/stable/distributed.html)

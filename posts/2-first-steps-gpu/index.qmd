@@ -12,9 +12,9 @@ categories: [GPU]
 This article is part of a series about distributed AI across multiple GPUs:
 
 - **Part 1: Understanding the Host and Device Paradigm** (this article)
-- [Part 2: Point-to-Point and Collective Operations](../3-torch-distributed-operations/index.qmd)
-- [Part 3: How GPUs Communicate](../4-gpu-hardware-and-networking/index.qmd)
-- Part 4: Data Parallelism *(coming soon)*
+- [Part 2: Point-to-Point and Collective Operations](../3-torch-distributed-operations/)
+- [Part 3: How GPUs Communicate](../4-gpu-hardware-and-networking/)
+- [Part 4: Gradient Accumulation & Distributed Data Parallelism (DDP)](../5-ddp/)
 - Part 5: ZeRO *(coming soon)*
 - Part 6: Tensor Parallelism *(coming soon)*
 
@@ -85,10 +85,13 @@ PyTorch provides two foundational methods for this communication, which we will 
 
 The asynchronous API is more complex because you must ensure you don't modify data while it is being sent. However, mastering it is the key to unlocking maximum performance in large-scale distributed training.
 
-In this post, you learned about:
+# Conclusion
+
+Congratulations for reading all the way to the end! In this post, you learned about:
+
 - The Host/Device relationship
 - Asynchronous execution
 - Host-Device synchronization
 - Communication patterns
 
-In the [next blog post](../3-torch-distributed-operations/index.qmd), we will dive deeper into the communication capabilities of the `torch.distributed` module.
+**In the [next blog post](../3-torch-distributed-operations/), we will dive deeper into Point-to-Point and Collective Operations, which enable multiple GPUs to coordinate complex workflows such as distributed neural network training.**

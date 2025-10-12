@@ -43,3 +43,4 @@ format:
     respect-user-color-scheme: true
     css: styles.css
     link-external-newwindow: true
+    highlight-style: dracula

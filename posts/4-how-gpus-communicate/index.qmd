@@ -11,10 +11,10 @@ categories: [GPU]
 
 This article is part of a series about distributed AI across multiple GPUs:
 
-- [Part 1: Understanding the Host and Device Paradigm](../2-first-steps-gpu/index.qmd)
-- [Part 2: Point-to-Point and Collective Operations](../3-torch-distributed-operations/index.qmd)
+- [Part 1: Understanding the Host and Device Paradigm](../2-first-steps-gpu/)
+- [Part 2: Point-to-Point and Collective Operations](../3-torch-distributed-operations/)
 - **Part 3: How GPUs Communicate** (this article)
-- Part 4: Data Parallelism *(coming soon)*
+- [Part 4: Gradient Accumulation & Distributed Data Parallelism (DDP)](../5-ddp/)
 - Part 5: ZeRO *(coming soon)*
 - Part 6: Tensor Parallelism *(coming soon)*
 
@@ -92,16 +92,17 @@ Modern server-grade motherboards support up to 8 GPUs. Within this range, you ca
 
 Once you scale beyond 8 GPUs and start using multiple nodes with InfiniBand, performance usually degrades faster. Inter-node communication introduces network protocol overhead, higher latency, and bandwidth limitations. This transition is where diminishing returns become much more pronounced. Each new additional GPU ends up operating at a fraction of its maximum capacity.
 
-## Conclusion
+# Conclusion
 
-Now that you read this blog post and learned the communication fundamentals, you'll be able to make much more informed decisions when designing AI workloads:
+Congratulations for reading all the way to the end! In this post you learned about:
 
-- Account for communication requirements when defining your topology
-- Estimate latency and throughput bottlenecks
-- Make smart scaling decisions based on your specific needs
+- The CPU-GPU and GPU-GPU communication fundamentals:
+  - PCIe, NVLink, NVSwitch, and InfiniBand
+- Latency and throughput bottlenecks
+- You're now able to make much more informed decisions when designing your AI workloads
 
-**In the next blog post, we'll dive into Data Parallelism.**
+**In the next [blog post](../5-ddp/), we'll dive into our first parallelism technique, the Distributed Data Parallelism.**
 
-### References
+# References
 
 1. [NVIDIA Blog](https://developer.nvidia.com/blog/nvidia-nvlink-and-nvidia-nvswitch-supercharge-large-language-model-inference/)
