@@ -38,12 +38,12 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-befe23ebd2f54d8af2c8a89d1a1611f1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7ffecba3d65d0ceb76f4c7db622b63c9.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-7ffecba3d65d0ceb76f4c7db622b63c9.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-ec7ccfbb941a833fdbb8fb4bea212431.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-a3a3163c528fce66c8cbb601af61b2ca.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-874deed9d0e94da0c44fb58e1b1e2e63.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-e416944d4c0aba2c9058af46e1c3098e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -348,10 +348,10 @@ ul.task-list li input[type="checkbox"] {
 <hr>
 <p>This article is part of a series about distributed AI across multiple GPUs:</p>
 <ul>
-<li><a href="../../posts/2-first-steps-gpu/index.html">Part 1: Understanding the Host and Device Paradigm</a></li>
-<li><a href="../../posts/3-torch-distributed-operations/index.html">Part 2: Point-to-Point and Collective Operations</a></li>
+<li><a href="../2-first-steps-gpu/">Part 1: Understanding the Host and Device Paradigm</a></li>
+<li><a href="../3-torch-distributed-operations/">Part 2: Point-to-Point and Collective Operations</a></li>
 <li><strong>Part 3: How GPUs Communicate</strong> (this article)</li>
-<li>Part 4: Data Parallelism <em>(coming soon)</em></li>
+<li><a href="../5-ddp/">Part 4: Gradient Accumulation &amp; Distributed Data Parallelism (DDP)</a></li>
 <li>Part 5: ZeRO <em>(coming soon)</em></li>
 <li>Part 6: Tensor Parallelism <em>(coming soon)</em></li>
 </ul>
@@ -433,24 +433,27 @@ ul.task-list li input[type="checkbox"] {
 <p>Modern server-grade motherboards support up to 8 GPUs. Within this range, you can often achieve near-linear scaling thanks to high-bandwidth, low-latency intra-node communication.</p>
 <p>Once you scale beyond 8 GPUs and start using multiple nodes with InfiniBand, performance usually degrades faster. Inter-node communication introduces network protocol overhead, higher latency, and bandwidth limitations. This transition is where diminishing returns become much more pronounced. Each new additional GPU ends up operating at a fraction of its maximum capacity.</p>
 </section>
-<section id="conclusion" class="level2">
-<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
-<p>Now that you read this blog post and learned the communication fundamentals, you’ll be able to make much more informed decisions when designing AI workloads:</p>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>Congratulations for reading all the way to the end! In this post you learned about:</p>
 <ul>
-<li>Account for communication requirements when defining your topology</li>
-<li>Estimate latency and throughput bottlenecks</li>
-<li>Make smart scaling decisions based on your specific needs</li>
+<li>The CPU-GPU and GPU-GPU communication fundamentals:
+<ul>
+<li>PCIe, NVLink, NVSwitch, and InfiniBand</li>
+</ul></li>
+<li>Latency and throughput bottlenecks</li>
+<li>You’re now able to make much more informed decisions when designing your AI workloads</li>
 </ul>
-<p><strong>In the next blog post, we’ll dive into Data Parallelism.</strong></p>
-<section id="references" class="level3">
-<h3 class="anchored" data-anchor-id="references">References</h3>
+<p><strong>In the next <a href="../5-ddp/">blog post</a>, we’ll dive into our first parallelism technique, the Distributed Data Parallelism.</strong></p>
+</section>
+<section id="references" class="level1">
+<h1>References</h1>
 <ol type="1">
 <li><a href="https://developer.nvidia.com/blog/nvidia-nvlink-and-nvidia-nvswitch-supercharge-large-language-model-inference/">NVIDIA Blog</a></li>
 </ol>
 
 
-</section>
-</section>
 </section>
 
 </main> <!-- /main -->

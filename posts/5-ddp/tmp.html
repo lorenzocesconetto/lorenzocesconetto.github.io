@@ -6,10 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Lorenzo Cesconetto">
-<meta name="dcterms.date" content="2025-10-01">
 
-<title>AI in Multiple GPUs with PyTorch (3/6) – Lorenzo Cesconetto</title>
+<title>tmp – Lorenzo Cesconetto</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,6 +19,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -38,12 +71,12 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-befe23ebd2f54d8af2c8a89d1a1611f1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7ffecba3d65d0ceb76f4c7db622b63c9.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-7ffecba3d65d0ceb76f4c7db622b63c9.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-ec7ccfbb941a833fdbb8fb4bea212431.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-a3a3163c528fce66c8cbb601af61b2ca.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-874deed9d0e94da0c44fb58e1b1e2e63.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-e416944d4c0aba2c9058af46e1c3098e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -264,7 +297,7 @@ ul.task-list li input[type="checkbox"] {
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
     <a class="nav-link" href="../../opensource.html"> 
-<span class="menu-text">Projects</span></a>
+<span class="menu-text">Projects &amp; Contributions</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
@@ -306,141 +339,122 @@ ul.task-list li input[type="checkbox"] {
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">AI in Multiple GPUs with PyTorch (3/6)</h1>
-  <div class="quarto-categories">
-    <div class="quarto-category">GPU</div>
-  </div>
-  </div>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
 
 
-<div class="quarto-title-meta">
-
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Lorenzo Cesconetto </p>
-          </div>
-  </div>
-    
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">October 1, 2025</p>
-    </div>
-  </div>
-  
-    
-  </div>
-  
 
 
-</header>
+<div id="edf774a1" class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> DDPModelWrapper:</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, model: torch.nn.Module):</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.model <span class="op">=</span> model</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__call__</span>(<span class="va">self</span>, <span class="op">*</span>args, <span class="op">**</span>kwargs):</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.model(<span class="op">*</span>args, <span class="op">**</span>kwargs)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> sync_gradients(<span class="va">self</span>):</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> param <span class="kw">in</span> <span class="va">self</span>.model.parameters():  <span class="co"># Iterates over parameter matrices in the model</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> param.grad <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:  <span class="co"># Some parameters might be frozen and don't have gradients</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>                <span class="co"># We sum and then divide since torch.distributed doesn't have an average operation</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>                torch.distributed.all_reduce(param.grad.data, op<span class="op">=</span>torch.distributed.ReduceOp.SUM)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Assuming each GPU received a equally sized mini-batch, we can average</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>                <span class="co"># the gradients dividing by the number of GPUs (aka world size)</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>                <span class="co"># By default the loss function already averages over the mini-batch size</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>                param.grad.data <span class="op">/=</span> torch.distributed.get_world_size()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="8a483274" class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> DDPModelWrapper:</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, model: torch.nn.Module):</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.model <span class="op">=</span> model</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> param <span class="kw">in</span> <span class="va">self</span>.model.parameters():</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>            <span class="co"># We create a new tensor so it can receive the broadcast</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>            rank_0_param <span class="op">=</span> param.data.clone()</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Initially rank_0_param contains the values for the current rank</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>            torch.distributed.broadcast(rank_0_param, src<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>            <span class="co"># After the broadcast rank_0_param variable is overwritten with the parameters from rank_0</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="kw">not</span> torch.equal(param.data, rank_0_param):  <span class="co"># Now we compare rank_x with rank_0</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>                <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Model parameters are not the same across all processes."</span>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__call__</span>(<span class="va">self</span>, <span class="op">*</span>args, <span class="op">**</span>kwargs):</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.model(<span class="op">*</span>args, <span class="op">**</span>kwargs)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> sync_gradients(<span class="va">self</span>):</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> param <span class="kw">in</span> <span class="va">self</span>.model.parameters():  <span class="co"># Iterates over parameter matrices in the model</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> param.grad <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:  <span class="co"># Some parameters might be frozen and don't have gradients</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>                <span class="co"># We sum and then divide since torch.distributed doesn't have an average operation</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>                torch.distributed.all_reduce(param.grad.data, op<span class="op">=</span>torch.distributed.ReduceOp.SUM)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Assuming each GPU received a equally sized mini-batch, we can average</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>                <span class="co"># the gradients dividing by the number of GPUs (aka world size)</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>                <span class="co"># By default the loss function already averages over the mini-batch size</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>                param.grad.data <span class="op">/=</span> torch.distributed.get_world_size()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="50560bca" class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> training_loop(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    model: torch.nn.Module,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    dataloader: torch.utils.data.DataLoader,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    optimizer: torch.optim.Optimizer,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    grad_accum_steps: <span class="bu">int</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, batch <span class="kw">in</span> <span class="bu">enumerate</span>(dataloader):</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        output <span class="op">=</span> model(batch)  <span class="co"># Forward pass</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        output.loss.backward()  <span class="co"># Backward pass (gradients are accumulated)</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> i <span class="op">%</span> grad_accum_steps <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>            optimizer.step()</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>            optimizer.zero_grad()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="37bc8181" class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> training_loop(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    ddp_model: DDPModelWrapper,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    dataloader: torch.utils.data.DataLoader,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    optimizer: torch.optim.Optimizer,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    grad_accum_steps: <span class="bu">int</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, batch <span class="kw">in</span> <span class="bu">enumerate</span>(dataloader):</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        output <span class="op">=</span> ddp_model(batch)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        output.loss.backward()</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> i <span class="op">%</span> grad_accum_steps <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Must sync gradients across GPUs BEFORE the optimization step</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>            ddp_model.sync_gradients()</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>            optimizer.step()</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>            optimizer.zero_grad()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="b654cfdb" class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, batch <span class="kw">in</span> <span class="bu">enumerate</span>(dataloader):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> i <span class="op">%</span> grad_accum_steps <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        ddp_model.enable_grad_sync()</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        ddp_model.disable_grad_sync()</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    output <span class="op">=</span> ddp_model(batch)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    output.loss.backward()</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> ddp_model.do_sync:</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        ddp_model.sync_gradients()</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        optimizer.step()</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        optimizer.zero_grad()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="f9f9ee24" class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<pre><code>torch.device</code></pre>
+</div>
+</div>
+<div id="6333f09f" class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>rank <span class="op">=</span> torch.distributed.get_rank()</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> torch.tensor([<span class="dv">0</span> <span class="op">+</span> rank, <span class="dv">1</span> <span class="op">+</span> rank, <span class="dv">2</span> <span class="op">+</span> rank], device<span class="op">=</span>device)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>torch.distributed.all_reduce(t, op<span class="op">=</span>torch.distributed.ReduceOp.SUM)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 
 
-<section id="part-36-gpu-communication-fundamentals" class="level1">
-<h1>Part 3/6: GPU Communication Fundamentals</h1>
-<hr>
-<p>This article is part of a series about distributed AI across multiple GPUs:</p>
-<ul>
-<li><a href="../../posts/2-first-steps-gpu/index.html">Part 1: Understanding the Host and Device Paradigm</a></li>
-<li><a href="../../posts/3-torch-distributed-operations/index.html">Part 2: Point-to-Point and Collective Operations</a></li>
-<li><strong>Part 3: GPU Communication Fundamentals</strong> (this article)</li>
-<li>Part 4: Data Parallelism <em>(coming soon)</em></li>
-<li>Part 5: ZeRO <em>(coming soon)</em></li>
-<li>Part 6: Tensor Parallelism <em>(coming soon)</em></li>
-</ul>
-</section>
-<section id="introduction" class="level1">
-<h1>Introduction</h1>
-<p>Before diving into advanced parallelism techniques, we need to understand the key technologies that enable GPUs to communicate with each other.</p>
-</section>
-<section id="the-communication-stack" class="level1">
-<h1>The Communication Stack</h1>
-<section id="pcie" class="level3">
-<h3 class="anchored" data-anchor-id="pcie">PCIe</h3>
-<p>PCIe (Peripheral Component Interconnect Express) connects expansion cards like GPUs to the motherboard using independent point-to-point serial lanes. Here’s what different PCIe generations offer for a GPU using 16 lanes:</p>
-<ul>
-<li><strong>Gen4 x16</strong>: ~32 GB/s bidirectional<br>
-</li>
-<li><strong>Gen5 x16</strong>: ~64 GB/s bidirectional</li>
-<li><strong>Gen6 x16</strong>: ~128 GB/s bidirectional (FYI 16 lanes x 8Gb/s/lane = 128 GB/s)</li>
-</ul>
-<p>Modern server CPUs typically offer up to 128 PCIe lanes, and modern GPUs need 16 lanes for optimal bandwidth. This is why you usually see 8 GPUs per server. Power consumption, and physical space in server chassis also makes it impractical to go beyond 8 GPUs in a single node.</p>
-</section>
-<section id="nvlink" class="level3">
-<h3 class="anchored" data-anchor-id="nvlink">NVLink</h3>
-<p>NVLink enables direct GPU-to-GPU communication within the same server (node), bypassing the CPU entirely. This NVIDIA-proprietary interconnect creates a direct memory-to-memory pathway between GPUs with huge bandwidth:</p>
-<ul>
-<li><strong>NVLink 3 (A100)</strong>: ~600 GB/s per GPU</li>
-<li><strong>NVLink 4 (H100)</strong>: ~900 GB/s per GPU<br>
-</li>
-<li><strong>NVLink 5 (Blackwell)</strong>: Up to 1.8 TB/s per GPU</li>
-</ul>
-<p>However, there’s a catch. In a server with 8x H100s, each GPU needs to communicate with 7 others, splitting that 900 GB/s into seven point-to-point connections of about 128 GB/s each. That’s where NVSwitch comes in.</p>
-</section>
-<section id="nvswitch" class="level3">
-<h3 class="anchored" data-anchor-id="nvswitch">NVSwitch</h3>
-<p>NVSwitch acts as a central hub for GPU communication, dynamically routing (switching if you will) data between GPUs as needed. With NVSwitch, every Hopper GPU can communicate at 900 GB/s with all other Hopper GPUs simultaneously, i.e.&nbsp;peak bandwidth doesn’t depend on how many GPUs are communicating. This is what makes NVSwitch “non-blocking”. Each GPU connects to several NVSwitch chips via multiple NVLink connections, ensuring maximum bandwidth.</p>
-<p>While NVSwitch started as an intra-node solution, it’s been extended to interconnect multiple nodes, creating GPU clusters that support up to 256 GPUs with all-to-all communication at near-local NVLink speeds.</p>
-<p>The generations of NVSwitch are:</p>
-<ul>
-<li><strong>First-Generation</strong>: Supports up to 16 GPUs per server (compatible with Tesla V100)</li>
-<li><strong>Second-Generation</strong>: Also supports up to 16 GPUs with improved bandwidth and lower latency</li>
-<li><strong>Third-Generation</strong>: Designed for H100 GPUs, supports up to 256 GPUs</li>
-</ul>
-</section>
-<section id="infiniband" class="level3">
-<h3 class="anchored" data-anchor-id="infiniband">InfiniBand</h3>
-<p>InfiniBand handles inter-node communication. While much slower (and cheaper) than NVSwitch, it’s commonly used in datacenters to scale to thousands of GPUs. Modern InfiniBand supports GPU-Direct RDMA, letting network adapters access GPU memory directly without CPU involvement (no expensive copying to host RAM).</p>
-<p>Current InfiniBand speeds include:</p>
-<ul>
-<li><strong>HDR</strong>: ~25 GB/s per port</li>
-<li><strong>NDR</strong>: ~50 GB/s per port</li>
-<li><strong>NDR200</strong>: ~100 GB/s per port</li>
-</ul>
-<p>These speeds are significantly slower than intra-node NVLink due to network protocol overhead and the need for two PCIe traversals (once at the sender and once at the receiver).</p>
-</section>
-</section>
-<section id="key-design-principles" class="level1">
-<h1>Key Design Principles</h1>
-<section id="understanding-linear-scaling" class="level3">
-<h3 class="anchored" data-anchor-id="understanding-linear-scaling">Understanding Linear Scaling</h3>
-<p>Linear scaling is the holy grail of distributed computing. In simple terms, it means doubling your GPUs should either double your throughput or halve your training time. That happens when each GPU operates at full capacity. However, perfect linear scaling is rare in AI workloads because communication requirements grow with the number of devices, and it’s usually impossible to achieve perfect compute-communication overlap (explained next).</p>
-</section>
-<section id="the-importance-of-compute-communication-overlap" class="level3">
-<h3 class="anchored" data-anchor-id="the-importance-of-compute-communication-overlap">The Importance of Compute-Communication Overlap</h3>
-<p>When a GPU sits idle waiting for data to be transferred before it can be processed, you’re wasting resources. Communication operations should overlap with computation as much as possible. When that’s not possible, we call that the communication an “exposed operation”.</p>
-</section>
-<section id="intra-node-vs.-inter-node-the-performance-cliff" class="level3">
-<h3 class="anchored" data-anchor-id="intra-node-vs.-inter-node-the-performance-cliff">Intra-Node vs.&nbsp;Inter-Node: The Performance Cliff</h3>
-<p>Modern server-grade motherboards support up to 8 GPUs. Within this range, you can often achieve near-linear scaling thanks to high-bandwidth, low-latency intra-node communication.</p>
-<p>Once you scale beyond 8 GPUs and start using multiple nodes with InfiniBand, performance usually degrades faster. Inter-node communication introduces network protocol overhead, higher latency, and bandwidth limitations. This transition is where diminishing returns become much more pronounced. Each new additional GPU ends up operating at a fraction of its maximum capacity.</p>
-</section>
-<section id="conclusion" class="level2">
-<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
-<p>Now that you read this blog post and learned the communication fundamentals, you’ll be able to make much more informed decisions when designing AI workloads:</p>
-<ul>
-<li>Account for communication requirements when defining your topology</li>
-<li>Estimate latency and throughput bottlenecks</li>
-<li>Make smart scaling decisions based on your specific needs</li>
-</ul>
-<p><strong>In the next blog post, we’ll dive into Data Parallelism.</strong></p>
-<section id="references" class="level3">
-<h3 class="anchored" data-anchor-id="references">References</h3>
-<ol type="1">
-<li><a href="https://developer.nvidia.com/blog/nvidia-nvlink-and-nvidia-nvswitch-supercharge-large-language-model-inference/">NVIDIA Blog</a></li>
-</ol>
-
-
-</section>
-</section>
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -528,7 +542,7 @@ ul.task-list li input[type="checkbox"] {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/lorenzocesconetto\.github\.io\/blog-lorenzo\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
