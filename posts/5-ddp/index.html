@@ -432,7 +432,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>):</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, batch <span class="kw">in</span> <span class="bu">enumerate</span>(dataloader):</span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        output <span class="op">=</span> model(batch)</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        output.loss.backward()</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        output.loss.backward() <span class="co"># Gradients get accumulated (summed)</span></span>
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Only update weights after `grad_accum_steps` micro-batches</span></span>
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> i <span class="op">%</span> grad_accum_steps <span class="op">==</span> <span class="dv">0</span>:</span>
@@ -451,6 +451,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Each GPU applies the same weight updates, keeping models in perfect sync.</li>
 </ol>
 <p>This lets us train with much larger effective batch sizes, leading to more stable training and potentially faster convergence with little to none extra time.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://miro.medium.com/v2/resize:fit:1200/1*zbgdxY4VN_uola6kQWzlzw.png" class="img-fluid figure-img"></p>
+<figcaption>Source: <a href="https://medium.com/@yashdoza21/scaling-model-training-across-multiple-gpus-efficient-strategies-with-pytorch-ddp-and-fsdp-d744be462667">Medium</a></figcaption>
+</figure>
+</div>
 </section>
 <section id="implementing-ddp-from-scratch-in-pytorch" class="level1">
 <h1>Implementing DDP from scratch in PyTorch</h1>
