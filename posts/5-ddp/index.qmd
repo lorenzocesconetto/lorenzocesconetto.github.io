@@ -1,11 +1,11 @@
 ---
-title: "(4/6) AI in Multiple GPUs: How GPUs Communicate"
+title: "(4/6) AI in Multiple GPUs: Grad Accum & Data Parallelism"
 author: "Lorenzo Cesconetto"
 date: "2025-10-12"
 categories: [GPU]
 ---
 
-# Part 4/6: Distributed Data Parallelism (DDP) & Gradient Accumulation
+# Part 4/6: Gradient Accumulation & Distributed Data Parallelism (DDP)
 
 ---
 
