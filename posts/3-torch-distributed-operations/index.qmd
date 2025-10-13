@@ -212,7 +212,7 @@ Congratulations for reading all the way to the end! In this post you learned abo
 - Collective operations
 - Synchronization methods
 
-**In the [next blog post](../4-gpu-hardware-and-networking/) we'll dive into PCIe, NVLink and other mechanisms that enable communication in a distributed setting!**
+**In the [next blog post](../4-how-gpus-communicate/) we'll dive into PCIe, NVLink and other mechanisms that enable communication in a distributed setting!**
 
-## References
+# References
 - [PyTorch Docs](https://docs.pytorch.org/docs/stable/distributed.html)

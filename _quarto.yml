@@ -37,6 +37,8 @@ website:
         target: "_blank"
 format:
   html:
+    toc: true
+    toc-depth: 2
     theme:
       dark: cyborg
       light: cosmo

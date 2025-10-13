@@ -24,7 +24,7 @@ This guide explains the foundational concepts of how a CPU and a discrete graphi
 
 *For integrated GPUs, such as those found in Apple Silicon chips, the architecture is slightly different, so we will not cover it in this post.*
 
-## The Big Picture: The Host and The Device
+# The Big Picture: The Host and The Device
 
 The most important concept to grasp is the relationship between the **Host** and the **Device**.
 
@@ -33,7 +33,7 @@ The most important concept to grasp is the relationship between the **Host** and
 
 Your program always starts on the CPU. When you want the GPU to perform a task, like multiplying two large matrices, the CPU sends the instructions and the data over to the GPU.
 
-## The CPU-GPU Interaction
+# The CPU-GPU Interaction
 
 The Host talks to the Device through a queuing system.
 
@@ -41,7 +41,7 @@ The Host talks to the Device through a queuing system.
 2.  **Commands are Queued:** The CPU doesn't wait. It simply places this command onto a special to-do list for the GPU called a **CUDA Stream**.
 3.  **Asynchronous Execution:** As soon as the command is enqueued, the CPU is free to move on to the next line of your script. This is called **asynchronous execution**, and it's a key to achieving high performance. While the GPU is busy crunching numbers, the CPU can work on other tasks, like preparing the next batch of data.
 
-## PyTorch Tensors
+# PyTorch Tensors
 
 PyTorch is a powerful framework that abstracts away many details, but this abstraction can sometimes obscure what is happening under the hood.
 
@@ -49,7 +49,7 @@ When you create a PyTorch tensor, it has two parts: metadata (like its shape and
 
 This distinction is important. When you run `print(t.shape)`, the CPU can immediately access this information because the metadata is already in its own RAM. But what happens if you run `print(t)`, which requires the actual data living in VRAM?
 
-## Host-Device Synchronization
+# Host-Device Synchronization
 
 Accessing GPU data from the CPU can trigger a **Host-Device Synchronization**, a common performance bottleneck. This occurs whenever the CPU needs a result from the GPU that isn't yet available in the CPU's RAM.
 
@@ -59,7 +59,7 @@ As another example, what's the difference between `torch.randn(100, 100).to(devi
 
 These synchronization points can severely impact performance. Effective GPU programming involves minimizing them to ensure both the Host and Device stay as busy as possible. After all, you want your GPUs to go *brrrrr*.
 
-## Scaling Up: Distributed Computing and Ranks
+# Scaling Up: Distributed Computing and Ranks
 
 Training large models, such as Large Language Models (LLMs), often requires more compute power than a single GPU can offer. Coordinating work across multiple GPUs brings you into the world of distributed computing.
 
@@ -69,7 +69,7 @@ In this context, a new and important concept emerges: the **Rank**.
 
 This means you are launching two separate instances of your Python script. On a single machine with multiple GPUs (a single node), these processes run on the same CPU but remain independent, without sharing memory or state. `Rank 0` commands its assigned GPU (`cuda:0`), while `Rank 1` commands its GPU (`cuda:1`). Although both ranks run the same code, you can use the rank ID to assign different tasks to each process, like having each one process a different portion of the data.
 
-## Communication: Blocking vs. Non-Blocking
+# Communication: Blocking vs. Non-Blocking
 
 To work together, these ranks must exchange data. This can happen directly between GPUs, bypassing the CPU's main memory, though the CPU still does some orchestration. Ideally, the GPUs are connected with a high-speed interconnect like NVLink or InfiniBand (we'll be covered in detail in a future post).
 
