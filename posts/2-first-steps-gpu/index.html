@@ -76,7 +76,7 @@ ul.task-list li input[type="checkbox"] {
 <link rel="stylesheet" href="../../styles.css">
 </head>
 
-<body class="nav-fixed fullcontent quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
+<body class="nav-fixed quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
       const bodyEl = window.document.querySelector("body");
@@ -304,7 +304,23 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul class="collapse">
+  <li><a href="#part-16-understanding-the-host-and-device-paradigm" id="toc-part-16-understanding-the-host-and-device-paradigm" class="nav-link active" data-scroll-target="#part-16-understanding-the-host-and-device-paradigm">Part 1/6: Understanding the Host and Device Paradigm</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#the-big-picture-the-host-and-the-device" id="toc-the-big-picture-the-host-and-the-device" class="nav-link" data-scroll-target="#the-big-picture-the-host-and-the-device">The Big Picture: The Host and The Device</a></li>
+  <li><a href="#the-cpu-gpu-interaction" id="toc-the-cpu-gpu-interaction" class="nav-link" data-scroll-target="#the-cpu-gpu-interaction">The CPU-GPU Interaction</a></li>
+  <li><a href="#pytorch-tensors" id="toc-pytorch-tensors" class="nav-link" data-scroll-target="#pytorch-tensors">PyTorch Tensors</a></li>
+  <li><a href="#host-device-synchronization" id="toc-host-device-synchronization" class="nav-link" data-scroll-target="#host-device-synchronization">Host-Device Synchronization</a></li>
+  <li><a href="#scaling-up-distributed-computing-and-ranks" id="toc-scaling-up-distributed-computing-and-ranks" class="nav-link" data-scroll-target="#scaling-up-distributed-computing-and-ranks">Scaling Up: Distributed Computing and Ranks</a></li>
+  <li><a href="#communication-blocking-vs.-non-blocking" id="toc-communication-blocking-vs.-non-blocking" class="nav-link" data-scroll-target="#communication-blocking-vs.-non-blocking">Communication: Blocking vs.&nbsp;Non-Blocking</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
@@ -360,8 +376,9 @@ ul.task-list li input[type="checkbox"] {
 <h1>Introduction</h1>
 <p>This guide explains the foundational concepts of how a CPU and a discrete graphics card (GPU) work together. It’s a high-level introduction designed to help you build a mental model of the host-device paradigm.</p>
 <p><em>For integrated GPUs, such as those found in Apple Silicon chips, the architecture is slightly different, so we will not cover it in this post.</em></p>
-<section id="the-big-picture-the-host-and-the-device" class="level2">
-<h2 class="anchored" data-anchor-id="the-big-picture-the-host-and-the-device">The Big Picture: The Host and The Device</h2>
+</section>
+<section id="the-big-picture-the-host-and-the-device" class="level1">
+<h1>The Big Picture: The Host and The Device</h1>
 <p>The most important concept to grasp is the relationship between the <strong>Host</strong> and the <strong>Device</strong>.</p>
 <ul>
 <li><strong>The Host:</strong> This is your <strong>CPU</strong>. It runs the operating system and executes your Python script line by line. The Host is the commander; it’s in charge of the overall logic and tells the Device what to do.</li>
@@ -369,8 +386,8 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 <p>Your program always starts on the CPU. When you want the GPU to perform a task, like multiplying two large matrices, the CPU sends the instructions and the data over to the GPU.</p>
 </section>
-<section id="the-cpu-gpu-interaction" class="level2">
-<h2 class="anchored" data-anchor-id="the-cpu-gpu-interaction">The CPU-GPU Interaction</h2>
+<section id="the-cpu-gpu-interaction" class="level1">
+<h1>The CPU-GPU Interaction</h1>
 <p>The Host talks to the Device through a queuing system.</p>
 <ol type="1">
 <li><strong>CPU Initiates Commands:</strong> Your script, running on the CPU, encounters a line of code intended for the GPU (e.g., <code>tensor.to('cuda')</code>).</li>
@@ -378,21 +395,21 @@ ul.task-list li input[type="checkbox"] {
 <li><strong>Asynchronous Execution:</strong> As soon as the command is enqueued, the CPU is free to move on to the next line of your script. This is called <strong>asynchronous execution</strong>, and it’s a key to achieving high performance. While the GPU is busy crunching numbers, the CPU can work on other tasks, like preparing the next batch of data.</li>
 </ol>
 </section>
-<section id="pytorch-tensors" class="level2">
-<h2 class="anchored" data-anchor-id="pytorch-tensors">PyTorch Tensors</h2>
+<section id="pytorch-tensors" class="level1">
+<h1>PyTorch Tensors</h1>
 <p>PyTorch is a powerful framework that abstracts away many details, but this abstraction can sometimes obscure what is happening under the hood.</p>
 <p>When you create a PyTorch tensor, it has two parts: metadata (like its shape and data type) and the actual numerical data. So when you run something like this <code>t = torch.randn(100, 100, device=device)</code>, the tensor’s metadata is managed by the CPU, while its data is stored in the GPU’s VRAM.</p>
 <p>This distinction is important. When you run <code>print(t.shape)</code>, the CPU can immediately access this information because the metadata is already in its own RAM. But what happens if you run <code>print(t)</code>, which requires the actual data living in VRAM?</p>
 </section>
-<section id="host-device-synchronization" class="level2">
-<h2 class="anchored" data-anchor-id="host-device-synchronization">Host-Device Synchronization</h2>
+<section id="host-device-synchronization" class="level1">
+<h1>Host-Device Synchronization</h1>
 <p>Accessing GPU data from the CPU can trigger a <strong>Host-Device Synchronization</strong>, a common performance bottleneck. This occurs whenever the CPU needs a result from the GPU that isn’t yet available in the CPU’s RAM.</p>
 <p>For example, consider the line <code>print(gpu_tensor)</code>. The CPU cannot print the tensor’s values until the GPU has finished all pending calculations on it. When the script reaches this line, the CPU is forced to <strong>block</strong>, i.e.&nbsp;it stops and waits for the GPU to finish. Only after the GPU completes its work and copies the data from its VRAM to the CPU’s RAM can the CPU proceed.</p>
 <p>As another example, what’s the difference between <code>torch.randn(100, 100).to(device)</code> and <code>torch.randn(100, 100, device=device)</code>? The first method is less efficient because it creates the data on the CPU and then transfers it to the GPU. The second method is more efficient because it creates the tensor directly on the GPU; the CPU only sends the creation command.</p>
 <p>These synchronization points can severely impact performance. Effective GPU programming involves minimizing them to ensure both the Host and Device stay as busy as possible. After all, you want your GPUs to go <em>brrrrr</em>.</p>
 </section>
-<section id="scaling-up-distributed-computing-and-ranks" class="level2">
-<h2 class="anchored" data-anchor-id="scaling-up-distributed-computing-and-ranks">Scaling Up: Distributed Computing and Ranks</h2>
+<section id="scaling-up-distributed-computing-and-ranks" class="level1">
+<h1>Scaling Up: Distributed Computing and Ranks</h1>
 <p>Training large models, such as Large Language Models (LLMs), often requires more compute power than a single GPU can offer. Coordinating work across multiple GPUs brings you into the world of distributed computing.</p>
 <p>In this context, a new and important concept emerges: the <strong>Rank</strong>.</p>
 <ul>
@@ -400,8 +417,8 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 <p>This means you are launching two separate instances of your Python script. On a single machine with multiple GPUs (a single node), these processes run on the same CPU but remain independent, without sharing memory or state. <code>Rank 0</code> commands its assigned GPU (<code>cuda:0</code>), while <code>Rank 1</code> commands its GPU (<code>cuda:1</code>). Although both ranks run the same code, you can use the rank ID to assign different tasks to each process, like having each one process a different portion of the data.</p>
 </section>
-<section id="communication-blocking-vs.-non-blocking" class="level2">
-<h2 class="anchored" data-anchor-id="communication-blocking-vs.-non-blocking">Communication: Blocking vs.&nbsp;Non-Blocking</h2>
+<section id="communication-blocking-vs.-non-blocking" class="level1">
+<h1>Communication: Blocking vs.&nbsp;Non-Blocking</h1>
 <p>To work together, these ranks must exchange data. This can happen directly between GPUs, bypassing the CPU’s main memory, though the CPU still does some orchestration. Ideally, the GPUs are connected with a high-speed interconnect like NVLink or InfiniBand (we’ll be covered in detail in a future post).</p>
 <p>PyTorch provides two foundational methods for this communication, which we will explore in more detail in later posts.</p>
 <section id="synchronous-blocking-communication" class="level3">
@@ -416,7 +433,6 @@ ul.task-list li input[type="checkbox"] {
 <li><strong>Behavior:</strong> When you call <code>torch.distributed.isend()</code>, the call returns <strong>immediately</strong>, and the send operation happens in the background. This allows your CPU to continue with other tasks, a technique known as <strong>overlapping computation with communication</strong>.</li>
 </ul>
 <p>The asynchronous API is more complex because you must ensure you don’t modify data while it is being sent. However, mastering it is the key to unlocking maximum performance in large-scale distributed training.</p>
-</section>
 </section>
 </section>
 <section id="conclusion" class="level1">
