@@ -1,6 +1,9 @@
 ---
 title: "Lorenzo Cesconetto"
 image: profile.jpg
+format:
+  html:
+    toc: false
 about:
   template: trestles
   links:
@@ -23,9 +26,11 @@ about:
 
 ---
 
+:::{.column-body-outset}
+
 ## Who I am
 
-I'm a software engineer based in Brazil. I have a wide variety of experiences, from Backend and DevOps to Data Science, Machine Learning (ML) and Artificial Intelligence (AI).
+I'm a Brazilian/Italian software engineer. I have a wide variety of experiences, from Backend and DevOps to Data Science, Machine Learning (ML) and Artificial Intelligence (AI).
 
 I am passionate about the intersection of Computer Science, Mathematics and AI.
 
@@ -49,8 +54,10 @@ Besides that:
 
 - Brazilian National Physics Olympics: Gold Medal
 - Ranked #1 in my major on the UNICAMP entrance exam
-- UNICAMP Challenge: 1st place
-- Starting Point Competition: 2nd place
-- Awarded full scholarship to attend Draper University
-- ITA Challenge - Object Detection Hackathon: 1st place
+- ITA + BCG Gamma Challenge - Object Detection from drone images Hackathon: 1st place
+- UNICAMP Challenge (build a startup on top of University's patents): 1st place
+- Starting Point Competition (startup): 2nd place
+  - Awarded full scholarship to attend Draper University in California
 - My previous startup, Buscamed, was awarded government equity-free funding
+
+:::
