@@ -344,8 +344,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul class="collapse">
-  <li><a href="#part-46-gradient-accumulation-distributed-data-parallelism-ddp" id="toc-part-46-gradient-accumulation-distributed-data-parallelism-ddp" class="nav-link active" data-scroll-target="#part-46-gradient-accumulation-distributed-data-parallelism-ddp">Part 4/6: Gradient Accumulation &amp; Distributed Data Parallelism (DDP)</a></li>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
   <li><a href="#a-quick-neural-network-refresher" id="toc-a-quick-neural-network-refresher" class="nav-link" data-scroll-target="#a-quick-neural-network-refresher">A Quick Neural Network Refresher</a></li>
   <li><a href="#gradient-accumulation" id="toc-gradient-accumulation" class="nav-link" data-scroll-target="#gradient-accumulation">Gradient Accumulation</a></li>
   <li><a href="#distributed-data-parallelism-ddp" id="toc-distributed-data-parallelism-ddp" class="nav-link" data-scroll-target="#distributed-data-parallelism-ddp">Distributed Data Parallelism (DDP)</a></li>
@@ -392,9 +391,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="part-46-gradient-accumulation-distributed-data-parallelism-ddp" class="level1">
-<h1>Part 4/6: Gradient Accumulation &amp; Distributed Data Parallelism (DDP)</h1>
-<hr>
 <p>This article is part of a series about distributed AI across multiple GPUs:</p>
 <ul>
 <li><a href="../2-first-steps-gpu/">Part 1: Understanding the Host and Device Paradigm</a></li>
@@ -404,7 +400,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Part 5: ZeRO <em>(coming soon)</em></li>
 <li>Part 6: Tensor Parallelism <em>(coming soon)</em></li>
 </ul>
-</section>
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
 <p>Distributed Data Parallelism (DDP) is the first parallelization method we’ll look at. It’s the baseline approach that’s <strong>always</strong> used in distributed settings, and it’s commonly combined with other parallelization techniques.</p>
@@ -430,6 +425,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Mini-batch:</strong> means using a small subset of the data for each optimization step.</li>
 </ul>
 <p>This is where Gradient Accumulation and Data Parallelism comes into play. Although we don’t use the entire dataset for each step, we can use these techniques to substantially increase our mini-batch size.</p>
+<blockquote class="blockquote">
+<p><strong>Pro-tip</strong></p>
+<p>Usually you don’t want to fill the whole GPU memory when training. Counter-intuitive as it may seem, leaving some free memory can actually lead to faster training (tokens/second). This is because it allows the GPU to manage memory more efficiently and avoid fragmentation, which can slow down training. A common practice is to leave around 10-20% of the GPU memory free.</p>
+</blockquote>
 </section>
 <section id="gradient-accumulation" class="level1">
 <h1>Gradient Accumulation</h1>
@@ -449,7 +448,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        output.loss.backward() <span class="co"># Gradients get accumulated (summed)</span></span>
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Only update weights after `grad_accum_steps` micro-batches</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> i <span class="op">%</span> grad_accum_steps <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (i<span class="op">+</span><span class="dv">1</span>) <span class="op">%</span> grad_accum_steps <span class="op">==</span> <span class="dv">0</span>: <span class="co"># i+1 to avoid a step in the first iteration when i=0</span></span>
 <span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>            optimizer.step()</span>
 <span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>            optimizer.zero_grad() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Notice we’re <em><strong>sequentially</strong></em> performing multiple forward and backward passes before each optimization step, which requires longer training times. It would be nice if we could speed this up by processing multiple micro-batches in <em><strong>parallel</strong></em>, well this is exactly what DDP does!</p>
@@ -531,7 +530,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        output <span class="op">=</span> ddp_model(batch)</span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        output.loss.backward()</span>
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> i <span class="op">%</span> grad_accum_steps <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (i<span class="op">+</span><span class="dv">1</span>) <span class="op">%</span> grad_accum_steps <span class="op">==</span> <span class="dv">0</span>:</span>
 <span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Must sync gradients across GPUs *BEFORE* the optimization step</span></span>
 <span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>            ddp_model.sync_gradients() </span>
 <span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>            optimizer.step()</span>

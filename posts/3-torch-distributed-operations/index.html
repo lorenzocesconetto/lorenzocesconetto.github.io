@@ -344,8 +344,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul class="collapse">
-  <li><a href="#part-26-point-to-point-and-collective-operations" id="toc-part-26-point-to-point-and-collective-operations" class="nav-link active" data-scroll-target="#part-26-point-to-point-and-collective-operations">Part 2/6: Point-to-Point and Collective Operations</a></li>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
   <li><a href="#point-to-point-one-to-one" id="toc-point-to-point-one-to-one" class="nav-link" data-scroll-target="#point-to-point-one-to-one">Point-to-Point (One-to-One)</a></li>
   <li><a href="#collectives" id="toc-collectives" class="nav-link" data-scroll-target="#collectives">Collectives</a></li>
   <li><a href="#synchronization" id="toc-synchronization" class="nav-link" data-scroll-target="#synchronization">Synchronization</a></li>
@@ -392,9 +391,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="part-26-point-to-point-and-collective-operations" class="level1">
-<h1>Part 2/6: Point-to-Point and Collective Operations</h1>
-<hr>
 <p>This article is part of a series about distributed AI across multiple GPUs:</p>
 <ul>
 <li><a href="../2-first-steps-gpu/">Part 1: Understanding the Host and Device Paradigm</a></li>
@@ -404,7 +400,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Part 5: ZeRO <em>(coming soon)</em></li>
 <li>Part 6: Tensor Parallelism <em>(coming soon)</em></li>
 </ul>
-</section>
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
 <p>In the previous post, we established the host-device paradigm and introduced the concept of ranks for multi-GPU training. Now, we’ll explore the specific communication patterns provided by PyTorch’s <code>torch.distributed</code> module to coordinate work and exchange data between these ranks. These operations, known as <strong>collectives</strong>, are the building blocks of distributed training.</p>
