@@ -5,10 +5,6 @@ date: "2025-10-12"
 categories: [GPU]
 ---
 
-# Part 4/6: Gradient Accumulation & Distributed Data Parallelism (DDP)
-
----
-
 This article is part of a series about distributed AI across multiple GPUs:
 
 - [Part 1: Understanding the Host and Device Paradigm](../2-first-steps-gpu/)
@@ -48,6 +44,10 @@ Performing the optimization step on large amounts of data generally gives more a
 
 This is where Gradient Accumulation and Data Parallelism comes into play. Although we don't use the entire dataset for each step, we can use these techniques to substantially increase our mini-batch size.
 
+> **Pro-tip**
+> 
+> Usually you don't want to fill the whole GPU memory when training. Counter-intuitive as it may seem, leaving some free memory can actually lead to faster training (tokens/second). This is because it allows the GPU to manage memory more efficiently and avoid fragmentation, which can slow down training. A common practice is to leave around 10-20% of the GPU memory free.
+
 # Gradient Accumulation
 
 Here’s how it works: if your mini-batch won’t fit in memory, split it into *micro-batches*. For each micro-batch, run forward and backward passes, adding (accumulating) the computed gradients. Once all micro-batches are processed, perform a single optimization step using the summed gradients.
@@ -70,7 +70,7 @@ def training_loop(
         output.loss.backward() # Gradients get accumulated (summed)
 
         # Only update weights after `grad_accum_steps` micro-batches
-        if i % grad_accum_steps == 0:
+        if (i+1) % grad_accum_steps == 0: # i+1 to avoid a step in the first iteration when i=0
             optimizer.step()
             optimizer.zero_grad() 
 ```
@@ -161,7 +161,7 @@ def training_loop(
         output = ddp_model(batch)
         output.loss.backward()
 
-        if i % grad_accum_steps == 0:
+        if (i+1) % grad_accum_steps == 0:
             # Must sync gradients across GPUs *BEFORE* the optimization step
             ddp_model.sync_gradients() 
             optimizer.step()

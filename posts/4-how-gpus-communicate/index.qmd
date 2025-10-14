@@ -5,10 +5,6 @@ date: "2025-10-01"
 categories: [GPU]
 ---
 
-# Part 3/6: How GPUs Communicate
-
----
-
 This article is part of a series about distributed AI across multiple GPUs:
 
 - [Part 1: Understanding the Host and Device Paradigm](../2-first-steps-gpu/)

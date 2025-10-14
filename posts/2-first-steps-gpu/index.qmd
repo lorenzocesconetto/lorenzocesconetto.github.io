@@ -5,10 +5,6 @@ date: "2025-09-21"
 categories: [GPU]
 ---
 
-# Part 1/6: Understanding the Host and Device Paradigm
-
----
-
 This article is part of a series about distributed AI across multiple GPUs:
 
 - **Part 1: Understanding the Host and Device Paradigm** (this article)

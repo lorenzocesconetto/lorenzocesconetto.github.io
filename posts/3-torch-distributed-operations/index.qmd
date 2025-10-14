@@ -5,10 +5,6 @@ date: "2025-09-23"
 categories: [GPU]
 ---
 
-# Part 2/6: Point-to-Point and Collective Operations
-
----
-
 This article is part of a series about distributed AI across multiple GPUs:
 
 - [Part 1: Understanding the Host and Device Paradigm](../2-first-steps-gpu/)
