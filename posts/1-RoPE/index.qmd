@@ -13,9 +13,9 @@ jupyter: python3
 
 There are plenty of good resources explaining the transformer architecture online, but **Rotary Position Embedding** (RoPE) is often poorly explained or skipped entirely.
 
-RoPE was first introduced in this [paper](https://arxiv.org/pdf/2104.09864), and while the mathematical operations involved are relatively straightforward -- primarily rotation matrix and matrix multiplications -- the real challenge lies in understanding the intuition behind how it works. I'll try to provide a way to visualize what it's doing to vectors and explain why this approach is so effective.
+RoPE was first introduced in the paper [RoFormer: Enhanced Transformer with Rotary Position Embedding](https://arxiv.org/abs/2104.09864), and while the mathematical operations involved are relatively straightforward -- primarily rotation matrix and matrix multiplications -- the real challenge lies in understanding the intuition behind how it works. I'll try to provide a way to visualize what it's doing to vectors and explain why this approach is so effective.
 
-*I assume you have a basic understanding of transformers and the attention mechanism throughout this post.*
+> I assume you have a basic understanding of transformers and the attention mechanism throughout this post.
 
 # RoPE Intuition
 
@@ -23,25 +23,25 @@ Since transformers lack inherent understanding of order and distances, researche
 
 - Tokens closer to each other should attend with higher weights, while distant tokens should attend with lower weights.
 
-- Position within a sequence shouldn't matter -- if two words are close to each other, they should attend to each other with higher weights regardless of whether they appear at the beginning or end of a long sequence.
+- Position within a sequence shouldn't matter, i.e. if two words are close to each other, they should attend to each other with higher weights regardless of whether they appear at the beginning or end of a long sequence.
 
-- To accomplish these goals, **relative positional embeddings** are far more useful than absolute position embeddings.
+- To accomplish these goals, **relative positional embeddings** are far more useful than absolute positional embeddings.
 
-**Key insight**: LLMs should focus on relative positions, which is what truly matters.
+**Key insight**: LLMs should focus on the relative positions between two tokens, which is what truly matters for attention.
 
 If you understand these concepts, you're already halfway there.
 
 # Before RoPE
 
-The original positional embeddings from *[Attention is All You Need](https://arxiv.org/pdf/1706.03762)* used predefined values (defined by a formula) added to semantic embeddings. While the formula made sense, and RoPE does something similar, mixing semantics and position was confusing-not just for humans, but for LLMs too. Later research confirmed that LLMs were memorizing (overfitting) rather than generalizing positions, causing rapid deterioration when sequence lengths exceeded training data.
+The original positional embeddings from the seminal paper [Attention is All You Need](https://arxiv.org/pdf/1706.03762) were defined by a closed form equation and then added into the semantic embeddings. Mixing position and semantics signals in the hidden state was not a good idea. Later research confirmed that LLMs were memorizing (overfitting) rather than generalizing positions, causing rapid deterioration when sequence lengths exceeded training data. But using a closed form formula makes sense, it allows us to extend it indefinitely, and RoPE does something similar.
 
-One strategy that proved successful in early deep learning was: when unsure how to compute useful features for a neural network, let the network learn them itself! That's what models like GPT-3 did -- they learned their own position embeddings. However, providing too much freedom increases overfitting risks and, in this case, creates hard limits on context windows.
+One strategy that proved successful in early deep learning was: when unsure how to compute useful features for a neural network, let the network learn them itself! That's what models like GPT-3 did -- they learned their own position embeddings. However, providing too much freedom increases overfitting risks and, in this case, creates hard limits on context windows (you can't extend it beyond your trained context window).
 
-The best approaches focused on modifying the attention mechanism so that nearby tokens receive higher attention weights while distant tokens receive lower weights. The goal was to cleverly modify $Q$ and $K$ so their dot products would reflect proximity while preserving hidden states.
+The best approaches focused on modifying the attention mechanism so that nearby tokens receive higher attention weights while distant tokens receive lower weights. By isolating the position information into the attention mechanism, it preserves the hidden state and keeps it focused on semantics. These techniques primarily tried to cleverly modify $Q$ and $K$ so their dot products would reflect proximity. Many papers attempted different methods, but RoPE was the one that best solved the problem.
 
 # Rotation Intuition
 
-RoPE modifies $Q$ and $K$ by applying rotations to them.
+RoPE modifies $Q$ and $K$ by applying rotations to them. One of the nicest properties of rotation is that it preserves vector modules (size), which potentially carries semantic information.
 
 Let $q$ be the query projection of a token and $k$ be the key projection of another. For tokens that are close in the text, minimal rotation is applied, while distant tokens undergo larger rotational transformations.
 
@@ -71,11 +71,11 @@ Rotation increases as the token's absolute position $m$ increases.
 
 I know what you're thinking: "$m$ is absolute position, but didn't you say relative positions matter most?"
 
-Here's the magic: consider a 2D plane where you rotate one vector by $\alpha$ and another by $\beta$. The angular difference between them becomes $\alpha - \beta$. Their absolute values don't matter -- only the distance does. So for two tokens at positions $m$ and $n$, the rotation modifies the angle between them proportionally to $m-n$.
+Here's the magic: consider a 2D plane where you rotate one vector by $\alpha$ and another by $\beta$. The angular difference between them becomes $\alpha - \beta$. The absolute values of $\alpha$ and $\beta$ don't matter, only their difference does. So for two tokens at positions $m$ and $n$, the rotation modifies the angle between them proportionally to $m-n$.
 
 ![Relative distance after rotation](rope_rotation_visualization.png)
 
-> For simplicity, let's assume we're only rotating $q$ (this is mathematically accurate since we care about final distances, not coordinates).
+> For simplicity, we can think that we're only rotating $q$ (this is mathematically accurate since we care about final distances, not coordinates).
 
 ### Hidden State Index $i$
 
@@ -83,7 +83,7 @@ Instead of applying uniform rotation across all hidden state dimensions, RoPE pr
 
 We rotate hidden state dimensions differently -- rotation is higher when $i$ is low (vector beginning) and lower when $i$ is high (vector end).
 
-Understanding this operation is straightforward; understanding why we need it requires more explanation:
+Understanding this operation is straightforward, but understanding why we need it requires more explanation:
 
 - It allows the model to choose what should have **shorter or longer ranges of influence**.
     - Imagine vectors in 3D ($xyz$).
@@ -104,7 +104,7 @@ That's correct, but here's why it still works:
 2. Although some dimensions grow closer, others that rotate more slowly continue growing farther apart. Hence the importance of rotating dimensions by different angles.
 3. RoPE isn't perfect -- due to its rotational nature, local maxima do occur. See the theoretical chart from the original authors:
 
-![Theoretical curve provided by the authors Source: ROFORMER: ENHANCED TRANSFORMER WITH ROTARY POSITION EMBEDDING](./RoPE-decay.png)
+![Theoretical curve provided by the authors of RoFormer paper. Source: Su et al., 2021](./RoPE-decay.png)
 
 The theoretical curve has some crazy bumps, but in practice I found it to be much more behaved:
 ```{python}
@@ -161,9 +161,9 @@ plt.tight_layout()
 plt.show()
 ```
 
-Some ideas that occurred to me: clipping the rotation angle so the similarity is a strictly decreasing function (or even picking something other than sin/cos). I wonder if newer papers have explored this approach. I've seen clipping being applied to other techniques, but not to RoPE. Anyways, let's keep moving forward...
+An idea that occurred to me was clipping the rotation angle so the similarity strictly decreases with distance increases. I've seen clipping being applied to other techniques, but not to RoPE.
 
-Bare in mind that cosine similarity tends to grow (although slowly) as the distance grows a lot past our base (10,000 in this case). A simple solution here is to increase the base, or even let techniques like local attention take care of it.
+Bare in mind that cosine similarity tends to grow (although slowly) as the distance grows a lot past our base value (later you'll see exactly what is this base of the formula later). A simple solution here is to increase the base, or even let techniques like local or window attention take care of it.
 
 ```{python}
 #| fig-cap: Expanding to 50k distance
@@ -186,18 +186,34 @@ plt.tight_layout()
 plt.show()
 ```
 
-> **Bottom line: The LLM learns to encode long-range and short-range meaning influences in different dimensions of the hidden state.**
+**Bottom line: The LLM learns to project long-range and short-range meaning influence in different dimensions of $q$ and $k$.**
 
-Here are concrete examples:
+Here are some concrete examples of long-range and short-range dependencies:
 
-- The LLM processes Python code where an initial transformation is applied to dataframe `df`. This relevant information should potentially carry over a long range.
+- The LLM processes Python code where an initial transformation is applied to a dataframe `df`. This relevant information should potentially carry over a long range and influence the contextual embedding of downstream `df` tokens.
 - Adjectives typically characterize **nearby** nouns. In "A beautiful mountain stretches beyond the valley", the adjective *beautiful* specifically describes the *mountain*, not the *valley*, so it should primarily affect the *mountain* embedding.
 
 # The Angle Formula
 
-Now that you understand the concepts and have strong intuition, here are the equations. The rotation angle is defined by $m \times \theta$, where $m$ is the token's absolute position and $\theta = 10000^{-2(i-1)/d_{model}}$, with $i \in \{1, 2, \ldots, d/2\}$ representing hidden state dimensions.
+Now that you understand the concepts and have strong intuition, here are the equations. The rotation angle is defined by:
 
-When $i=1 \Rightarrow \theta=1$ (high) and when $i=d/2 \Rightarrow \theta \approx 1/10000$ (low).
+$$
+\text{angle} = m \times \theta
+$$
+
+$$
+\theta = 10,000^{-2(i-1)/d_{model}}
+$$
+
+- $m$ is the token's absolute position
+- $i \in \{1, 2, \ldots, d/2\}$ representing hidden state dimensions, since we process two dimensions at a time we only need to iterate to $d/2$ rather than $d$.
+- $d_{model}$ is the hidden state dimension (e.g., $4,096$)
+- $10,000$ is the base
+
+Notice that when:
+
+- $i=1 \Rightarrow \theta=1$ (high)
+- $i=d/2 \Rightarrow \theta \approx 1/10,000$ (low)
 
 # Conclusion
 

@@ -26,6 +26,9 @@ website:
     background: secondary
     center: "Copyright 2025, Lorenzo Cesconetto" 
     right:
+      - icon: youtube
+        href: https://www.youtube.com/@lorenzocesconetto
+        target: "_blank"
       - icon: linkedin
         href: https://www.linkedin.com/in/lorenzo-cesconetto/
         target: "_blank"

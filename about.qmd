@@ -32,9 +32,9 @@ about:
 
 I'm a Brazilian/Italian software engineer. I have a wide variety of experiences, from Backend and DevOps to Data Science, Machine Learning (ML) and Artificial Intelligence (AI).
 
-I am passionate about the intersection of Computer Science, Mathematics and AI.
+I am passionate about the intersection of Computer Science, Mathematics and AI, and I am particularly attracted to NLP applications.
 
-I am particularly attracted to NLP applications.
+I am a devote Catholic and love getting involved in church activities.
 
 ## Why I started this blog
 
@@ -43,6 +43,8 @@ I enjoy diving very deep when learning new things. I can only truly understand a
 I believe there are other like-minded people around the world. If you're one of them, hopefully you'll find my content insightful.
 
 Most AI content on the internet is rather superficial, so I decided to share my way of seeing the world.
+
+> Superficial content is the equivalent of junk food -- Karpathy
 
 Besides that:
 
@@ -59,5 +61,15 @@ Besides that:
 - Starting Point Competition (startup): 2nd place
   - Awarded full scholarship to attend Draper University in California
 - My previous startup, Buscamed, was awarded government equity-free funding
+
+### Hobbies
+
+- Running (5km PB 19:20 | 3:52 min/km)
+- Swimming (PB 25m freestyle 14s)
+- Volunteering at my local church
+- Beach Tennis
+- Footvolley
+- Reading (mostly non-fiction)
+- Anime
 
 :::

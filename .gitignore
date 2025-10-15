@@ -9,3 +9,4 @@ todo.md
 notes.md
 *.quarto_ipynb
 tmp.*
+_tmp.*

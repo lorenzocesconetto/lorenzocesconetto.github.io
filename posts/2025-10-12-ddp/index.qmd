@@ -46,7 +46,7 @@ This is where Gradient Accumulation and Data Parallelism comes into play. Althou
 
 > **Pro-tip**
 > 
-> Usually you don't want to fill the whole GPU memory when training. Counter-intuitive as it may seem, leaving some free memory can actually lead to faster training (tokens/second). This is because it allows the GPU to manage memory more efficiently and avoid fragmentation, which can slow down training. A common practice is to leave around 10-20% of the GPU memory free.
+> Usually you don't want to fill the whole GPU memory when training. Counter-intuitive as it may seem, leaving some free memory can actually lead to faster training (tokens/second). This is because it allows the GPU to manage memory more efficiently, avoid fragmentation and allows for better overlapping of computations and asynchronous memory operations (it's really important to hide memory latency behind computation). A common practice is to leave around ~15% of the GPU memory free.
 
 # Gradient Accumulation
 

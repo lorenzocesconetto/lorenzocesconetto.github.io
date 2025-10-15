@@ -72,6 +72,10 @@ Current InfiniBand speeds include:
 
 These speeds are significantly slower than intra-node NVLink due to network protocol overhead and the need for two PCIe traversals (once at the sender and once at the receiver).
 
+### NVIDIA Direct
+
+...
+
 # Key Design Principles
 
 ### Understanding Linear Scaling
