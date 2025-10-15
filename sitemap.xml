@@ -5,51 +5,43 @@
     <lastmod>2025-10-05T02:33:28.835Z</lastmod>
   </url>
   <url>
-    <loc>https://lorenzocesconetto.github.io/blog-lorenzo/notes.html</loc>
-    <lastmod>2025-10-06T15:29:33.351Z</lastmod>
-  </url>
-  <url>
     <loc>https://lorenzocesconetto.github.io/blog-lorenzo/about.html</loc>
-    <lastmod>2025-10-13T21:43:23.279Z</lastmod>
+    <lastmod>2025-10-14T12:24:29.654Z</lastmod>
   </url>
   <url>
     <loc>https://lorenzocesconetto.github.io/blog-lorenzo/todo.html</loc>
     <lastmod>2025-10-06T15:29:29.647Z</lastmod>
   </url>
   <url>
-    <loc>https://lorenzocesconetto.github.io/blog-lorenzo/posts/4-how-gpus-communicate/index.html</loc>
-    <lastmod>2025-10-14T01:11:54.678Z</lastmod>
-  </url>
-  <url>
-    <loc>https://lorenzocesconetto.github.io/blog-lorenzo/posts/2-first-steps-gpu/index.html</loc>
-    <lastmod>2025-10-14T01:12:12.752Z</lastmod>
-  </url>
-  <url>
-    <loc>https://lorenzocesconetto.github.io/blog-lorenzo/posts/5-ddp/index.html</loc>
-    <lastmod>2025-10-14T01:12:29.556Z</lastmod>
-  </url>
-  <url>
-    <loc>https://lorenzocesconetto.github.io/blog-lorenzo/posts/5-ddp/tmp.html</loc>
-    <lastmod>2025-10-12T14:46:44.379Z</lastmod>
+    <loc>https://lorenzocesconetto.github.io/blog-lorenzo/posts/2025-10-12-ddp/index.html</loc>
+    <lastmod>2025-10-14T01:22:43.211Z</lastmod>
   </url>
   <url>
     <loc>https://lorenzocesconetto.github.io/blog-lorenzo/posts/1-RoPE/index.html</loc>
-    <lastmod>2025-09-19T14:05:08.408Z</lastmod>
+    <lastmod>2025-10-15T01:20:38.484Z</lastmod>
   </url>
   <url>
-    <loc>https://lorenzocesconetto.github.io/blog-lorenzo/posts/3-torch-distributed-operations/index.html</loc>
+    <loc>https://lorenzocesconetto.github.io/blog-lorenzo/posts/2025-09-21-first-steps-gpu/index.html</loc>
+    <lastmod>2025-10-14T01:12:12.752Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lorenzocesconetto.github.io/blog-lorenzo/posts/2025-09-23-torch-distributed-operations/index.html</loc>
     <lastmod>2025-10-14T01:12:06.637Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lorenzocesconetto.github.io/blog-lorenzo/posts/2025-10-01-how-gpus-communicate/index.html</loc>
+    <lastmod>2025-10-14T01:26:04.285Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lorenzocesconetto.github.io/blog-lorenzo/posts/2025-10-12-ddp/tmp.html</loc>
+    <lastmod>2025-10-12T14:46:44.379Z</lastmod>
   </url>
   <url>
     <loc>https://lorenzocesconetto.github.io/blog-lorenzo/index.html</loc>
     <lastmod>2025-10-01T00:41:20.920Z</lastmod>
   </url>
   <url>
-    <loc>https://lorenzocesconetto.github.io/blog-lorenzo/nn.html</loc>
-    <lastmod>2025-09-25T21:03:38.619Z</lastmod>
-  </url>
-  <url>
-    <loc>https://lorenzocesconetto.github.io/blog-lorenzo/tmp.html</loc>
-    <lastmod>2025-10-10T14:52:28.827Z</lastmod>
+    <loc>https://lorenzocesconetto.github.io/blog-lorenzo/notes.html</loc>
+    <lastmod>2025-10-06T15:29:33.351Z</lastmod>
   </url>
 </urlset>

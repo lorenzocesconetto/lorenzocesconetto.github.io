@@ -442,7 +442,7 @@ window.Quarto = {
 </section>
 <section id="before-rope" class="level1">
 <h1>Before RoPE</h1>
-<p>The original positional embeddings from the seminal paper <a href="https://arxiv.org/pdf/1706.03762">Attention is All You Need</a> were defined by a closed form equation and then added into the semantic embeddings. Mixing position and semantics signals in the hidden state was not a good idea. Later research confirmed that LLMs were memorizing (overfitting) rather than generalizing positions, causing rapid deterioration when sequence lengths exceeded training data. But using a closed form formula makes sense, it allows us to extend it indefinitely, and RoPE does something similar.</p>
+<p>The original positional embeddings from the seminal paper <em><a href="https://arxiv.org/pdf/1706.03762">Attention is All You Need</a></em> were defined by a closed form equation and then added into the semantic embeddings. Mixing position and semantics signals in the hidden state was not a good idea. Later research confirmed that LLMs were memorizing (overfitting) rather than generalizing positions, causing rapid deterioration when sequence lengths exceeded training data. But using a closed form formula makes sense, it allows us to extend it indefinitely, and RoPE does something similar.</p>
 <p>One strategy that proved successful in early deep learning was: when unsure how to compute useful features for a neural network, let the network learn them itself! That’s what models like GPT-3 did – they learned their own position embeddings. However, providing too much freedom increases overfitting risks and, in this case, creates hard limits on context windows (you can’t extend it beyond your trained context window).</p>
 <p>The best approaches focused on modifying the attention mechanism so that nearby tokens receive higher attention weights while distant tokens receive lower weights. By isolating the position information into the attention mechanism, it preserves the hidden state and keeps it focused on semantics. These techniques primarily tried to cleverly modify <span class="math inline">\(Q\)</span> and <span class="math inline">\(K\)</span> so their dot products would reflect proximity. Many papers attempted different methods, but RoPE was the one that best solved the problem.</p>
 </section>
@@ -521,11 +521,11 @@ window.Quarto = {
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="./RoPE-decay.png" class="img-fluid figure-img"></p>
-<figcaption>Theoretical curve provided by the authors of RoFormer paper. Source: Su et al., 2021</figcaption>
+<figcaption>Theoretical curve provided by the authors Source: Su et al., 2021</figcaption>
 </figure>
 </div>
 <p>The theoretical curve has some crazy bumps, but in practice I found it to be much more behaved:</p>
-<div id="5cd3ced7" class="cell" data-execution_count="2">
+<div id="bcf667a5" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -589,8 +589,8 @@ window.Quarto = {
 </div>
 </div>
 <p>An idea that occurred to me was clipping the rotation angle so the similarity strictly decreases with distance increases. I’ve seen clipping being applied to other techniques, but not to RoPE.</p>
-<p>Bare in mind that cosine similarity tends to grow (although slowly) as the distance grows a lot past our base value (later you’ll see exactly what is this base of the formula later). A simple solution here is to increase the base, or even let techniques like local or window attention take care of it.</p>
-<div id="5de6b706" class="cell" data-execution_count="3">
+<p>Bare in mind that cosine similarity tends to grow (although slowly) as the distance grows a lot past our base (we’ll dive into the base of the formula later). A simple solution here is to increase the base, or even let techniques like local or window attention take care of it.</p>
+<div id="1405d9b2" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">42</span>)</span>
@@ -755,7 +755,7 @@ window.Quarto = {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/lorenzocesconetto\.github\.io\/blog-lorenzo\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -1098,12 +1098,6 @@ window.Quarto = {
 </div>
     <div class="nav-footer-right">
       <ul class="footer-items list-unstyled">
-    <li class="nav-item compact">
-    <a class="nav-link" href="https://www.youtube.com/@lorenzocesconetto" target="_blank">
-      <i class="bi bi-youtube" role="img">
-</i> 
-    </a>
-  </li>  
     <li class="nav-item compact">
     <a class="nav-link" href="https://www.linkedin.com/in/lorenzo-cesconetto/" target="_blank">
       <i class="bi bi-linkedin" role="img">

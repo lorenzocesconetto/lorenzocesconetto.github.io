@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Lorenzo Cesconetto">
+<meta name="dcterms.date" content="2025-09-21">
 
-<title>AI Blog – Lorenzo Cesconetto</title>
+<title>(1/6) AI in Multiple GPUs: Understanding the Host and Device Paradigm – Lorenzo Cesconetto</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,27 +25,25 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-7ffecba3d65d0ceb76f4c7db622b63c9.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-7ffecba3d65d0ceb76f4c7db622b63c9.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-874deed9d0e94da0c44fb58e1b1e2e63.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-e416944d4c0aba2c9058af46e1c3098e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7ffecba3d65d0ceb76f4c7db622b63c9.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-7ffecba3d65d0ceb76f4c7db622b63c9.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-874deed9d0e94da0c44fb58e1b1e2e63.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-e416944d4c0aba2c9058af46e1c3098e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -71,67 +71,9 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
 
-    const options = {
-      valueNames: ['listing-title','listing-reading-time',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-title-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../../styles.css">
 </head>
 
 <body class="nav-fixed quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
@@ -310,7 +252,7 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Lorenzo Cesconetto</span>
     </a>
   </div>
@@ -321,13 +263,13 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./opensource.html"> 
+    <a class="nav-link" href="../../opensource.html"> 
 <span class="menu-text">Projects &amp; Contributions</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
+    <a class="nav-link" href="../../about.html"> 
 <span class="menu-text">About me</span></a>
   </li>  
   <li class="nav-item compact">
@@ -359,26 +301,54 @@ window.Quarto = {
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(6)</span></div><div class="category" data-category="R1BV">GPU <span class="quarto-category-count">(4)</span></div><div class="category" data-category="VHJhbnNmb3JtZXJz">Transformers <span class="quarto-category-count">(1)</span></div></div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul class="collapse">
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#the-big-picture-the-host-and-the-device" id="toc-the-big-picture-the-host-and-the-device" class="nav-link" data-scroll-target="#the-big-picture-the-host-and-the-device">The Big Picture: The Host and The Device</a></li>
+  <li><a href="#the-cpu-gpu-interaction" id="toc-the-cpu-gpu-interaction" class="nav-link" data-scroll-target="#the-cpu-gpu-interaction">The CPU-GPU Interaction</a></li>
+  <li><a href="#pytorch-tensors" id="toc-pytorch-tensors" class="nav-link" data-scroll-target="#pytorch-tensors">PyTorch Tensors</a></li>
+  <li><a href="#host-device-synchronization" id="toc-host-device-synchronization" class="nav-link" data-scroll-target="#host-device-synchronization">Host-Device Synchronization</a></li>
+  <li><a href="#scaling-up-distributed-computing-and-ranks" id="toc-scaling-up-distributed-computing-and-ranks" class="nav-link" data-scroll-target="#scaling-up-distributed-computing-and-ranks">Scaling Up: Distributed Computing and Ranks</a></li>
+  <li><a href="#communication-blocking-vs.-non-blocking" id="toc-communication-blocking-vs.-non-blocking" class="nav-link" data-scroll-target="#communication-blocking-vs.-non-blocking">Communication: Blocking vs.&nbsp;Non-Blocking</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
-<main class="content column-page-left" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
 
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">AI Blog</h1>
-</div>
+<h1 class="title">(1/6) AI in Multiple GPUs: Understanding the Host and Device Paradigm</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">GPU</div>
+  </div>
+  </div>
 
 
 
-<div class="quarto-title-meta column-page-left">
+<div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Lorenzo Cesconetto </p>
+          </div>
+  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 21, 2025</p>
+    </div>
+  </div>
   
     
   </div>
@@ -388,98 +358,93 @@ window.Quarto = {
 </header>
 
 
-<p>Here’s where I document and share some of my learnings in Machine Learning and Artificial Intelligence :)</p>
+<p>This article is part of a series about distributed AI across multiple GPUs:</p>
+<ul>
+<li><strong>Part 1: Understanding the Host and Device Paradigm</strong> (this article)</li>
+<li><a href="../3-torch-distributed-operations/">Part 2: Point-to-Point and Collective Operations</a></li>
+<li><a href="../4-gpu-hardware-and-networking/">Part 3: How GPUs Communicate</a></li>
+<li><a href="../5-ddp/">Part 4: Gradient Accumulation &amp; Distributed Data Parallelism (DDP)</a></li>
+<li>Part 5: ZeRO <em>(coming soon)</em></li>
+<li>Part 6: Tensor Parallelism <em>(coming soon)</em></li>
+</ul>
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>This guide explains the foundational concepts of how a CPU and a discrete graphics card (GPU) work together. It’s a high-level introduction designed to help you build a mental model of the host-device paradigm.</p>
+<p><em>For integrated GPUs, such as those found in Apple Silicon chips, the architecture is slightly different, so we will not cover it in this post.</em></p>
+</section>
+<section id="the-big-picture-the-host-and-the-device" class="level1">
+<h1>The Big Picture: The Host and The Device</h1>
+<p>The most important concept to grasp is the relationship between the <strong>Host</strong> and the <strong>Device</strong>.</p>
+<ul>
+<li><strong>The Host:</strong> This is your <strong>CPU</strong>. It runs the operating system and executes your Python script line by line. The Host is the commander; it’s in charge of the overall logic and tells the Device what to do.</li>
+<li><strong>The Device:</strong> This is your <strong>GPU</strong>. It’s a powerful but specialized coprocessor designed for massively parallel computations. The Device is the accelerator; it doesn’t do anything until the Host gives it a task.</li>
+</ul>
+<p>Your program always starts on the CPU. When you want the GPU to perform a task, like multiplying two large matrices, the CPU sends the instructions and the data over to the GPU.</p>
+</section>
+<section id="the-cpu-gpu-interaction" class="level1">
+<h1>The CPU-GPU Interaction</h1>
+<p>The Host talks to the Device through a queuing system.</p>
+<ol type="1">
+<li><strong>CPU Initiates Commands:</strong> Your script, running on the CPU, encounters a line of code intended for the GPU (e.g., <code>tensor.to('cuda')</code>).</li>
+<li><strong>Commands are Queued:</strong> The CPU doesn’t wait. It simply places this command onto a special to-do list for the GPU called a <strong>CUDA Stream</strong>.</li>
+<li><strong>Asynchronous Execution:</strong> As soon as the command is enqueued, the CPU is free to move on to the next line of your script. This is called <strong>asynchronous execution</strong>, and it’s a key to achieving high performance. While the GPU is busy crunching numbers, the CPU can work on other tasks, like preparing the next batch of data.</li>
+</ol>
+</section>
+<section id="pytorch-tensors" class="level1">
+<h1>PyTorch Tensors</h1>
+<p>PyTorch is a powerful framework that abstracts away many details, but this abstraction can sometimes obscure what is happening under the hood.</p>
+<p>When you create a PyTorch tensor, it has two parts: metadata (like its shape and data type) and the actual numerical data. So when you run something like this <code>t = torch.randn(100, 100, device=device)</code>, the tensor’s metadata is managed by the CPU, while its data is stored in the GPU’s VRAM.</p>
+<p>This distinction is important. When you run <code>print(t.shape)</code>, the CPU can immediately access this information because the metadata is already in its own RAM. But what happens if you run <code>print(t)</code>, which requires the actual data living in VRAM?</p>
+</section>
+<section id="host-device-synchronization" class="level1">
+<h1>Host-Device Synchronization</h1>
+<p>Accessing GPU data from the CPU can trigger a <strong>Host-Device Synchronization</strong>, a common performance bottleneck. This occurs whenever the CPU needs a result from the GPU that isn’t yet available in the CPU’s RAM.</p>
+<p>For example, consider the line <code>print(gpu_tensor)</code>. The CPU cannot print the tensor’s values until the GPU has finished all pending calculations on it. When the script reaches this line, the CPU is forced to <strong>block</strong>, i.e.&nbsp;it stops and waits for the GPU to finish. Only after the GPU completes its work and copies the data from its VRAM to the CPU’s RAM can the CPU proceed.</p>
+<p>As another example, what’s the difference between <code>torch.randn(100, 100).to(device)</code> and <code>torch.randn(100, 100, device=device)</code>? The first method is less efficient because it creates the data on the CPU and then transfers it to the GPU. The second method is more efficient because it creates the tensor directly on the GPU; the CPU only sends the creation command.</p>
+<p>These synchronization points can severely impact performance. Effective GPU programming involves minimizing them to ensure both the Host and Device stay as busy as possible. After all, you want your GPUs to go <em>brrrrr</em>.</p>
+</section>
+<section id="scaling-up-distributed-computing-and-ranks" class="level1">
+<h1>Scaling Up: Distributed Computing and Ranks</h1>
+<p>Training large models, such as Large Language Models (LLMs), often requires more compute power than a single GPU can offer. Coordinating work across multiple GPUs brings you into the world of distributed computing.</p>
+<p>In this context, a new and important concept emerges: the <strong>Rank</strong>.</p>
+<ul>
+<li>Each <strong>rank</strong> is a CPU process which gets assigned a single device (GPU) and a unique ID. If you launch a training script across two GPUs, you will create two processes: one with <code>rank=0</code> and another with <code>rank=1</code>.</li>
+</ul>
+<p>This means you are launching two separate instances of your Python script. On a single machine with multiple GPUs (a single node), these processes run on the same CPU but remain independent, without sharing memory or state. <code>Rank 0</code> commands its assigned GPU (<code>cuda:0</code>), while <code>Rank 1</code> commands its GPU (<code>cuda:1</code>). Although both ranks run the same code, you can use the rank ID to assign different tasks to each process, like having each one process a different portion of the data.</p>
+</section>
+<section id="communication-blocking-vs.-non-blocking" class="level1">
+<h1>Communication: Blocking vs.&nbsp;Non-Blocking</h1>
+<p>To work together, these ranks must exchange data. This can happen directly between GPUs, bypassing the CPU’s main memory, though the CPU still does some orchestration. Ideally, the GPUs are connected with a high-speed interconnect like NVLink or InfiniBand (we’ll be covered in detail in a future post).</p>
+<p>PyTorch provides two foundational methods for this communication, which we will explore in more detail in later posts.</p>
+<section id="synchronous-blocking-communication" class="level3">
+<h3 class="anchored" data-anchor-id="synchronous-blocking-communication">Synchronous (Blocking) Communication</h3>
+<ul>
+<li><strong>Behavior:</strong> When you call <code>torch.distributed.send()</code>, your process <strong>stops and waits</strong> until the data has been safely copied to a communication buffer. This method is simple and reliable.</li>
+</ul>
+</section>
+<section id="asynchronous-non-blocking-communication" class="level3">
+<h3 class="anchored" data-anchor-id="asynchronous-non-blocking-communication">Asynchronous (Non-Blocking) Communication</h3>
+<ul>
+<li><strong>Behavior:</strong> When you call <code>torch.distributed.isend()</code>, the call returns <strong>immediately</strong>, and the send operation happens in the background. This allows your CPU to continue with other tasks, a technique known as <strong>overlapping computation with communication</strong>.</li>
+</ul>
+<p>The asynchronous API is more complex because you must ensure you don’t modify data while it is being sent. However, mastering it is the key to unlocking maximum performance in large-scale distributed training.</p>
+</section>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>Congratulations for reading all the way to the end! In this post, you learned about:</p>
+<ul>
+<li>The Host/Device relationship</li>
+<li>Asynchronous execution</li>
+<li>Host-Device synchronization</li>
+<li>Communication patterns</li>
+</ul>
+<p><strong>In the <a href="../3-torch-distributed-operations/">next blog post</a>, we will dive deeper into Point-to-Point and Collective Operations, which enable multiple GPUs to coordinate complex workflows such as distributed neural network training.</strong></p>
 
 
+</section>
 
-
-<div class="quarto-listing quarto-listing-container-table" id="listing-listing">
-<table class="quarto-listing-table table table-hover">
-<thead>
-<tr>
-
-<th>
-Title
-</th>
-
-<th>
-Reading Time
-</th>
-
-</tr>
-</thead>
-<tbody class="list">
-
-<tr data-index="0" data-listing-file-modified-sort="1760280404379" data-listing-filename-sort="tmp.ipynb" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="./posts/2025-10-12-ddp/tmp.html" class="title listing-title">&nbsp;</a>
-</td>
-<td>
-<span class="listing-reading-time">&nbsp;</span>
-</td>
-
-</tr>
-
-<tr data-index="1" data-categories="R1BV" data-listing-date-sort="1760238000000" data-listing-file-modified-sort="1760404963211" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8" data-listing-word-count-sort="1526" data-listing-title-sort="(4/6) AI in Multiple GPUs: Grad Accum &amp; Data Parallelism" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="./posts/2025-10-12-ddp/index.html" class="title listing-title">(4/6) AI in Multiple GPUs: Grad Accum &amp; Data Parallelism</a>
-</td>
-<td>
-<span class="listing-reading-time">8 min</span>
-</td>
-
-</tr>
-
-<tr data-index="2" data-categories="R1BV" data-listing-date-sort="1759287600000" data-listing-file-modified-sort="1760405164285" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="841" data-listing-title-sort="(3/6) AI in Multiple GPUs: How GPUs Communicate" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="./posts/2025-10-01-how-gpus-communicate/index.html" class="title listing-title">(3/6) AI in Multiple GPUs: How GPUs Communicate</a>
-</td>
-<td>
-<span class="listing-reading-time">5 min</span>
-</td>
-
-</tr>
-
-<tr data-index="3" data-categories="R1BV" data-listing-date-sort="1758596400000" data-listing-file-modified-sort="1760404326637" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9" data-listing-word-count-sort="1640" data-listing-title-sort="(2/6) AI in Multiple GPUs: Point-to-Point and Collective Operations" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="./posts/2025-09-23-torch-distributed-operations/index.html" class="title listing-title">(2/6) AI in Multiple GPUs: Point-to-Point and Collective Operations</a>
-</td>
-<td>
-<span class="listing-reading-time">9 min</span>
-</td>
-
-</tr>
-
-<tr data-index="4" data-categories="R1BV" data-listing-date-sort="1758423600000" data-listing-file-modified-sort="1760404332752" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1047" data-listing-title-sort="(1/6) AI in Multiple GPUs: Understanding the Host and Device Paradigm" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="./posts/2025-09-21-first-steps-gpu/index.html" class="title listing-title">(1/6) AI in Multiple GPUs: Understanding the Host and Device Paradigm</a>
-</td>
-<td>
-<span class="listing-reading-time">6 min</span>
-</td>
-
-</tr>
-
-<tr data-index="5" data-categories="VHJhbnNmb3JtZXJz" data-listing-date-sort="1757991600000" data-listing-file-modified-sort="1760491238484" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9" data-listing-word-count-sort="1719" data-listing-title-sort="RoPE clearly explained" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="./posts/1-RoPE/index.html" class="title listing-title">RoPE clearly explained</a>
-</td>
-<td>
-<span class="listing-reading-time">9 min</span>
-</td>
-
-</tr>
-
-</tbody>
-</table>
-<div class="listing-no-matching d-none">No matching items</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right

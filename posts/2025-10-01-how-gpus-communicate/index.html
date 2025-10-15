@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Lorenzo Cesconetto">
+<meta name="dcterms.date" content="2025-10-01">
 
-<title>AI Blog – Lorenzo Cesconetto</title>
+<title>(3/6) AI in Multiple GPUs: How GPUs Communicate – Lorenzo Cesconetto</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,27 +25,25 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-7ffecba3d65d0ceb76f4c7db622b63c9.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-7ffecba3d65d0ceb76f4c7db622b63c9.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-874deed9d0e94da0c44fb58e1b1e2e63.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-e416944d4c0aba2c9058af46e1c3098e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7ffecba3d65d0ceb76f4c7db622b63c9.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-7ffecba3d65d0ceb76f4c7db622b63c9.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-874deed9d0e94da0c44fb58e1b1e2e63.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-e416944d4c0aba2c9058af46e1c3098e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -71,67 +71,9 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
 
-    const options = {
-      valueNames: ['listing-title','listing-reading-time',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-title-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../../styles.css">
 </head>
 
 <body class="nav-fixed quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
@@ -310,7 +252,7 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Lorenzo Cesconetto</span>
     </a>
   </div>
@@ -321,13 +263,13 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./opensource.html"> 
+    <a class="nav-link" href="../../opensource.html"> 
 <span class="menu-text">Projects &amp; Contributions</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
+    <a class="nav-link" href="../../about.html"> 
 <span class="menu-text">About me</span></a>
   </li>  
   <li class="nav-item compact">
@@ -359,26 +301,51 @@ window.Quarto = {
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(6)</span></div><div class="category" data-category="R1BV">GPU <span class="quarto-category-count">(4)</span></div><div class="category" data-category="VHJhbnNmb3JtZXJz">Transformers <span class="quarto-category-count">(1)</span></div></div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul class="collapse">
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#the-communication-stack" id="toc-the-communication-stack" class="nav-link" data-scroll-target="#the-communication-stack">The Communication Stack</a></li>
+  <li><a href="#key-design-principles" id="toc-key-design-principles" class="nav-link" data-scroll-target="#key-design-principles">Key Design Principles</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
-<main class="content column-page-left" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
 
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">AI Blog</h1>
-</div>
+<h1 class="title">(3/6) AI in Multiple GPUs: How GPUs Communicate</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">GPU</div>
+  </div>
+  </div>
 
 
 
-<div class="quarto-title-meta column-page-left">
+<div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Lorenzo Cesconetto </p>
+          </div>
+  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">October 1, 2025</p>
+    </div>
+  </div>
   
     
   </div>
@@ -388,98 +355,120 @@ window.Quarto = {
 </header>
 
 
-<p>Here’s where I document and share some of my learnings in Machine Learning and Artificial Intelligence :)</p>
+<p>This article is part of a series about distributed AI across multiple GPUs:</p>
+<ul>
+<li><a href="../2-first-steps-gpu/">Part 1: Understanding the Host and Device Paradigm</a></li>
+<li><a href="../3-torch-distributed-operations/">Part 2: Point-to-Point and Collective Operations</a></li>
+<li><strong>Part 3: How GPUs Communicate</strong> (this article)</li>
+<li><a href="../5-ddp/">Part 4: Gradient Accumulation &amp; Distributed Data Parallelism (DDP)</a></li>
+<li>Part 5: ZeRO <em>(coming soon)</em></li>
+<li>Part 6: Tensor Parallelism <em>(coming soon)</em></li>
+</ul>
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>Before diving into advanced parallelism techniques, we need to understand the key technologies that enable GPUs to communicate with each other.</p>
+</section>
+<section id="the-communication-stack" class="level1">
+<h1>The Communication Stack</h1>
+<section id="pcie" class="level3">
+<h3 class="anchored" data-anchor-id="pcie">PCIe</h3>
+<p>PCIe (Peripheral Component Interconnect Express) connects expansion cards like GPUs to the motherboard using independent point-to-point serial lanes. Here’s what different PCIe generations offer for a GPU using 16 lanes:</p>
+<ul>
+<li><strong>Gen4 x16</strong>: ~32 GB/s bidirectional<br>
+</li>
+<li><strong>Gen5 x16</strong>: ~64 GB/s bidirectional</li>
+<li><strong>Gen6 x16</strong>: ~128 GB/s bidirectional (FYI 16 lanes x 8Gb/s/lane = 128 GB/s)</li>
+</ul>
+<p>High-end server CPUs typically offer 128 PCIe lanes, and modern GPUs need 16 lanes for optimal bandwidth. This is why you usually see 8 GPUs per server (128 = 16 x 8). Power consumption, and physical space in server chassis also makes it impractical to go beyond 8 GPUs in a single node.</p>
+</section>
+<section id="nvlink" class="level3">
+<h3 class="anchored" data-anchor-id="nvlink">NVLink</h3>
+<p>NVLink enables direct GPU-to-GPU communication within the same server (node), bypassing the CPU entirely. This NVIDIA-proprietary interconnect creates a direct memory-to-memory pathway between GPUs with huge bandwidth:</p>
+<ul>
+<li><strong>NVLink 3 (A100)</strong>: ~600 GB/s per GPU</li>
+<li><strong>NVLink 4 (H100)</strong>: ~900 GB/s per GPU<br>
+</li>
+<li><strong>NVLink 5 (Blackwell)</strong>: Up to 1.8 TB/s per GPU</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://miro.medium.com/v2/resize:fit:1400/format:webp/1*Qty8oEjinArM-wIAly_ZdA.png" class="img-fluid figure-img"></p>
+<figcaption>Source: <a href="https://medium.com/riselab/ai-and-memory-wall-2cb4265cb0b8">Medium</a></figcaption>
+</figure>
+</div>
+<blockquote class="blockquote">
+<p><strong>Note: on NVLink for CPU-GPU communication</strong></p>
+<p>Certain CPU architectures support NVLink as a PCIe replacement, dramatically accelerating CPU-GPU communication by overcoming the PCIe bottleneck in data transfers, such as moving training batches from CPU to GPU. This CPU-GPU NVLink capability makes CPU-offloading (a technique that saves VRAM by storing data in RAM instead) practical for real-world AI applications. Since scaling RAM is typically more cost-effective than scaling VRAM, this approach offers significant economic advantages.</p>
+<p>CPUs with NVLink support include IBM POWER8, POWER9, and NVIDIA Grace.</p>
+</blockquote>
+<p>However, there’s a catch. In a server with 8x H100s, each GPU needs to communicate with 7 others, splitting that 900 GB/s into seven point-to-point connections of about 128 GB/s each. That’s where NVSwitch comes in.</p>
+</section>
+<section id="nvswitch" class="level3">
+<h3 class="anchored" data-anchor-id="nvswitch">NVSwitch</h3>
+<p>NVSwitch acts as a central hub for GPU communication, dynamically routing (switching if you will) data between GPUs as needed. With NVSwitch, every Hopper GPU can communicate at 900 GB/s with all other Hopper GPUs simultaneously, i.e.&nbsp;peak bandwidth doesn’t depend on how many GPUs are communicating. This is what makes NVSwitch “non-blocking”. Each GPU connects to several NVSwitch chips via multiple NVLink connections, ensuring maximum bandwidth.</p>
+<p>While NVSwitch started as an intra-node solution, it’s been extended to interconnect multiple nodes, creating GPU clusters that support up to 256 GPUs with all-to-all communication at near-local NVLink speeds.</p>
+<p>The generations of NVSwitch are:</p>
+<ul>
+<li><strong>First-Generation</strong>: Supports up to 16 GPUs per server (compatible with Tesla V100)</li>
+<li><strong>Second-Generation</strong>: Also supports up to 16 GPUs with improved bandwidth and lower latency</li>
+<li><strong>Third-Generation</strong>: Designed for H100 GPUs, supports up to 256 GPUs</li>
+</ul>
+</section>
+<section id="infiniband" class="level3">
+<h3 class="anchored" data-anchor-id="infiniband">InfiniBand</h3>
+<p>InfiniBand handles inter-node communication. While much slower (and cheaper) than NVSwitch, it’s commonly used in datacenters to scale to thousands of GPUs. Modern InfiniBand supports GPU-Direct RDMA, letting network adapters access GPU memory directly without CPU involvement (no expensive copying to host RAM).</p>
+<p>Current InfiniBand speeds include:</p>
+<ul>
+<li><strong>HDR</strong>: ~25 GB/s per port</li>
+<li><strong>NDR</strong>: ~50 GB/s per port</li>
+<li><strong>NDR200</strong>: ~100 GB/s per port</li>
+</ul>
+<p>These speeds are significantly slower than intra-node NVLink due to network protocol overhead and the need for two PCIe traversals (once at the sender and once at the receiver).</p>
+</section>
+<section id="nvidia-direct" class="level3">
+<h3 class="anchored" data-anchor-id="nvidia-direct">NVIDIA Direct</h3>
+<p>…</p>
+</section>
+</section>
+<section id="key-design-principles" class="level1">
+<h1>Key Design Principles</h1>
+<section id="understanding-linear-scaling" class="level3">
+<h3 class="anchored" data-anchor-id="understanding-linear-scaling">Understanding Linear Scaling</h3>
+<p>Linear scaling is the holy grail of distributed computing. In simple terms, it means doubling your GPUs should either double your throughput or halve your training time. That happens when each GPU operates at full capacity. However, perfect linear scaling is rare in AI workloads because communication requirements grow with the number of devices, and it’s usually impossible to achieve perfect compute-communication overlap (explained next).</p>
+</section>
+<section id="the-importance-of-compute-communication-overlap" class="level3">
+<h3 class="anchored" data-anchor-id="the-importance-of-compute-communication-overlap">The Importance of Compute-Communication Overlap</h3>
+<p>When a GPU sits idle waiting for data to be transferred before it can be processed, you’re wasting resources. Communication operations should overlap with computation as much as possible. When that’s not possible, we call that communication an “exposed operation”.</p>
+</section>
+<section id="intra-node-vs.-inter-node-the-performance-cliff" class="level3">
+<h3 class="anchored" data-anchor-id="intra-node-vs.-inter-node-the-performance-cliff">Intra-Node vs.&nbsp;Inter-Node: The Performance Cliff</h3>
+<p>Modern server-grade motherboards support up to 8 GPUs. Within this range, you can often achieve near-linear scaling thanks to high-bandwidth, low-latency intra-node communication.</p>
+<p>Once you scale beyond 8 GPUs and start using multiple nodes with InfiniBand, performance usually degrades faster. Inter-node communication introduces network protocol overhead, higher latency, and bandwidth limitations. This transition is where diminishing returns become much more pronounced. Each new additional GPU ends up operating at a fraction of its maximum capacity.</p>
+</section>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>Congratulations for reading all the way to the end! In this post you learned about:</p>
+<ul>
+<li>The CPU-GPU and GPU-GPU communication fundamentals:
+<ul>
+<li>PCIe, NVLink, NVSwitch, and InfiniBand</li>
+</ul></li>
+<li>Latency and throughput bottlenecks</li>
+<li>You’re now able to make much more informed decisions when designing your AI workloads</li>
+</ul>
+<p><strong>In the next <a href="../5-ddp/">blog post</a>, we’ll dive into our first parallelism technique, the Distributed Data Parallelism.</strong></p>
+</section>
+<section id="references" class="level1">
+<h1>References</h1>
+<ol type="1">
+<li><a href="https://developer.nvidia.com/blog/nvidia-nvlink-and-nvidia-nvswitch-supercharge-large-language-model-inference/">NVIDIA Blog</a></li>
+</ol>
 
 
+</section>
 
-
-<div class="quarto-listing quarto-listing-container-table" id="listing-listing">
-<table class="quarto-listing-table table table-hover">
-<thead>
-<tr>
-
-<th>
-Title
-</th>
-
-<th>
-Reading Time
-</th>
-
-</tr>
-</thead>
-<tbody class="list">
-
-<tr data-index="0" data-listing-file-modified-sort="1760280404379" data-listing-filename-sort="tmp.ipynb" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="./posts/2025-10-12-ddp/tmp.html" class="title listing-title">&nbsp;</a>
-</td>
-<td>
-<span class="listing-reading-time">&nbsp;</span>
-</td>
-
-</tr>
-
-<tr data-index="1" data-categories="R1BV" data-listing-date-sort="1760238000000" data-listing-file-modified-sort="1760404963211" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8" data-listing-word-count-sort="1526" data-listing-title-sort="(4/6) AI in Multiple GPUs: Grad Accum &amp; Data Parallelism" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="./posts/2025-10-12-ddp/index.html" class="title listing-title">(4/6) AI in Multiple GPUs: Grad Accum &amp; Data Parallelism</a>
-</td>
-<td>
-<span class="listing-reading-time">8 min</span>
-</td>
-
-</tr>
-
-<tr data-index="2" data-categories="R1BV" data-listing-date-sort="1759287600000" data-listing-file-modified-sort="1760405164285" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="841" data-listing-title-sort="(3/6) AI in Multiple GPUs: How GPUs Communicate" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="./posts/2025-10-01-how-gpus-communicate/index.html" class="title listing-title">(3/6) AI in Multiple GPUs: How GPUs Communicate</a>
-</td>
-<td>
-<span class="listing-reading-time">5 min</span>
-</td>
-
-</tr>
-
-<tr data-index="3" data-categories="R1BV" data-listing-date-sort="1758596400000" data-listing-file-modified-sort="1760404326637" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9" data-listing-word-count-sort="1640" data-listing-title-sort="(2/6) AI in Multiple GPUs: Point-to-Point and Collective Operations" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="./posts/2025-09-23-torch-distributed-operations/index.html" class="title listing-title">(2/6) AI in Multiple GPUs: Point-to-Point and Collective Operations</a>
-</td>
-<td>
-<span class="listing-reading-time">9 min</span>
-</td>
-
-</tr>
-
-<tr data-index="4" data-categories="R1BV" data-listing-date-sort="1758423600000" data-listing-file-modified-sort="1760404332752" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1047" data-listing-title-sort="(1/6) AI in Multiple GPUs: Understanding the Host and Device Paradigm" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="./posts/2025-09-21-first-steps-gpu/index.html" class="title listing-title">(1/6) AI in Multiple GPUs: Understanding the Host and Device Paradigm</a>
-</td>
-<td>
-<span class="listing-reading-time">6 min</span>
-</td>
-
-</tr>
-
-<tr data-index="5" data-categories="VHJhbnNmb3JtZXJz" data-listing-date-sort="1757991600000" data-listing-file-modified-sort="1760491238484" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9" data-listing-word-count-sort="1719" data-listing-title-sort="RoPE clearly explained" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="./posts/1-RoPE/index.html" class="title listing-title">RoPE clearly explained</a>
-</td>
-<td>
-<span class="listing-reading-time">9 min</span>
-</td>
-
-</tr>
-
-</tbody>
-</table>
-<div class="listing-no-matching d-none">No matching items</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
