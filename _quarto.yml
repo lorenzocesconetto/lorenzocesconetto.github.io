@@ -7,6 +7,8 @@ website:
     left:
       - href: opensource.qmd
         text: Projects & Contributions
+      - href: quick-notes.qmd
+        text: Quick Notes
     right:
       - href: about.qmd
         text: About me

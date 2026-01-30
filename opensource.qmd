@@ -27,3 +27,4 @@ But I am planning to do more Open Source contributions this year. Hopefully this
   - [PR 775](https://github.com/modelcontextprotocol/python-sdk/pull/775/)
   - [PR 802](https://github.com/modelcontextprotocol/python-sdk/pull/802)
   - [PR 871](https://github.com/modelcontextprotocol/python-sdk/pull/871)
+  - [Found a mistake in the ultrascale playbook](https://huggingface.co/spaces/nanotron/ultrascale-playbook/discussions/120)

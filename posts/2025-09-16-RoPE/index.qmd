@@ -131,13 +131,13 @@ def rope_angle_between(q, k, d, base=10000.0):
     q_rot_even = cos_t * q_even - sin_t * q_odd
     q_rot_odd = sin_t * q_even + cos_t * q_odd
 
-    b_rot = np.empty_like(q)
-    b_rot[0::2] = q_rot_even
-    b_rot[1::2] = q_rot_odd
+    q_rot = np.empty_like(q)
+    q_rot[0::2] = q_rot_even
+    q_rot[1::2] = q_rot_odd
 
-    dot = float(np.dot(k, b_rot))
+    dot = float(np.dot(k, q_rot))
     na = float(np.linalg.norm(k))
-    nb = float(np.linalg.norm(b_rot))
+    nb = float(np.linalg.norm(q_rot))
     cosine = dot / (na * nb)
     return cosine
 
@@ -163,7 +163,7 @@ plt.show()
 
 An idea that occurred to me was clipping the rotation angle so the similarity strictly decreases with distance increases. I've seen clipping being applied to other techniques, but not to RoPE.
 
-Bare in mind that cosine similarity tends to grow (although slowly) as the distance grows a lot past our base value (later you'll see exactly what is this base of the formula later). A simple solution here is to increase the base, or even let techniques like local or window attention take care of it.
+Bare in mind that cosine similarity tends to grow (although slowly) as the distance grows a lot past our base value (later you'll see exactly what is this base of the formula). A simple solution here is to increase the base, or even let techniques like local or window attention take care of it.
 
 ```{python}
 #| fig-cap: Expanding to 50k distance

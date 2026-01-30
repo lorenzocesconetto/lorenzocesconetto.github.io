@@ -1,0 +1,77 @@
+---
+title: "Why we need to divide by $\\sqrt{d_k}$ in attention?"
+author: "Lorenzo Cesconetto"
+date: "2026-01-29"
+categories: [Transformers]
+---
+
+When computing attention scores in transformers, we calculate $QK^T$ and then divide by $\sqrt{d_k}$ before applying softmax. But why is this scaling necessary?
+
+## The variance problem
+
+For each attention score, we compute $score = \sum_{i=1}^{d_k}q_i \cdot k_i$. Let's analyze what happens to this sum under typical conditions.
+
+Assume $q_i$ and $k_i$ are independent random variables with mean 0 and variance 1. Let's derive the expected value and variance of our score.
+
+**Expected value of the score:**
+
+$$
+E[X \cdot Y] = E[X] \cdot E[Y] \quad \text{(if X and Y are independent)}
+$$
+$$
+E[q_i \cdot k_i] = E[q_i] \cdot E[k_i] = 0 \cdot 0 = 0
+$$
+$$
+E[X + Y] = E[X] + E[Y]
+$$
+$$
+E[\sum_{i=1}^{d_k} q_i \cdot k_i] = \sum_{i=1}^{d_k} E[q_i \cdot k_i] = 0
+$$
+
+**Variance of the score:**
+
+For independent random variables with mean 0 and variance 1, the variance of their product is:
+
+$$
+Var(X \cdot Y)= Var(X) \cdot Var(Y) + Var(X)⋅[E(Y)]^2 + Var(Y)⋅[E(X)]^2
+$$ 
+$$ 
+Var(q_i \cdot k_i) = 1 \cdot 1 + 1 \cdot 0^2 + 1 \cdot 0^2 = 1
+$$
+
+When summing independent variables:
+
+$$
+Var(X + Y) = Var(X) + Var(Y) \quad \text{(if X and Y are independent)}
+$$
+$$
+Var(\sum_{i=1}^{d_k} q_i \cdot k_i) = \sum_{i=1}^{d_k} Var(q_i \cdot k_i) = d_k
+$$
+
+Therefore, each product $q_i \cdot k_i$ has mean 0 and variance 1. When we sum $d_k$ terms, the mean remains 0 but **the variance grows to $d_k$**. This is the key issue: as the $q$ and $k$ vector dimension increases, our attention scores become increasingly spread out (high variance).
+
+## Why high variance breaks softmax
+
+The softmax function is extremely sensitive to the scale of its inputs. Consider this example with **mean zero** but **high variance** that represents our attention scores if we didn't scale them:
+
+$$
+softmax(100, -50, -50) = \frac{e^{100}}{e^{100} + e^{-50} + e^{-50}} \approx 1
+$$
+
+Now let's see what happens to the output when we perturb each input value slightly (this is exactly what the gradient represents):
+
+$$
+softmax(99.9, -50.1, -50.1) = \frac{e^{99.9}}{e^{99.9} + e^{-50.1} + e^{-50.1}} \approx 1
+$$
+
+The output is nearly identical despite the input changes. This means **gradients become vanishingly small**, making the model difficult to train (you're performing really small steps and taking forever to converge). The softmax has saturated—it's producing near one-hot distributions where small changes in input barely affect the output.
+
+## The solution
+
+By dividing by $\sqrt{d_k}$, we normalize the variance back to 1:
+
+$$
+Var\left(\frac{score}{\sqrt{d_k}}\right) = \frac{Var(score)}{d_k} = \frac{d_k}{d_k} = 1
+$$
+
+This keeps the attention scores in a reasonable range regardless of embedding dimension, allowing softmax to produce smooth distributions with meaningful gradients throughout training.
