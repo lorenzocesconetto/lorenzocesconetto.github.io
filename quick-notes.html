@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>notes – Lorenzo Cesconetto</title>
+<title>Quick Notes – Lorenzo Cesconetto</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,6 +30,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-listing/list.min.js"></script>
+<script src="site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -69,6 +71,35 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script>
+
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-listing .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-title','listing-reading-time',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-title-sort'] }],
+      
+      searchColumns: ["listing-date","listing-title","listing-author"],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  </script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -294,7 +325,7 @@ window.Quarto = {
 <span class="menu-text">Projects &amp; Contributions</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./quick-notes.html"> 
+    <a class="nav-link active" href="./quick-notes.html" aria-current="page"> 
 <span class="menu-text">Quick Notes</span></a>
   </li>  
 </ul>
@@ -332,75 +363,83 @@ window.Quarto = {
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul class="collapse">
-  <li><a href="#notes" id="toc-notes" class="nav-link active" data-scroll-target="#notes">Notes</a>
-  <ul class="collapse">
-  <li><a href="#prompts" id="toc-prompts" class="nav-link" data-scroll-target="#prompts">Prompts</a></li>
-  <li><a href="#sections" id="toc-sections" class="nav-link" data-scroll-target="#sections">Sections:</a></li>
-  <li><a href="#posts" id="toc-posts" class="nav-link" data-scroll-target="#posts">Posts</a></li>
-  </ul></li>
-  </ul>
-</nav>
-    </div>
+        
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(2)</span></div><div class="category" data-category="VHJhbnNmb3JtZXJz">Transformers <span class="quarto-category-count">(2)</span></div></div></div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content column-page-left" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Quick Notes</h1>
+</div>
+
+
+
+<div class="quarto-title-meta column-page-left">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Short notes, snippets, and quick references.</p>
 
 
 
 
+<div class="quarto-listing quarto-listing-container-table" id="listing-listing">
+<table class="quarto-listing-table table table-hover">
+<thead>
+<tr>
 
-<section id="notes" class="level1">
-<h1>Notes</h1>
-<section id="prompts" class="level2">
-<h2 class="anchored" data-anchor-id="prompts">Prompts</h2>
-<p>Help me improve the blog post below. It should provide a smooth reading experience, sound natural and idiomatic to american ears, and be succinct. The tone should not be super formal. Make sure to enclose the blog post in ```.</p>
-</section>
-<section id="sections" class="level2">
-<h2 class="anchored" data-anchor-id="sections">Sections:</h2>
-<ul>
-<li>Open Source contributions</li>
-<li>Noticeable repos / projects</li>
-</ul>
-</section>
-<section id="posts" class="level2">
-<h2 class="anchored" data-anchor-id="posts">Posts</h2>
-<ul>
-<li><p>Ring-reduce (all reduce) https://blog.dailydoseofds.com/p/all-reduce-and-ring-reduce-for-model</p></li>
-<li><p>The Log-Sum-Exp Trick https://gregorygundersen.com/blog/2020/02/09/log-sum-exp/</p></li>
-<li><p>Which layers to quantize?</p>
-<ul>
-<li>Unsloth has shown that heavily quantizing the MoE layers is fine, but lightly quantize Attention and shared experts</li>
-</ul></li>
-<li><p>Why GPUs will not get much faster?</p>
-<ul>
-<li>We’ve been cutting down on the Mantissa because the time is given by: <span class="math inline">\(Exponent + Matissa^2\)</span></li>
-<li>There’s not much we can cut down anymore, since we’re already working with Float 4</li>
-</ul></li>
-<li><p>Learn torch.compile(). It’s not just wrapping a function in it, there are many many options (arguments) available.</p></li>
-<li><p>vLLM vs Llama.cpp comparison / bench</p>
-<ul>
-<li>https://www.arsturn.com/blog/vllm-vs-ollama-vs-llama-cpp-production-use</li>
-<li>Which Performs Better for LLMs, VLLM or Llama.cpp? https://freedium.cfd/https://medium.com/<span class="citation" data-cites="tam.tamanna18/which-performs-better-for-llms-vllm-or-llama-cpp-eff62b5e25da">@tam.tamanna18/which-performs-better-for-llms-vllm-or-llama-cpp-eff62b5e25da</span></li>
-</ul></li>
-<li><p>Paged Attention &amp; Continuos Batching</p>
-<ul>
-<li>https://rishirajacharya.com/how-vllm-does-it</li>
-<li>https://blog.vllm.ai/2023/06/20/vllm.html</li>
-</ul></li>
-</ul>
+<th>
+Title
+</th>
 
+<th>
+Reading Time
+</th>
 
-</section>
-</section>
+</tr>
+</thead>
+<tbody class="list">
 
-</main> <!-- /main -->
+<tr data-index="0" data-categories="VHJhbnNmb3JtZXJz" data-listing-date-sort="1769655600000" data-listing-file-modified-sort="1769732321436" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="394" data-listing-title-sort="Why we need to divide by $\sqrt{d_k}$ in attention?" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
+ if (href) { window.location=href ; return false; }">
+<td>
+<a href="./quick-notes/2026-01-29-why-divide-by-d/index.html" class="title listing-title">Why we need to divide by <span class="math inline">\(\sqrt{d_k}\)</span> in attention?</a>
+</td>
+<td>
+<span class="listing-reading-time">2 min</span>
+</td>
+
+</tr>
+
+<tr data-index="1" data-categories="VHJhbnNmb3JtZXJz" data-listing-date-sort="1769482800000" data-listing-file-modified-sort="1769521812401" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="212" data-listing-title-sort="Transformers in a nutshell" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
+ if (href) { window.location=href ; return false; }">
+<td>
+<a href="./quick-notes/2026-01-27-transformers-in-a-nutshell/index.html" class="title listing-title">Transformers in a nutshell</a>
+</td>
+<td>
+<span class="listing-reading-time">2 min</span>
+</td>
+
+</tr>
+
+</tbody>
+</table>
+<div class="listing-no-matching d-none">No matching items</div>
+</div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
