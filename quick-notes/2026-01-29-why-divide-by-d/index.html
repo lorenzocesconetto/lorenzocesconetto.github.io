@@ -386,12 +386,12 @@ window.Quarto = {
 </header>
 
 
-<p>When computing attention scores in transformers, we calculate <span class="math inline">\(QK^T\)</span> and then divide by <span class="math inline">\(\sqrt{d_k}\)</span> before applying softmax. But why is this scaling necessary?</p>
+<p>Transformer models compute attention scores by calculating <span class="math inline">\(QK^T\)</span>, then dividing by <span class="math inline">\(\sqrt{d_k}\)</span> to scale the result before applying softmax. This scaling factor might seem like a minor detail, but it plays a crucial role in training stability. Let’s explore why.</p>
 <section id="the-variance-problem" class="level2">
 <h2 class="anchored" data-anchor-id="the-variance-problem">The variance problem</h2>
 <p>For each attention score, we compute <span class="math inline">\(score = \sum_{i=1}^{d_k}q_i \cdot k_i\)</span>. Let’s analyze what happens to this sum under typical conditions.</p>
 <p>Assume <span class="math inline">\(q_i\)</span> and <span class="math inline">\(k_i\)</span> are independent random variables with mean 0 and variance 1. Let’s derive the expected value and variance of our score.</p>
-<p><strong>Expected value of the score:</strong></p>
+<p><strong>Expected value of the attention score:</strong></p>
 <p><span class="math display">\[
 E[X \cdot Y] = E[X] \cdot E[Y] \quad \text{(if X and Y are independent)}
 \]</span> <span class="math display">\[
@@ -401,14 +401,14 @@ E[X + Y] = E[X] + E[Y]
 \]</span> <span class="math display">\[
 E[\sum_{i=1}^{d_k} q_i \cdot k_i] = \sum_{i=1}^{d_k} E[q_i \cdot k_i] = 0
 \]</span></p>
-<p><strong>Variance of the score:</strong></p>
-<p>For independent random variables with mean 0 and variance 1, the variance of their product is:</p>
+<p><strong>Variance of the attention score:</strong></p>
+<p>Similarly, we can derive the variance of our attention scores. Let’s start with the each product term variance:</p>
 <p><span class="math display">\[
 Var(X \cdot Y)= Var(X) \cdot Var(Y) + Var(X)⋅[E(Y)]^2 + Var(Y)⋅[E(X)]^2
 \]</span> <span class="math display">\[
 Var(q_i \cdot k_i) = 1 \cdot 1 + 1 \cdot 0^2 + 1 \cdot 0^2 = 1
 \]</span></p>
-<p>When summing independent variables:</p>
+<p>Therefore, each product has mean 0 and variance 1. Now, using the property that the variance of the sum of independent variables is the sum of their variances:</p>
 <p><span class="math display">\[
 Var(X + Y) = Var(X) + Var(Y) \quad \text{(if X and Y are independent)}
 \]</span> <span class="math display">\[
@@ -426,7 +426,7 @@ softmax(100, -50, -50) = \frac{e^{100}}{e^{100} + e^{-50} + e^{-50}} \approx 1
 <p><span class="math display">\[
 softmax(99.9, -50.1, -50.1) = \frac{e^{99.9}}{e^{99.9} + e^{-50.1} + e^{-50.1}} \approx 1
 \]</span></p>
-<p>The output is nearly identical despite the input changes. This means <strong>gradients become vanishingly small</strong>, making the model difficult to train (you’re performing really small steps and taking forever to converge). The softmax has saturated—it’s producing near one-hot distributions where small changes in input barely affect the output.</p>
+<p>The output is nearly identical despite the input changes. This means <strong>gradients become vanishingly small</strong>, making the model difficult to train (the optimizer is performing really small steps and taking forever to converge). The softmax has saturated—it’s producing near one-hot distributions where small changes in input barely affect the output.</p>
 </section>
 <section id="the-solution" class="level2">
 <h2 class="anchored" data-anchor-id="the-solution">The solution</h2>
