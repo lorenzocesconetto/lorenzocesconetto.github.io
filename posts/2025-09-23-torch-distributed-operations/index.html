@@ -350,7 +350,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
   <li><a href="#point-to-point-one-to-one" id="toc-point-to-point-one-to-one" class="nav-link" data-scroll-target="#point-to-point-one-to-one">Point-to-Point (One-to-One)</a></li>
-  <li><a href="#collectives" id="toc-collectives" class="nav-link" data-scroll-target="#collectives">Collectives</a></li>
+  <li><a href="#collectives" id="toc-collectives" class="nav-link" data-scroll-target="#collectives">Collectives</a>
+  <ul class="collapse">
+  <li><a href="#one-to-all-collectives" id="toc-one-to-all-collectives" class="nav-link" data-scroll-target="#one-to-all-collectives">One-to-All Collectives</a></li>
+  <li><a href="#all-to-one-collectives" id="toc-all-to-one-collectives" class="nav-link" data-scroll-target="#all-to-one-collectives">All-to-One Collectives</a></li>
+  <li><a href="#all-to-all-collectives" id="toc-all-to-all-collectives" class="nav-link" data-scroll-target="#all-to-all-collectives">All-to-All Collectives</a></li>
+  </ul></li>
   <li><a href="#synchronization" id="toc-synchronization" class="nav-link" data-scroll-target="#synchronization">Synchronization</a></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
@@ -395,6 +400,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
+<style>
+img {
+  max-width: 100%;
+  height: auto;
+}
+pre code {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+</style>
 <p>This article is part of a series about distributed AI across multiple GPUs:</p>
 <ul>
 <li><a href="../2-first-steps-gpu/">Part 1: Understanding the Host and Device Paradigm</a></li>
@@ -458,9 +473,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>Collectives</h1>
 <hr>
 <p>Every collective operation function supports both sync and async operations through the <code>async_op</code> argument. It defaults to False, meaning synchronous operations.</p>
-<section id="one-to-all-collectives" class="level3">
-<h3 class="anchored" data-anchor-id="one-to-all-collectives">One-to-All Collectives</h3>
+<section id="one-to-all-collectives" class="level2">
+<h2 class="anchored" data-anchor-id="one-to-all-collectives">One-to-All Collectives</h2>
 <p>These operations involve one rank sending data to all other ranks in the group.</p>
+<section id="broadcast" class="level3">
+<h3 class="anchored" data-anchor-id="broadcast">Broadcast</h3>
 <ul>
 <li><p><strong><code>torch.distributed.broadcast(tensor, src)</code></strong>: Copies a tensor from a single source rank (<code>src</code>) to all other ranks. Every process ends up with an identical copy of the tensor. The <code>tensor</code> has two purposes, (1) when the rank of the process matches the <code>src</code>, the <code>tensor</code> is the data being sent (2) otherwise <code>tensor</code> is used to save the received data.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>rank <span class="op">=</span> torch.distributed.get_rank()</span>
@@ -472,10 +489,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://developer-blogs.nvidia.com/wp-content/uploads/2016/04/image04.png" class="img-fluid figure-img"></p>
-<figcaption>Broadcast. Source: <a href="https://developer.nvidia.com/blog/fast-multi-gpu-collectives-nccl/">NVIDIA</a></figcaption>
+<p><img src="./broadcast.gif" height="400" class="figure-img"></p>
+<figcaption>Image by author: Broadcast visual animation</figcaption>
 </figure>
 </div>
+</section>
+<section id="scatter" class="level3">
+<h3 class="anchored" data-anchor-id="scatter">Scatter</h3>
 <ul>
 <li><p><strong><code>torch.distributed.scatter(tensor, scatter_list, src)</code></strong>: Distributes chunks of data from a source rank across all ranks. The <code>scatter_list</code> on the source rank contains multiple tensors, and each rank (including the source) receives one tensor from this list into its <code>tensor</code> variable.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The scatter_list must be None for all non-source ranks.</span></span>
@@ -486,14 +506,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://miro.medium.com/v2/resize:fit:1400/1*bTgdxwx_SLm57X55L1mJjQ.png" class="img-fluid figure-img"></p>
-<figcaption>Scatter. Source: <a href="https://medium.com/@tugrul_acikgoz/nccl-collective-communication-pattern-basics-4efe3c7e6190">Medium</a></figcaption>
+<p><img src="./scatter.gif" height="400" class="figure-img"></p>
+<figcaption>Image by author: Scatter visual animation</figcaption>
 </figure>
 </div>
 </section>
-<section id="all-to-one-collectives" class="level3">
-<h3 class="anchored" data-anchor-id="all-to-one-collectives">All-to-One Collectives</h3>
+</section>
+<section id="all-to-one-collectives" class="level2">
+<h2 class="anchored" data-anchor-id="all-to-one-collectives">All-to-One Collectives</h2>
 <p>These operations gather data from all ranks and consolidate it onto a single destination rank.</p>
+<section id="reduce" class="level3">
+<h3 class="anchored" data-anchor-id="reduce">Reduce</h3>
 <ul>
 <li><p><strong><code>torch.distributed.reduce(tensor, dst, op)</code></strong>: Takes a tensor from each rank, applies a reduction operation (like <code>SUM</code>, <code>MAX</code>, <code>MIN</code>), and stores the final result on the destination rank (<code>dst</code>) only.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>rank <span class="op">=</span> torch.distributed.get_rank()</span>
@@ -503,10 +526,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://miro.medium.com/v2/resize:fit:1400/format:webp/1*gWmSoDx8uGA_vPM1fR8MQw.png" class="img-fluid figure-img"></p>
-<figcaption>Reduce. Source: <a href="https://medium.com/@tugrul_acikgoz/nccl-collective-communication-pattern-basics-4efe3c7e6190">Medium</a></figcaption>
+<p><img src="./reduce.gif" height="300" class="figure-img"></p>
+<figcaption>Image by author: Reduce visual animation</figcaption>
 </figure>
 </div>
+</section>
+<section id="gather" class="level3">
+<h3 class="anchored" data-anchor-id="gather">Gather</h3>
 <ul>
 <li><p><strong><code>torch.distributed.gather(tensor, gather_list, dst)</code></strong>: Gathers a tensor from every rank into a list of tensors on the destination rank. The <code>gather_list</code> must be a list of correctly sized tensors on the destination and <code>None</code> everywhere else.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The gather_list must be None for all non-destination ranks.</span></span>
@@ -520,45 +546,43 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The variable <code>world_size</code> is the total number of ranks. It can be obtained with <code>torch.distributed.get_world_size()</code>. But don’t worry about implementation details for now, the most important thing is to grasp the concepts.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://miro.medium.com/v2/resize:fit:1400/format:webp/1*WCtTuDLQwjTT3co8gTSUrQ.png" class="img-fluid figure-img"></p>
-<figcaption>Gather. Source: <a href="https://medium.com/@tugrul_acikgoz/nccl-collective-communication-pattern-basics-4efe3c7e6190">Medium</a></figcaption>
+<p><img src="./gather.gif" class="img-fluid figure-img"></p>
+<figcaption>Image by author: Gather visual animation</figcaption>
 </figure>
 </div>
 </section>
-<section id="all-to-all-collectives" class="level3">
-<h3 class="anchored" data-anchor-id="all-to-all-collectives">All-to-All Collectives</h3>
+</section>
+<section id="all-to-all-collectives" class="level2">
+<h2 class="anchored" data-anchor-id="all-to-all-collectives">All-to-All Collectives</h2>
 <p>In these operations, every rank both sends and receives data from all other ranks.</p>
+<section id="all-reduce" class="level3">
+<h3 class="anchored" data-anchor-id="all-reduce">All Reduce</h3>
 <ul>
-<li><strong><code>torch.distributed.all_reduce(tensor, op)</code></strong>: Same as <code>reduce</code>, but the result is stored on <em>every</em> rank instead of just one destination.</li>
-</ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://developer-blogs.nvidia.com/wp-content/uploads/2016/04/image01.png" class="img-fluid figure-img"></p>
-<figcaption>All Reduce. Source: <a href="https://developer.nvidia.com/blog/fast-multi-gpu-collectives-nccl/">NVIDIA</a></figcaption>
-</figure>
-</div>
+<li><p><strong><code>torch.distributed.all_reduce(tensor, op)</code></strong>: Same as <code>reduce</code>, but the result is stored on <em>every</em> rank instead of just one destination.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example for torch.distributed.all_reduce</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>rank <span class="op">=</span> torch.distributed.get_rank()</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>tensor <span class="op">=</span> torch.tensor([rank<span class="op">+</span><span class="dv">1</span>, rank<span class="op">+</span><span class="dv">2</span>, rank<span class="op">+</span><span class="dv">3</span>], dtype<span class="op">=</span>torch.float32, device<span class="op">=</span>device)</span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>torch.distributed.all_reduce(tensor, op<span class="op">=</span>torch.distributed.ReduceOp.SUM)</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Rank </span><span class="sc">{</span>rank<span class="sc">}</span><span class="ss"> after all_reduce: </span><span class="sc">{</span>tensor<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<ul>
-<li><strong><code>torch.distributed.all_gather(tensor_list, tensor)</code></strong>: Same as <code>gather</code>, but the gathered list of tensors is available on <em>every</em> rank.</li>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Rank </span><span class="sc">{</span>rank<span class="sc">}</span><span class="ss"> after all_reduce: </span><span class="sc">{</span>tensor<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
 </ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://developer-blogs.nvidia.com/wp-content/uploads/2016/04/image00.png" class="img-fluid figure-img"></p>
-<figcaption>All Gather. Source: <a href="https://developer.nvidia.com/blog/fast-multi-gpu-collectives-nccl/">NVIDIA</a></figcaption>
+<p><img src="./all-reduce.gif" height="300" class="figure-img"></p>
+<figcaption>Image by author: Gather visual animation</figcaption>
 </figure>
 </div>
+</section>
+<section id="all-gather" class="level3">
+<h3 class="anchored" data-anchor-id="all-gather">All Gather</h3>
+<ul>
+<li><p><strong><code>torch.distributed.all_gather(tensor_list, tensor)</code></strong>: Same as <code>gather</code>, but the gathered list of tensors is available on <em>every</em> rank.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example for torch.distributed.all_gather</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>rank <span class="op">=</span> torch.distributed.get_rank()</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>world_size <span class="op">=</span> torch.distributed.get_world_size()</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>input_tensor <span class="op">=</span> torch.tensor([rank], dtype<span class="op">=</span>torch.float32, device<span class="op">=</span>device)</span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>tensor_list <span class="op">=</span> [torch.empty(<span class="dv">1</span>, dtype<span class="op">=</span>torch.float32, device<span class="op">=</span>device) <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(world_size)]</span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>torch.distributed.all_gather(tensor_list, input_tensor)</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Rank </span><span class="sc">{</span>rank<span class="sc">}</span><span class="ss"> gathered: </span><span class="sc">{</span>[t.item() <span class="cf">for</span> t <span class="kw">in</span> tensor_list]<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<ul>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Rank </span><span class="sc">{</span>rank<span class="sc">}</span><span class="ss"> gathered: </span><span class="sc">{</span>[t.item() <span class="cf">for</span> t <span class="kw">in</span> tensor_list]<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
 <li><p><strong><code>torch.distributed.all_gather_into_tensor(output_tensor, input_tensor)</code></strong>: A more efficient version of <code>all_gather</code>. It gathers tensors from all ranks into a single, stacked <code>output_tensor</code> on every rank.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example for torch.distributed.all_gather_into_tensor</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>rank <span class="op">=</span> torch.distributed.get_rank()</span>
@@ -567,6 +591,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>output_tensor <span class="op">=</span> torch.empty(world_size, dtype<span class="op">=</span>torch.float32, device<span class="op">=</span>device)</span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>torch.distributed.all_gather_into_tensor(output_tensor, input_tensor)</span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Rank </span><span class="sc">{</span>rank<span class="sc">}</span><span class="ss"> gathered tensor: </span><span class="sc">{</span>output_tensor<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./all-gather.gif" height="400" class="figure-img"></p>
+<figcaption>Image by author: All Gather visual animation</figcaption>
+</figure>
+</div>
+</section>
+<section id="reduce-scatter" class="level3">
+<h3 class="anchored" data-anchor-id="reduce-scatter">Reduce Scatter</h3>
+<ul>
 <li><p><strong><code>torch.distributed.reduce_scatter(output, input_list)</code></strong>: Performs a reduce operation on a list of tensors and then scatters the results. Each rank receives a different part of the reduced output.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example for torch.distributed.reduce_scatter</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>rank <span class="op">=</span> torch.distributed.get_rank()</span>
@@ -578,10 +613,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/_images/reducescatter.png" class="img-fluid figure-img"></p>
-<figcaption>Reduce Scatter. Source: <a href="https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/usage/collectives.html">NVIDIA</a></figcaption>
+<p><img src="./reduce-scatter.gif" height="300" class="figure-img"></p>
+<figcaption>Image by author: Reduce Scatter visual animation</figcaption>
 </figure>
 </div>
+</section>
 </section>
 </section>
 <section id="synchronization" class="level1">

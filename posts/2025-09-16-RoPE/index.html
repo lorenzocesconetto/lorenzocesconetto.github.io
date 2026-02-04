@@ -425,6 +425,9 @@ window.Quarto = {
 </header>
 
 
+<blockquote class="blockquote">
+<p>This blog post got feartured on <a href="https://towardsdatascience.com/rope-clearly-explained/">Towards Data Science</a>!</p>
+</blockquote>
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
 <p>There are plenty of good resources explaining the transformer architecture online, but <strong>Rotary Position Embedding</strong> (RoPE) is often poorly explained or skipped entirely.</p>
@@ -529,7 +532,7 @@ window.Quarto = {
 </figure>
 </div>
 <p>The theoretical curve has some crazy bumps, but in practice I found it to be much more behaved:</p>
-<div id="3ea16c22" class="cell" data-execution_count="1">
+<div id="3ea16c22" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -594,7 +597,7 @@ window.Quarto = {
 </div>
 <p>An idea that occurred to me was clipping the rotation angle so the similarity strictly decreases with distance increases. I’ve seen clipping being applied to other techniques, but not to RoPE.</p>
 <p>Bare in mind that cosine similarity tends to grow (although slowly) as the distance grows a lot past our base value (later you’ll see exactly what is this base of the formula). A simple solution here is to increase the base, or even let techniques like local or window attention take care of it.</p>
-<div id="84b7addd" class="cell" data-execution_count="2">
+<div id="84b7addd" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">42</span>)</span>
