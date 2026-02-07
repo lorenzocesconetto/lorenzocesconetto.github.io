@@ -5,13 +5,26 @@ date: "2025-09-23"
 categories: [GPU]
 ---
 
+```{=html}
+<style>
+img {
+  max-width: 100%;
+  height: auto;
+}
+pre code {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+</style>
+```
+
 This article is part of a series about distributed AI across multiple GPUs:
 
 - [Part 1: Understanding the Host and Device Paradigm](../2-first-steps-gpu/)
 - **Part 2: Point-to-Point and Collective Operations** (this article)
 - [Part 3: How GPUs Communicate](../4-how-gpus-communicate/)
 - [Part 4: Gradient Accumulation & Distributed Data Parallelism (DDP)](../5-ddp/)
-- Part 5: ZeRO *(coming soon)*
+- [Part 5: ZeRO](../2025-10-25-ZeRO/)
 - Part 6: Tensor Parallelism *(coming soon)*
 
 # Introduction
@@ -72,9 +85,11 @@ The CPU process at `rank 1` gets stuck on `print(t)` because it triggers a host-
 
 Every collective operation function supports both sync and async operations through the `async_op` argument. It defaults to False, meaning synchronous operations.
 
-### One-to-All Collectives
+## One-to-All Collectives
 
 These operations involve one rank sending data to all other ranks in the group.
+
+### Broadcast
 
 * **`torch.distributed.broadcast(tensor, src)`**: Copies a tensor from a single source rank (`src`) to all other ranks. Every process ends up with an identical copy of the tensor. The `tensor` has two purposes, (1) when the rank of the process matches the `src`, the `tensor` is the data being sent (2) otherwise `tensor` is used to save the received data.
 
@@ -87,7 +102,9 @@ These operations involve one rank sending data to all other ranks in the group.
     torch.distributed.broadcast(tensor, src=0)
     ```
 
-![Broadcast. Source: [NVIDIA](https://developer.nvidia.com/blog/fast-multi-gpu-collectives-nccl/)](https://developer-blogs.nvidia.com/wp-content/uploads/2016/04/image04.png)
+![Image by author: Broadcast visual animation](./broadcast.gif){height=400}
+
+### Scatter
 
 * **`torch.distributed.scatter(tensor, scatter_list, src)`**: Distributes chunks of data from a source rank across all ranks. The `scatter_list` on the source rank contains multiple tensors, and each rank (including the source) receives one tensor from this list into its `tensor` variable.
 
@@ -99,11 +116,13 @@ These operations involve one rank sending data to all other ranks in the group.
     print(f'Rank {rank} received: {output}')
     ```
 
-![Scatter. Source: [Medium](https://medium.com/@tugrul_acikgoz/nccl-collective-communication-pattern-basics-4efe3c7e6190)](https://miro.medium.com/v2/resize:fit:1400/1*bTgdxwx_SLm57X55L1mJjQ.png)
+![Image by author: Scatter visual animation](./scatter.gif){height=400}
 
-### All-to-One Collectives
+## All-to-One Collectives
 
 These operations gather data from all ranks and consolidate it onto a single destination rank.
+
+### Reduce
 
 * **`torch.distributed.reduce(tensor, dst, op)`**: Takes a tensor from each rank, applies a reduction operation (like `SUM`, `MAX`, `MIN`), and stores the final result on the destination rank (`dst`) only.
 
@@ -114,7 +133,9 @@ These operations gather data from all ranks and consolidate it onto a single des
     print(tensor)
     ```
 
-![Reduce. Source: [Medium](https://medium.com/@tugrul_acikgoz/nccl-collective-communication-pattern-basics-4efe3c7e6190)](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*gWmSoDx8uGA_vPM1fR8MQw.png)
+![Image by author: Reduce visual animation](./reduce.gif){height=300}
+
+### Gather
 
 * **`torch.distributed.gather(tensor, gather_list, dst)`**: Gathers a tensor from every rank into a list of tensors on the destination rank. The `gather_list` must be a list of correctly sized tensors on the destination and `None` everywhere else.
 
@@ -130,15 +151,15 @@ These operations gather data from all ranks and consolidate it onto a single des
 
 The variable `world_size` is the total number of ranks. It can be obtained with `torch.distributed.get_world_size()`. But don't worry about implementation details for now, the most important thing is to grasp the concepts.
 
-![Gather. Source: [Medium](https://medium.com/@tugrul_acikgoz/nccl-collective-communication-pattern-basics-4efe3c7e6190)](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*WCtTuDLQwjTT3co8gTSUrQ.png)
+![Image by author: Gather visual animation](./gather.gif)
 
-### All-to-All Collectives
+## All-to-All Collectives
 
 In these operations, every rank both sends and receives data from all other ranks.
 
-* **`torch.distributed.all_reduce(tensor, op)`**: Same as `reduce`, but the result is stored on *every* rank instead of just one destination.
+### All Reduce
 
-![All Reduce. Source: [NVIDIA](https://developer.nvidia.com/blog/fast-multi-gpu-collectives-nccl/)](https://developer-blogs.nvidia.com/wp-content/uploads/2016/04/image01.png)
+* **`torch.distributed.all_reduce(tensor, op)`**: Same as `reduce`, but the result is stored on *every* rank instead of just one destination.
 
   ```python
   # Example for torch.distributed.all_reduce
@@ -148,9 +169,12 @@ In these operations, every rank both sends and receives data from all other rank
   print(f"Rank {rank} after all_reduce: {tensor}")
   ```
 
+![Image by author: Gather visual animation](./all-reduce.gif){height=300}
+
+### All Gather
+
 * **`torch.distributed.all_gather(tensor_list, tensor)`**: Same as `gather`, but the gathered list of tensors is available on *every* rank.
 
-![All Gather. Source: [NVIDIA](https://developer.nvidia.com/blog/fast-multi-gpu-collectives-nccl/)](https://developer-blogs.nvidia.com/wp-content/uploads/2016/04/image00.png)
 
   ```python
   # Example for torch.distributed.all_gather
@@ -161,7 +185,6 @@ In these operations, every rank both sends and receives data from all other rank
   torch.distributed.all_gather(tensor_list, input_tensor)
   print(f"Rank {rank} gathered: {[t.item() for t in tensor_list]}")
   ```
-
 
 * **`torch.distributed.all_gather_into_tensor(output_tensor, input_tensor)`**: A more efficient version of `all_gather`. It gathers tensors from all ranks into a single, stacked `output_tensor` on every rank.
 
@@ -175,6 +198,10 @@ In these operations, every rank both sends and receives data from all other rank
     print(f"Rank {rank} gathered tensor: {output_tensor}")
     ```
 
+![Image by author: All Gather visual animation](./all-gather.gif){height=400}
+
+### Reduce Scatter
+
 * **`torch.distributed.reduce_scatter(output, input_list)`**: Performs a reduce operation on a list of tensors and then scatters the results. Each rank receives a different part of the reduced output.
 
     ```python
@@ -187,7 +214,7 @@ In these operations, every rank both sends and receives data from all other rank
     print(f"Rank {rank} received reduced value: {output.item()}")
     ```
 
-![Reduce Scatter. Source: [NVIDIA](https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/usage/collectives.html)](https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/_images/reducescatter.png)
+![Image by author: Reduce Scatter visual animation](./reduce-scatter.gif){height=300}
 
 # Synchronization
 

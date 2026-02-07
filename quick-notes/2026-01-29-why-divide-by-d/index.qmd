@@ -5,7 +5,7 @@ date: "2026-01-29"
 categories: [Transformers]
 ---
 
-When computing attention scores in transformers, we calculate $QK^T$ and then divide by $\sqrt{d_k}$ before applying softmax. But why is this scaling necessary?
+Transformer models compute attention scores by calculating $QK^T$, then dividing by $\sqrt{d_k}$ to scale the result before applying softmax. This scaling factor might seem like a minor detail, but it plays a crucial role in training stability. Let's explore why.
 
 ## The variance problem
 
@@ -13,7 +13,7 @@ For each attention score, we compute $score = \sum_{i=1}^{d_k}q_i \cdot k_i$. Le
 
 Assume $q_i$ and $k_i$ are independent random variables with mean 0 and variance 1. Let's derive the expected value and variance of our score.
 
-**Expected value of the score:**
+**Expected value of the attention score:**
 
 $$
 E[X \cdot Y] = E[X] \cdot E[Y] \quad \text{(if X and Y are independent)}
@@ -28,18 +28,18 @@ $$
 E[\sum_{i=1}^{d_k} q_i \cdot k_i] = \sum_{i=1}^{d_k} E[q_i \cdot k_i] = 0
 $$
 
-**Variance of the score:**
+**Variance of the attention score:**
 
-For independent random variables with mean 0 and variance 1, the variance of their product is:
+Similarly, we can derive the variance of our attention scores. Let's start with the each product term variance:
 
 $$
-Var(X \cdot Y)= Var(X) \cdot Var(Y) + Var(X)⋅[E(Y)]^2 + Var(Y)⋅[E(X)]^2
+Var(X \cdot Y)= Var(X) \cdot Var(Y) + Var(X)⋅[E(Y)]^2 + Var(Y)⋅[E(X)]^2 
 $$ 
 $$ 
 Var(q_i \cdot k_i) = 1 \cdot 1 + 1 \cdot 0^2 + 1 \cdot 0^2 = 1
 $$
 
-When summing independent variables:
+Therefore, each product has mean 0 and variance 1. Now, using the property that the variance of the sum of independent variables is the sum of their variances:
 
 $$
 Var(X + Y) = Var(X) + Var(Y) \quad \text{(if X and Y are independent)}
@@ -64,7 +64,7 @@ $$
 softmax(99.9, -50.1, -50.1) = \frac{e^{99.9}}{e^{99.9} + e^{-50.1} + e^{-50.1}} \approx 1
 $$
 
-The output is nearly identical despite the input changes. This means **gradients become vanishingly small**, making the model difficult to train (you're performing really small steps and taking forever to converge). The softmax has saturated—it's producing near one-hot distributions where small changes in input barely affect the output.
+The output is nearly identical despite the input changes. This means **gradients become vanishingly small**, making the model difficult to train (the optimizer is performing really small steps and taking forever to converge). The softmax has saturated—it's producing near one-hot distributions where small changes in input barely affect the output.
 
 ## The solution
 

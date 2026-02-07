@@ -11,7 +11,7 @@ This article is part of a series about distributed AI across multiple GPUs:
 - [Part 2: Point-to-Point and Collective Operations](../3-torch-distributed-operations/)
 - [Part 3: How GPUs Communicate](../4-gpu-hardware-and-networking/)
 - [Part 4: Gradient Accumulation & Distributed Data Parallelism (DDP)](../5-ddp/)
-- Part 5: ZeRO *(coming soon)*
+- [Part 5: ZeRO](../2025-10-25-ZeRO/)
 - Part 6: Tensor Parallelism *(coming soon)*
 
 # Introduction
