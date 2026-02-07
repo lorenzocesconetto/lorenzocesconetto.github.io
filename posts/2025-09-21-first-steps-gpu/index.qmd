@@ -8,17 +8,17 @@ categories: [GPU]
 This article is part of a series about distributed AI across multiple GPUs:
 
 - **Part 1: Understanding the Host and Device Paradigm** (this article)
-- [Part 2: Point-to-Point and Collective Operations](../3-torch-distributed-operations/)
-- [Part 3: How GPUs Communicate](../4-gpu-hardware-and-networking/)
-- [Part 4: Gradient Accumulation & Distributed Data Parallelism (DDP)](../5-ddp/)
+- [Part 2: Point-to-Point and Collective Operations](../2025-09-23-torch-distributed-operations/)
+- [Part 3: How GPUs Communicate](../2025-10-01-how-gpus-communicate/)
+- [Part 4: Gradient Accumulation & Distributed Data Parallelism (DDP)](../2025-10-12-ddp/)
 - [Part 5: ZeRO](../2025-10-25-ZeRO/)
 - Part 6: Tensor Parallelism *(coming soon)*
 
 # Introduction
 
-This guide explains the foundational concepts of how a CPU and a discrete graphics card (GPU) work together. It's a high-level introduction designed to help you build a mental model of the host-device paradigm.
+This guide explains the foundational concepts of how a CPU and a discrete graphics card (GPU) work together. It's a high-level introduction designed to help you build a mental model of the host-device paradigm. We will focus specifically on NVIDIA GPUs, which are the most commonly used for AI workloads.
 
-*For integrated GPUs, such as those found in Apple Silicon chips, the architecture is slightly different, so we will not cover it in this post.*
+*For integrated GPUs, such as those found in Apple Silicon chips, the architecture is slightly different, and it won't be covered in this post.*
 
 # The Big Picture: The Host and The Device
 
@@ -35,13 +35,13 @@ The Host talks to the Device through a queuing system.
 
 1.  **CPU Initiates Commands:** Your script, running on the CPU, encounters a line of code intended for the GPU (e.g., `tensor.to('cuda')`).
 2.  **Commands are Queued:** The CPU doesn't wait. It simply places this command onto a special to-do list for the GPU called a **CUDA Stream**.
-3.  **Asynchronous Execution:** As soon as the command is enqueued, the CPU is free to move on to the next line of your script. This is called **asynchronous execution**, and it's a key to achieving high performance. While the GPU is busy crunching numbers, the CPU can work on other tasks, like preparing the next batch of data.
+3.  **Asynchronous Execution:** The CPU does not wait for the actual operation to be completed by the GPU, the host moves on to the next line of your script. This is called **asynchronous execution**, and it's a key to achieving high performance. While the GPU is busy crunching numbers, the CPU can work on other tasks, like preparing the next batch of data.
 
 # PyTorch Tensors
 
 PyTorch is a powerful framework that abstracts away many details, but this abstraction can sometimes obscure what is happening under the hood.
 
-When you create a PyTorch tensor, it has two parts: metadata (like its shape and data type) and the actual numerical data. So when you run something like this `t = torch.randn(100, 100, device=device)`, the tensor's metadata is managed by the CPU, while its data is stored in the GPU's VRAM.
+When you create a PyTorch tensor, it has two parts: metadata (like its shape and data type) and the actual numerical data. So when you run something like this `t = torch.randn(100, 100, device=device)`, the tensor's metadata is stored in the host's RAM, while its data is stored in the GPU's VRAM.
 
 This distinction is important. When you run `print(t.shape)`, the CPU can immediately access this information because the metadata is already in its own RAM. But what happens if you run `print(t)`, which requires the actual data living in VRAM?
 
@@ -49,11 +49,13 @@ This distinction is important. When you run `print(t.shape)`, the CPU can immedi
 
 Accessing GPU data from the CPU can trigger a **Host-Device Synchronization**, a common performance bottleneck. This occurs whenever the CPU needs a result from the GPU that isn't yet available in the CPU's RAM.
 
-For example, consider the line `print(gpu_tensor)`. The CPU cannot print the tensor's values until the GPU has finished all pending calculations on it. When the script reaches this line, the CPU is forced to **block**, i.e. it stops and waits for the GPU to finish. Only after the GPU completes its work and copies the data from its VRAM to the CPU's RAM can the CPU proceed.
+For example, consider the line `print(gpu_tensor)` which prints a tensor that is still being computed by the GPU. The CPU cannot print the tensor's values until the GPU has finished all the calculations to obtain the final result. When the script reaches this line, the CPU is forced to **block**, i.e. it stops and waits for the GPU to finish. Only after the GPU completes its work and copies the data from its VRAM to the CPU's RAM can the CPU proceed.
 
 As another example, what's the difference between `torch.randn(100, 100).to(device)` and `torch.randn(100, 100, device=device)`? The first method is less efficient because it creates the data on the CPU and then transfers it to the GPU. The second method is more efficient because it creates the tensor directly on the GPU; the CPU only sends the creation command.
 
 These synchronization points can severely impact performance. Effective GPU programming involves minimizing them to ensure both the Host and Device stay as busy as possible. After all, you want your GPUs to go *brrrrr*.
+
+![](https://www.perrygeo.com/images/brr.png)
 
 # Scaling Up: Distributed Computing and Ranks
 
@@ -63,23 +65,7 @@ In this context, a new and important concept emerges: the **Rank**.
 
 *   Each **rank** is a CPU process which gets assigned a single device (GPU) and a unique ID. If you launch a training script across two GPUs, you will create two processes: one with `rank=0` and another with `rank=1`.
 
-This means you are launching two separate instances of your Python script. On a single machine with multiple GPUs (a single node), these processes run on the same CPU but remain independent, without sharing memory or state. `Rank 0` commands its assigned GPU (`cuda:0`), while `Rank 1` commands its GPU (`cuda:1`). Although both ranks run the same code, you can use the rank ID to assign different tasks to each process, like having each one process a different portion of the data.
-
-# Communication: Blocking vs. Non-Blocking
-
-To work together, these ranks must exchange data. This can happen directly between GPUs, bypassing the CPU's main memory, though the CPU still does some orchestration. Ideally, the GPUs are connected with a high-speed interconnect like NVLink or InfiniBand (we'll be covered in detail in a future post).
-
-PyTorch provides two foundational methods for this communication, which we will explore in more detail in later posts.
-
-### Synchronous (Blocking) Communication
-
-*   **Behavior:** When you call `torch.distributed.send()`, your process **stops and waits** until the data has been safely copied to a communication buffer. This method is simple and reliable.
-
-### Asynchronous (Non-Blocking) Communication
-
-*   **Behavior:** When you call `torch.distributed.isend()`, the call returns **immediately**, and the send operation happens in the background. This allows your CPU to continue with other tasks, a technique known as **overlapping computation with communication**.
-
-The asynchronous API is more complex because you must ensure you don't modify data while it is being sent. However, mastering it is the key to unlocking maximum performance in large-scale distributed training.
+This means you are launching two separate instances of your Python script. On a single machine with multiple GPUs (a single node), these processes run on the same CPU but remain independent, without sharing memory or state. `Rank 0` commands its assigned GPU (`cuda:0`), while `Rank 1` commands another GPU (`cuda:1`). Although both ranks run the same code, you can leverage a variable that holds the rank ID to assign different tasks to each GPU, like having each one process a different portion of the data (we'll see examples of this in the next [blog post](../2025-09-23-torch-distributed-operations/) of this series).
 
 # Conclusion
 
@@ -88,6 +74,5 @@ Congratulations for reading all the way to the end! In this post, you learned ab
 - The Host/Device relationship
 - Asynchronous execution
 - Host-Device synchronization
-- Communication patterns
 
 **In the [next blog post](../3-torch-distributed-operations/), we will dive deeper into Point-to-Point and Collective Operations, which enable multiple GPUs to coordinate complex workflows such as distributed neural network training.**

@@ -20,24 +20,40 @@ pre code {
 
 This article is part of a series about distributed AI across multiple GPUs:
 
-- [Part 1: Understanding the Host and Device Paradigm](../2-first-steps-gpu/)
+- [Part 1: Understanding the Host and Device Paradigm](../2025-09-21-first-steps-gpu/)
 - **Part 2: Point-to-Point and Collective Operations** (this article)
-- [Part 3: How GPUs Communicate](../4-how-gpus-communicate/)
-- [Part 4: Gradient Accumulation & Distributed Data Parallelism (DDP)](../5-ddp/)
+- [Part 3: How GPUs Communicate](../2025-10-01-how-gpus-communicate/)
+- [Part 4: Gradient Accumulation & Distributed Data Parallelism (DDP)](../2025-10-12-ddp/)
 - [Part 5: ZeRO](../2025-10-25-ZeRO/)
 - Part 6: Tensor Parallelism *(coming soon)*
 
 # Introduction
 
-In the previous post, we established the host-device paradigm and introduced the concept of ranks for multi-GPU training. Now, we'll explore the specific communication patterns provided by PyTorch's `torch.distributed` module to coordinate work and exchange data between these ranks. These operations, known as **collectives**, are the building blocks of distributed training.
+In the previous post, we established the host-device paradigm and introduced the concept of ranks for multi-GPU workloads. Now, we'll explore the specific communication patterns provided by PyTorch's `torch.distributed` module to coordinate work and exchange data between these ranks. These operations, known as **collectives**, are the building blocks of distributed workloads.
 
 Although PyTorch exposes these operations, it ultimately calls a backend framework that actually implements the communication. For NVIDIA GPUs, it's `NCCL` (NVIDIA Collective Communications Library), while for AMD it's RCCL (ROCm Communication Collectives Library).
 
 `NCCL` implements multi-GPU and multi-node communication primitives optimized for NVIDIA GPUs and networking. It automatically detects the current topology (communication channels like PCIe, NVLink, InfiniBand) and selects the most efficient one.
 
-> Since NVIDIA GPUs are the most common, we'll focus on the `NCCL` backend for this post.
+> Disclaimer 1: Since NVIDIA GPUs are the most common, we'll focus on the `NCCL` backend for this post.
 
-> For brevity, the code presented below only provides the main arguments of each method instead of all available arguments.
+> Disclaimer 2: For brevity, the code presented below only provides the main arguments of each method instead of all available arguments.
+
+> Disclaimer 3: For simplicity, we're not showing the memory deallocation of tensors, but operations like `scatter` will not automatically free the memory of the source rank (if you don't understand what I mean, that's fine, it'll become clear very soon).
+
+# Communication: Blocking vs. Non-Blocking
+
+To work together, GPUs must exchange data. The CPU initiates the communication by enqueuing NCCL kernels into CUDA streams (if you don't know what CUDA Streams are, check out the [first blog post](../2025-09-21-first-steps-gpu/) of this series), but the actual data transfer happens directly between GPUs over the interconnect, bypassing the CPU's main memory entirely. Ideally, the GPUs are connected with a high-speed interconnect like NVLink or InfiniBand (these interconnects are covered in the [third post of this series](../2025-10-01-how-gpus-communicate/)).
+
+This communication may be synchronous (blocking) or asynchronous (non-blocking), which we explore below.
+
+### Synchronous (Blocking) Communication
+
+* **Behavior:** When you call a synchronous communication method, the host process **stops and waits** until the NCCL kernel is successfully enqueued on the NCCL CUDA stream. Once enqueued, the function returns. This is usually simple and reliable. Note that the host is not waiting for the transfer to complete, just for the operation to be enqueued. However, it blocks **that specific stream from moving on to the next operation** until the NCCL kernel is executed to completion.
+
+### Asynchronous (Non-Blocking) Communication
+
+* **Behavior:** When you call an asynchronous communication method, the call returns **immediately**, and the enqueuing operation happens in the background. This allows your CPU to continue with other tasks, a technique known as **overlapping computation with communication**. The asynchronous API is more complex because you must ensure you don't modify data while it's being transferred, as doing so would lead to undefined behavior. However, mastering it is key to unlocking maximum performance in large-scale distributed training.
 
 # Point-to-Point (One-to-One)
 
@@ -45,18 +61,20 @@ Although PyTorch exposes these operations, it ultimately calls a backend framewo
 
 These operations are not considered **collectives**, but they are foundational communication primitives. They facilitate direct data transfer between two specific ranks and are fundamental for tasks where one GPU needs to send specific information to another.
 
-* **Synchronous (Blocking)**: The program waits for the operation to be enqueued before proceeding. For CPU tensors, the rank process is blocked until the transfer is completed. For GPU tensors, it blocks only until the operation is submitted to the GPU's command queue.
+* **Synchronous (Blocking)**: The host process waits for the operation to be enqueued to the CUDA stream before proceeding.
   * `torch.distributed.send(tensor, dst)`: Sends a tensor to a specified destination rank.
   * `torch.distributed.recv(tensor, src)`: Receives a tensor from a source rank. The receiving tensor must be pre-allocated with the correct shape and `dtype`.
 
-* **Asynchronous (Non-Blocking)**: The program initiates the transfer and immediately continues with other tasks. This allows for overlapping communication with computation. Both operations return a `request` object that can be used to track the status.
-  * `torch.distributed.isend(tensor, dst)`: Initiates an asynchronous send operation.
-  * `torch.distributed.irecv(tensor, src)`: Initiates an asynchronous receive operation.
-  * `request.wait()`: Blocks execution until the specific asynchronous operation is complete.
+* **Asynchronous (Non-Blocking)**: The host process initiates the enqueue operation and immediately continues with other tasks. This allows for overlapping communication with computation. These operations return a `request` object that can be used to track the enqueuing status.
+  * `request = torch.distributed.isend(tensor, dst)`: Initiates an asynchronous send operation.
+  * `request = torch.distributed.irecv(tensor, src)`: Initiates an asynchronous receive operation.
+  * `request.wait()`: Blocks the host only until the operation has been successfully enqueued on the CUDA stream. However, it does block the currently active CUDA stream from executing later kernels until this specific asynchronous operation completes.
+  * `request.wait(timeout)`: If you provide a timeout argument, the host behavior changes. It will block the CPU thread until the NCCL work completes or times out (raising an exception). In normal cases, users do not need to set the timeout.
+  * `request.is_completed()`: Returns `True` if the operation has been successfully enqueued onto a CUDA stream. It may be used for polling. It does not guarantee that the actual data has been transferred.
 
 ### Major "Gotchas" in NCCL
 
-While `send` and `recv` are labeled "synchronous," their behavior in NCCL can be confusing, so let me clarify things before you get confused when running your tests. A synchronous call on a CUDA tensor blocks the host CPU thread only until the data transfer kernel is launched on the GPU, **not** until the transfer is complete. The CPU is then free to enqueue other tasks. Asynchronous operations are generally preferred as they make this overlap explicit.
+While `send` and `recv` are labeled "synchronous," their behavior in NCCL can be confusing. A synchronous call on a CUDA tensor blocks the host CPU thread only until the data transfer kernel is enqueued to the stream, **not** until the data transfer completes. The CPU is then free to enqueue other tasks.
 
 There is an exception: the very first call to `torch.distributed.recv()` in a process is truly blocking and waits for the transfer to finish, likely due to internal NCCL warm-up procedures. Subsequent calls will only block until the operation is enqueued.
 
@@ -77,7 +95,7 @@ else: # rank == 1 (assuming only 2 ranks)
 
 The CPU process at `rank 1` gets stuck on `print(t)` because it triggers a host-device synchronization to access the tensor's data, which never arrives.
 
-> If you run this code multiple times, notice that `This WILL print if NCCL is warmed-up` will not get printed in the following executions, since the CPU is still stuck at `print(t)` from the previous run.
+> If you run this code multiple times, notice that `This WILL print if NCCL is warmed-up` will not get printed in the later executions, since the CPU is still stuck at `print(t)`.
 
 # Collectives
 
@@ -91,7 +109,7 @@ These operations involve one rank sending data to all other ranks in the group.
 
 ### Broadcast
 
-* **`torch.distributed.broadcast(tensor, src)`**: Copies a tensor from a single source rank (`src`) to all other ranks. Every process ends up with an identical copy of the tensor. The `tensor` has two purposes, (1) when the rank of the process matches the `src`, the `tensor` is the data being sent (2) otherwise `tensor` is used to save the received data.
+* **`torch.distributed.broadcast(tensor, src)`**: Copies a tensor from a single source rank (`src`) to all other ranks. Every process ends up with an identical copy of the tensor. The `tensor` parameter serves two purposes: (1) when the rank of the process matches the `src`, the `tensor` is the data being sent; (2) otherwise, `tensor` is used to save the received data.
 
     ```python
     rank = torch.distributed.get_rank()
@@ -106,14 +124,14 @@ These operations involve one rank sending data to all other ranks in the group.
 
 ### Scatter
 
-* **`torch.distributed.scatter(tensor, scatter_list, src)`**: Distributes chunks of data from a source rank across all ranks. The `scatter_list` on the source rank contains multiple tensors, and each rank (including the source) receives one tensor from this list into its `tensor` variable.
+* **`torch.distributed.scatter(tensor, scatter_list, src)`**: Distributes chunks of data from a source rank across all ranks. The `scatter_list` on the source rank contains multiple tensors, and each rank (including the source) receives one tensor from this list into its `tensor` variable. The destination ranks just pass `None` for the `scatter_list`.
 
     ```python
     # The scatter_list must be None for all non-source ranks.
     scatter_list = None if rank != 0 else [torch.tensor([i, i+1]).to(device) for i in range(0,4,2)]
-    output = torch.empty(2, dtype=torch.int64).to(device)
-    torch.distributed.scatter(output, scatter_list, src=0)
-    print(f'Rank {rank} received: {output}')
+    tensor = torch.empty(2, dtype=torch.int64).to(device)
+    torch.distributed.scatter(tensor, scatter_list, src=0)
+    print(f'Rank {rank} received: {tensor}')
     ```
 
 ![Image by author: Scatter visual animation](./scatter.gif){height=400}
@@ -129,7 +147,7 @@ These operations gather data from all ranks and consolidate it onto a single des
     ```python
     rank = torch.distributed.get_rank()
     tensor = torch.tensor([rank+1, rank+2, rank+3], device=device)
-    torch.distributed.all_reduce(tensor, op=torch.distributed.ReduceOp.SUM)
+    torch.distributed.reduce(tensor, dst=0, op=torch.distributed.ReduceOp.SUM)
     print(tensor)
     ```
 
@@ -137,7 +155,7 @@ These operations gather data from all ranks and consolidate it onto a single des
 
 ### Gather
 
-* **`torch.distributed.gather(tensor, gather_list, dst)`**: Gathers a tensor from every rank into a list of tensors on the destination rank. The `gather_list` must be a list of correctly sized tensors on the destination and `None` everywhere else.
+* **`torch.distributed.gather(tensor, gather_list, dst)`**: Gathers a tensor from every rank into a list of tensors on the destination rank. The `gather_list` must be a list of tensors (correctly sized and typed) on the destination and `None` everywhere else.
 
     ```python
     # The gather_list must be None for all non-destination ranks.
@@ -175,7 +193,6 @@ In these operations, every rank both sends and receives data from all other rank
 
 * **`torch.distributed.all_gather(tensor_list, tensor)`**: Same as `gather`, but the gathered list of tensors is available on *every* rank.
 
-
   ```python
   # Example for torch.distributed.all_gather
   rank = torch.distributed.get_rank()
@@ -186,23 +203,11 @@ In these operations, every rank both sends and receives data from all other rank
   print(f"Rank {rank} gathered: {[t.item() for t in tensor_list]}")
   ```
 
-* **`torch.distributed.all_gather_into_tensor(output_tensor, input_tensor)`**: A more efficient version of `all_gather`. It gathers tensors from all ranks into a single, stacked `output_tensor` on every rank.
-
-    ```python
-    # Example for torch.distributed.all_gather_into_tensor
-    rank = torch.distributed.get_rank()
-    world_size = torch.distributed.get_world_size()
-    input_tensor = torch.tensor([rank], dtype=torch.float32, device=device)
-    output_tensor = torch.empty(world_size, dtype=torch.float32, device=device)
-    torch.distributed.all_gather_into_tensor(output_tensor, input_tensor)
-    print(f"Rank {rank} gathered tensor: {output_tensor}")
-    ```
-
 ![Image by author: All Gather visual animation](./all-gather.gif){height=400}
 
 ### Reduce Scatter
 
-* **`torch.distributed.reduce_scatter(output, input_list)`**: Performs a reduce operation on a list of tensors and then scatters the results. Each rank receives a different part of the reduced output.
+* **`torch.distributed.reduce_scatter(output, input_list)`**: Equivalent of performing a reduce operation on a list of tensors and then scattering the results. Each rank receives a different part of the reduced output.
 
     ```python
     # Example for torch.distributed.reduce_scatter
@@ -222,20 +227,21 @@ In these operations, every rank both sends and receives data from all other rank
 
 The two most frequently used operations are `request.wait()` and `torch.cuda.synchronize()`. It's crucial to understand the difference between these two:
 
-* `request.wait()`: This is used for asynchronous operations. It synchronizes CUDA streams for that **specific** operation, ensuring the default stream waits for the communication to complete before proceeding. For GPU collectives, it does **not** block the host CPU thread, it only blocks the currently active CUDA stream (if you're not familiar with streams, don't worry about it for now, just understand that the GPU is blocked). For CPU collectives, it will block the host process until the operation is completed.
+* `request.wait()`: This is used for asynchronous operations. It synchronizes the currently active CUDA stream for that operation, ensuring the stream waits for the communication to complete before proceeding. In other words, it blocks the currently active CUDA stream until the data transfer finishes. On the host side, it only causes the host to wait until the kernel is enqueued; the host does **not** wait for the data transfer to complete.
 
-* `torch.cuda.synchronize()`: This is a more forceful command that pauses the host CPU thread until **all** previously queued tasks on the GPU have finished. It guarantees that the GPU is completely idle before the CPU moves on, but it can create performance bottlenecks if used improperly. Whenever you need to perform benchmark measurements, you should use this to ensure you capture the exact moment the GPUs are done.
+* `torch.cuda.synchronize()`: This is a more forceful command that pauses the host CPU thread until **all** previously enqueued tasks on the GPU have finished. It guarantees that the GPU is completely idle before the CPU moves on, but it can create performance bottlenecks if used improperly. Whenever you need to perform benchmark measurements, you should use this to ensure you capture the exact moment the GPUs are done.
 
 # Conclusion
 
-Congratulations for reading all the way to the end! In this post you learned about:
+Congratulations on making it to the end! In this post, you learned about:
 
 - Point-to-Point Operations
 - Sync and Async in NCCL
 - Collective operations
 - Synchronization methods
 
-**In the [next blog post](../4-how-gpus-communicate/) we'll dive into PCIe, NVLink and other mechanisms that enable communication in a distributed setting!**
+**In the [next blog post](../2025-10-01-how-gpus-communicate/) we'll dive into PCIe, NVLink, and other mechanisms that enable communication in a distributed setting!**
 
 # References
 - [PyTorch Docs](https://docs.pytorch.org/docs/stable/distributed.html)
+- [NCCL P2P Docs](https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/api/p2p.html)
