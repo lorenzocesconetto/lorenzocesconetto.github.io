@@ -5,6 +5,19 @@ date: "2025-09-21"
 categories: [GPU]
 ---
 
+```{=html}
+<style>
+img {
+  max-width: 100%;
+  height: auto;
+}
+pre code {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+</style>
+```
+
 This article is part of a series about distributed AI across multiple GPUs:
 
 - **Part 1: Understanding the Host and Device Paradigm** (this article)
@@ -113,7 +126,7 @@ As another example, what's the difference between `torch.randn(100, 100).to(devi
 
 These synchronization points can severely impact performance. Effective GPU programming involves minimizing them to ensure both the Host and Device stay as busy as possible. After all, you want your GPUs to go *brrrrr*.
 
-![](https://www.perrygeo.com/images/brr.png)
+![Image by author: generated with ChatGPT](./gpus-go-brr.png){height=350}
 
 # Scaling Up: Distributed Computing and Ranks
 

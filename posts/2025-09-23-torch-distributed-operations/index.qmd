@@ -191,7 +191,7 @@ In these operations, every rank both sends and receives data from all other rank
   print(f"Rank {rank} after all_reduce: {tensor}")
   ```
 
-![Image by author: Gather visual animation](./all-reduce.gif){height=300}
+![Image by author: All Reduce visual animation](./all-reduce.gif){height=300}
 
 ### All Gather
 
