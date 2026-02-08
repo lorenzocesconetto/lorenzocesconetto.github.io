@@ -12,6 +12,7 @@
   {
     "listing": "/quick-notes.html",
     "items": [
+      "/quick-notes/2026-01-30-how-softmax-is-implemented-in-practice/index.html",
       "/quick-notes/2026-01-29-why-divide-by-d/index.html",
       "/quick-notes/2026-01-27-transformers-in-a-nutshell/index.html"
     ]

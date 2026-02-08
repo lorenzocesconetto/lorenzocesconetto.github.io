@@ -349,6 +349,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul class="collapse">
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#communication-blocking-vs.-non-blocking" id="toc-communication-blocking-vs.-non-blocking" class="nav-link" data-scroll-target="#communication-blocking-vs.-non-blocking">Communication: Blocking vs.&nbsp;Non-Blocking</a></li>
   <li><a href="#point-to-point-one-to-one" id="toc-point-to-point-one-to-one" class="nav-link" data-scroll-target="#point-to-point-one-to-one">Point-to-Point (One-to-One)</a></li>
   <li><a href="#collectives" id="toc-collectives" class="nav-link" data-scroll-target="#collectives">Collectives</a>
   <ul class="collapse">
@@ -412,45 +413,67 @@ pre code {
 </style>
 <p>This article is part of a series about distributed AI across multiple GPUs:</p>
 <ul>
-<li><a href="../2-first-steps-gpu/">Part 1: Understanding the Host and Device Paradigm</a></li>
+<li><a href="../2025-09-21-first-steps-gpu/">Part 1: Understanding the Host and Device Paradigm</a></li>
 <li><strong>Part 2: Point-to-Point and Collective Operations</strong> (this article)</li>
-<li><a href="../4-how-gpus-communicate/">Part 3: How GPUs Communicate</a></li>
-<li><a href="../5-ddp/">Part 4: Gradient Accumulation &amp; Distributed Data Parallelism (DDP)</a></li>
+<li><a href="../2025-10-01-how-gpus-communicate/">Part 3: How GPUs Communicate</a></li>
+<li><a href="../2025-10-12-ddp/">Part 4: Gradient Accumulation &amp; Distributed Data Parallelism (DDP)</a></li>
 <li><a href="../2025-10-25-ZeRO/">Part 5: ZeRO</a></li>
 <li>Part 6: Tensor Parallelism <em>(coming soon)</em></li>
 </ul>
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
-<p>In the previous post, we established the host-device paradigm and introduced the concept of ranks for multi-GPU training. Now, we’ll explore the specific communication patterns provided by PyTorch’s <code>torch.distributed</code> module to coordinate work and exchange data between these ranks. These operations, known as <strong>collectives</strong>, are the building blocks of distributed training.</p>
+<p>In the previous post, we established the host-device paradigm and introduced the concept of ranks for multi-GPU workloads. Now, we’ll explore the specific communication patterns provided by PyTorch’s <code>torch.distributed</code> module to coordinate work and exchange data between these ranks. These operations, known as <strong>collectives</strong>, are the building blocks of distributed workloads.</p>
 <p>Although PyTorch exposes these operations, it ultimately calls a backend framework that actually implements the communication. For NVIDIA GPUs, it’s <code>NCCL</code> (NVIDIA Collective Communications Library), while for AMD it’s RCCL (ROCm Communication Collectives Library).</p>
 <p><code>NCCL</code> implements multi-GPU and multi-node communication primitives optimized for NVIDIA GPUs and networking. It automatically detects the current topology (communication channels like PCIe, NVLink, InfiniBand) and selects the most efficient one.</p>
 <blockquote class="blockquote">
-<p>Since NVIDIA GPUs are the most common, we’ll focus on the <code>NCCL</code> backend for this post.</p>
+<p>Disclaimer 1: Since NVIDIA GPUs are the most common, we’ll focus on the <code>NCCL</code> backend for this post.</p>
 </blockquote>
 <blockquote class="blockquote">
-<p>For brevity, the code presented below only provides the main arguments of each method instead of all available arguments.</p>
+<p>Disclaimer 2: For brevity, the code presented below only provides the main arguments of each method instead of all available arguments.</p>
 </blockquote>
+<blockquote class="blockquote">
+<p>Disclaimer 3: For simplicity, we’re not showing the memory deallocation of tensors, but operations like <code>scatter</code> will not automatically free the memory of the source rank (if you don’t understand what I mean, that’s fine, it’ll become clear very soon).</p>
+</blockquote>
+</section>
+<section id="communication-blocking-vs.-non-blocking" class="level1">
+<h1>Communication: Blocking vs.&nbsp;Non-Blocking</h1>
+<p>To work together, GPUs must exchange data. The CPU initiates the communication by enqueuing NCCL kernels into CUDA streams (if you don’t know what CUDA Streams are, check out the <a href="../2025-09-21-first-steps-gpu/">first blog post</a> of this series), but the actual data transfer happens directly between GPUs over the interconnect, bypassing the CPU’s main memory entirely. Ideally, the GPUs are connected with a high-speed interconnect like NVLink or InfiniBand (these interconnects are covered in the <a href="../2025-10-01-how-gpus-communicate/">third post of this series</a>).</p>
+<p>This communication may be synchronous (blocking) or asynchronous (non-blocking), which we explore below.</p>
+<section id="synchronous-blocking-communication" class="level3">
+<h3 class="anchored" data-anchor-id="synchronous-blocking-communication">Synchronous (Blocking) Communication</h3>
+<ul>
+<li><strong>Behavior:</strong> When you call a synchronous communication method, the host process <strong>stops and waits</strong> until the NCCL kernel is successfully enqueued on the NCCL CUDA stream. Once enqueued, the function returns. This is usually simple and reliable. Note that the host is not waiting for the transfer to complete, just for the operation to be enqueued. However, it blocks <strong>that specific stream from moving on to the next operation</strong> until the NCCL kernel is executed to completion.</li>
+</ul>
+</section>
+<section id="asynchronous-non-blocking-communication" class="level3">
+<h3 class="anchored" data-anchor-id="asynchronous-non-blocking-communication">Asynchronous (Non-Blocking) Communication</h3>
+<ul>
+<li><strong>Behavior:</strong> When you call an asynchronous communication method, the call returns <strong>immediately</strong>, and the enqueuing operation happens in the background. This allows your CPU to continue with other tasks, a technique known as <strong>overlapping computation with communication</strong>. The asynchronous API is more complex because you must ensure you don’t modify data while it’s being transferred, as doing so would lead to undefined behavior. However, mastering it is key to unlocking maximum performance in large-scale distributed training.</li>
+</ul>
+</section>
 </section>
 <section id="point-to-point-one-to-one" class="level1">
 <h1>Point-to-Point (One-to-One)</h1>
 <hr>
 <p>These operations are not considered <strong>collectives</strong>, but they are foundational communication primitives. They facilitate direct data transfer between two specific ranks and are fundamental for tasks where one GPU needs to send specific information to another.</p>
 <ul>
-<li><strong>Synchronous (Blocking)</strong>: The program waits for the operation to be enqueued before proceeding. For CPU tensors, the rank process is blocked until the transfer is completed. For GPU tensors, it blocks only until the operation is submitted to the GPU’s command queue.
+<li><strong>Synchronous (Blocking)</strong>: The host process waits for the operation to be enqueued to the CUDA stream before proceeding.
 <ul>
 <li><code>torch.distributed.send(tensor, dst)</code>: Sends a tensor to a specified destination rank.</li>
 <li><code>torch.distributed.recv(tensor, src)</code>: Receives a tensor from a source rank. The receiving tensor must be pre-allocated with the correct shape and <code>dtype</code>.</li>
 </ul></li>
-<li><strong>Asynchronous (Non-Blocking)</strong>: The program initiates the transfer and immediately continues with other tasks. This allows for overlapping communication with computation. Both operations return a <code>request</code> object that can be used to track the status.
+<li><strong>Asynchronous (Non-Blocking)</strong>: The host process initiates the enqueue operation and immediately continues with other tasks. This allows for overlapping communication with computation. These operations return a <code>request</code> object that can be used to track the enqueuing status.
 <ul>
-<li><code>torch.distributed.isend(tensor, dst)</code>: Initiates an asynchronous send operation.</li>
-<li><code>torch.distributed.irecv(tensor, src)</code>: Initiates an asynchronous receive operation.</li>
-<li><code>request.wait()</code>: Blocks execution until the specific asynchronous operation is complete.</li>
+<li><code>request = torch.distributed.isend(tensor, dst)</code>: Initiates an asynchronous send operation.</li>
+<li><code>request = torch.distributed.irecv(tensor, src)</code>: Initiates an asynchronous receive operation.</li>
+<li><code>request.wait()</code>: Blocks the host only until the operation has been successfully enqueued on the CUDA stream. However, it does block the currently active CUDA stream from executing later kernels until this specific asynchronous operation completes.</li>
+<li><code>request.wait(timeout)</code>: If you provide a timeout argument, the host behavior changes. It will block the CPU thread until the NCCL work completes or times out (raising an exception). In normal cases, users do not need to set the timeout.</li>
+<li><code>request.is_completed()</code>: Returns <code>True</code> if the operation has been successfully enqueued onto a CUDA stream. It may be used for polling. It does not guarantee that the actual data has been transferred.</li>
 </ul></li>
 </ul>
 <section id="major-gotchas-in-nccl" class="level3">
 <h3 class="anchored" data-anchor-id="major-gotchas-in-nccl">Major “Gotchas” in NCCL</h3>
-<p>While <code>send</code> and <code>recv</code> are labeled “synchronous,” their behavior in NCCL can be confusing, so let me clarify things before you get confused when running your tests. A synchronous call on a CUDA tensor blocks the host CPU thread only until the data transfer kernel is launched on the GPU, <strong>not</strong> until the transfer is complete. The CPU is then free to enqueue other tasks. Asynchronous operations are generally preferred as they make this overlap explicit.</p>
+<p>While <code>send</code> and <code>recv</code> are labeled “synchronous,” their behavior in NCCL can be confusing. A synchronous call on a CUDA tensor blocks the host CPU thread only until the data transfer kernel is enqueued to the stream, <strong>not</strong> until the data transfer completes. The CPU is then free to enqueue other tasks.</p>
 <p>There is an exception: the very first call to <code>torch.distributed.recv()</code> in a process is truly blocking and waits for the transfer to finish, likely due to internal NCCL warm-up procedures. Subsequent calls will only block until the operation is enqueued.</p>
 <p>Consider this example where <code>rank 1</code> hangs because the CPU tries to access a tensor that the GPU has not yet received:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>rank <span class="op">=</span> torch.distributed.get_rank()</span>
@@ -465,7 +488,7 @@ pre code {
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>   <span class="bu">print</span>(<span class="st">"This will NOT print"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The CPU process at <code>rank 1</code> gets stuck on <code>print(t)</code> because it triggers a host-device synchronization to access the tensor’s data, which never arrives.</p>
 <blockquote class="blockquote">
-<p>If you run this code multiple times, notice that <code>This WILL print if NCCL is warmed-up</code> will not get printed in the following executions, since the CPU is still stuck at <code>print(t)</code> from the previous run.</p>
+<p>If you run this code multiple times, notice that <code>This WILL print if NCCL is warmed-up</code> will not get printed in the later executions, since the CPU is still stuck at <code>print(t)</code>.</p>
 </blockquote>
 </section>
 </section>
@@ -479,7 +502,7 @@ pre code {
 <section id="broadcast" class="level3">
 <h3 class="anchored" data-anchor-id="broadcast">Broadcast</h3>
 <ul>
-<li><p><strong><code>torch.distributed.broadcast(tensor, src)</code></strong>: Copies a tensor from a single source rank (<code>src</code>) to all other ranks. Every process ends up with an identical copy of the tensor. The <code>tensor</code> has two purposes, (1) when the rank of the process matches the <code>src</code>, the <code>tensor</code> is the data being sent (2) otherwise <code>tensor</code> is used to save the received data.</p>
+<li><p><strong><code>torch.distributed.broadcast(tensor, src)</code></strong>: Copies a tensor from a single source rank (<code>src</code>) to all other ranks. Every process ends up with an identical copy of the tensor. The <code>tensor</code> parameter serves two purposes: (1) when the rank of the process matches the <code>src</code>, the <code>tensor</code> is the data being sent; (2) otherwise, <code>tensor</code> is used to save the received data.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>rank <span class="op">=</span> torch.distributed.get_rank()</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> rank <span class="op">==</span> <span class="dv">0</span>: <span class="co"># source rank</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  tensor <span class="op">=</span> torch.tensor([<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>], dtype<span class="op">=</span>torch.int64, device<span class="op">=</span>device)</span>
@@ -497,12 +520,12 @@ pre code {
 <section id="scatter" class="level3">
 <h3 class="anchored" data-anchor-id="scatter">Scatter</h3>
 <ul>
-<li><p><strong><code>torch.distributed.scatter(tensor, scatter_list, src)</code></strong>: Distributes chunks of data from a source rank across all ranks. The <code>scatter_list</code> on the source rank contains multiple tensors, and each rank (including the source) receives one tensor from this list into its <code>tensor</code> variable.</p>
+<li><p><strong><code>torch.distributed.scatter(tensor, scatter_list, src)</code></strong>: Distributes chunks of data from a source rank across all ranks. The <code>scatter_list</code> on the source rank contains multiple tensors, and each rank (including the source) receives one tensor from this list into its <code>tensor</code> variable. The destination ranks just pass <code>None</code> for the <code>scatter_list</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The scatter_list must be None for all non-source ranks.</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>scatter_list <span class="op">=</span> <span class="va">None</span> <span class="cf">if</span> rank <span class="op">!=</span> <span class="dv">0</span> <span class="cf">else</span> [torch.tensor([i, i<span class="op">+</span><span class="dv">1</span>]).to(device) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">4</span>,<span class="dv">2</span>)]</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>output <span class="op">=</span> torch.empty(<span class="dv">2</span>, dtype<span class="op">=</span>torch.int64).to(device)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>torch.distributed.scatter(output, scatter_list, src<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Rank </span><span class="sc">{</span>rank<span class="sc">}</span><span class="ss"> received: </span><span class="sc">{</span>output<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>tensor <span class="op">=</span> torch.empty(<span class="dv">2</span>, dtype<span class="op">=</span>torch.int64).to(device)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>torch.distributed.scatter(tensor, scatter_list, src<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Rank </span><span class="sc">{</span>rank<span class="sc">}</span><span class="ss"> received: </span><span class="sc">{</span>tensor<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
 </ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -521,7 +544,7 @@ pre code {
 <li><p><strong><code>torch.distributed.reduce(tensor, dst, op)</code></strong>: Takes a tensor from each rank, applies a reduction operation (like <code>SUM</code>, <code>MAX</code>, <code>MIN</code>), and stores the final result on the destination rank (<code>dst</code>) only.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>rank <span class="op">=</span> torch.distributed.get_rank()</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>tensor <span class="op">=</span> torch.tensor([rank<span class="op">+</span><span class="dv">1</span>, rank<span class="op">+</span><span class="dv">2</span>, rank<span class="op">+</span><span class="dv">3</span>], device<span class="op">=</span>device)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>torch.distributed.all_reduce(tensor, op<span class="op">=</span>torch.distributed.ReduceOp.SUM)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>torch.distributed.<span class="bu">reduce</span>(tensor, dst<span class="op">=</span><span class="dv">0</span>, op<span class="op">=</span>torch.distributed.ReduceOp.SUM)</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tensor)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
 </ul>
 <div class="quarto-figure quarto-figure-center">
@@ -534,7 +557,7 @@ pre code {
 <section id="gather" class="level3">
 <h3 class="anchored" data-anchor-id="gather">Gather</h3>
 <ul>
-<li><p><strong><code>torch.distributed.gather(tensor, gather_list, dst)</code></strong>: Gathers a tensor from every rank into a list of tensors on the destination rank. The <code>gather_list</code> must be a list of correctly sized tensors on the destination and <code>None</code> everywhere else.</p>
+<li><p><strong><code>torch.distributed.gather(tensor, gather_list, dst)</code></strong>: Gathers a tensor from every rank into a list of tensors on the destination rank. The <code>gather_list</code> must be a list of tensors (correctly sized and typed) on the destination and <code>None</code> everywhere else.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The gather_list must be None for all non-destination ranks.</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>rank <span class="op">=</span> torch.distributed.get_rank()</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>world_size <span class="op">=</span> torch.distributed.get_world_size()</span>
@@ -583,14 +606,6 @@ pre code {
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>tensor_list <span class="op">=</span> [torch.empty(<span class="dv">1</span>, dtype<span class="op">=</span>torch.float32, device<span class="op">=</span>device) <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(world_size)]</span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>torch.distributed.all_gather(tensor_list, input_tensor)</span>
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Rank </span><span class="sc">{</span>rank<span class="sc">}</span><span class="ss"> gathered: </span><span class="sc">{</span>[t.item() <span class="cf">for</span> t <span class="kw">in</span> tensor_list]<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
-<li><p><strong><code>torch.distributed.all_gather_into_tensor(output_tensor, input_tensor)</code></strong>: A more efficient version of <code>all_gather</code>. It gathers tensors from all ranks into a single, stacked <code>output_tensor</code> on every rank.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example for torch.distributed.all_gather_into_tensor</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>rank <span class="op">=</span> torch.distributed.get_rank()</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>world_size <span class="op">=</span> torch.distributed.get_world_size()</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>input_tensor <span class="op">=</span> torch.tensor([rank], dtype<span class="op">=</span>torch.float32, device<span class="op">=</span>device)</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>output_tensor <span class="op">=</span> torch.empty(world_size, dtype<span class="op">=</span>torch.float32, device<span class="op">=</span>device)</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>torch.distributed.all_gather_into_tensor(output_tensor, input_tensor)</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Rank </span><span class="sc">{</span>rank<span class="sc">}</span><span class="ss"> gathered tensor: </span><span class="sc">{</span>output_tensor<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
 </ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -602,14 +617,14 @@ pre code {
 <section id="reduce-scatter" class="level3">
 <h3 class="anchored" data-anchor-id="reduce-scatter">Reduce Scatter</h3>
 <ul>
-<li><p><strong><code>torch.distributed.reduce_scatter(output, input_list)</code></strong>: Performs a reduce operation on a list of tensors and then scatters the results. Each rank receives a different part of the reduced output.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example for torch.distributed.reduce_scatter</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>rank <span class="op">=</span> torch.distributed.get_rank()</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>world_size <span class="op">=</span> torch.distributed.get_world_size()</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>input_list <span class="op">=</span> [torch.tensor([rank <span class="op">+</span> i], dtype<span class="op">=</span>torch.float32, device<span class="op">=</span>device) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(world_size)]</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>output <span class="op">=</span> torch.empty(<span class="dv">1</span>, dtype<span class="op">=</span>torch.float32, device<span class="op">=</span>device)</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>torch.distributed.reduce_scatter(output, input_list, op<span class="op">=</span>torch.distributed.ReduceOp.SUM)</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Rank </span><span class="sc">{</span>rank<span class="sc">}</span><span class="ss"> received reduced value: </span><span class="sc">{</span>output<span class="sc">.</span>item()<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong><code>torch.distributed.reduce_scatter(output, input_list)</code></strong>: Equivalent of performing a reduce operation on a list of tensors and then scattering the results. Each rank receives a different part of the reduced output.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example for torch.distributed.reduce_scatter</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>rank <span class="op">=</span> torch.distributed.get_rank()</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>world_size <span class="op">=</span> torch.distributed.get_world_size()</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>input_list <span class="op">=</span> [torch.tensor([rank <span class="op">+</span> i], dtype<span class="op">=</span>torch.float32, device<span class="op">=</span>device) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(world_size)]</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>output <span class="op">=</span> torch.empty(<span class="dv">1</span>, dtype<span class="op">=</span>torch.float32, device<span class="op">=</span>device)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>torch.distributed.reduce_scatter(output, input_list, op<span class="op">=</span>torch.distributed.ReduceOp.SUM)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Rank </span><span class="sc">{</span>rank<span class="sc">}</span><span class="ss"> received reduced value: </span><span class="sc">{</span>output<span class="sc">.</span>item()<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
 </ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -625,25 +640,26 @@ pre code {
 <hr>
 <p>The two most frequently used operations are <code>request.wait()</code> and <code>torch.cuda.synchronize()</code>. It’s crucial to understand the difference between these two:</p>
 <ul>
-<li><p><code>request.wait()</code>: This is used for asynchronous operations. It synchronizes CUDA streams for that <strong>specific</strong> operation, ensuring the default stream waits for the communication to complete before proceeding. For GPU collectives, it does <strong>not</strong> block the host CPU thread, it only blocks the currently active CUDA stream (if you’re not familiar with streams, don’t worry about it for now, just understand that the GPU is blocked). For CPU collectives, it will block the host process until the operation is completed.</p></li>
-<li><p><code>torch.cuda.synchronize()</code>: This is a more forceful command that pauses the host CPU thread until <strong>all</strong> previously queued tasks on the GPU have finished. It guarantees that the GPU is completely idle before the CPU moves on, but it can create performance bottlenecks if used improperly. Whenever you need to perform benchmark measurements, you should use this to ensure you capture the exact moment the GPUs are done.</p></li>
+<li><p><code>request.wait()</code>: This is used for asynchronous operations. It synchronizes the currently active CUDA stream for that operation, ensuring the stream waits for the communication to complete before proceeding. In other words, it blocks the currently active CUDA stream until the data transfer finishes. On the host side, it only causes the host to wait until the kernel is enqueued; the host does <strong>not</strong> wait for the data transfer to complete.</p></li>
+<li><p><code>torch.cuda.synchronize()</code>: This is a more forceful command that pauses the host CPU thread until <strong>all</strong> previously enqueued tasks on the GPU have finished. It guarantees that the GPU is completely idle before the CPU moves on, but it can create performance bottlenecks if used improperly. Whenever you need to perform benchmark measurements, you should use this to ensure you capture the exact moment the GPUs are done.</p></li>
 </ul>
 </section>
 <section id="conclusion" class="level1">
 <h1>Conclusion</h1>
-<p>Congratulations for reading all the way to the end! In this post you learned about:</p>
+<p>Congratulations on making it to the end! In this post, you learned about:</p>
 <ul>
 <li>Point-to-Point Operations</li>
 <li>Sync and Async in NCCL</li>
 <li>Collective operations</li>
 <li>Synchronization methods</li>
 </ul>
-<p><strong>In the <a href="../4-how-gpus-communicate/">next blog post</a> we’ll dive into PCIe, NVLink and other mechanisms that enable communication in a distributed setting!</strong></p>
+<p><strong>In the <a href="../2025-10-01-how-gpus-communicate/">next blog post</a> we’ll dive into PCIe, NVLink, and other mechanisms that enable communication in a distributed setting!</strong></p>
 </section>
 <section id="references" class="level1">
 <h1>References</h1>
 <ul>
 <li><a href="https://docs.pytorch.org/docs/stable/distributed.html">PyTorch Docs</a></li>
+<li><a href="https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/api/p2p.html">NCCL P2P Docs</a></li>
 </ul>
 
 
