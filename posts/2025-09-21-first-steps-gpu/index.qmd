@@ -34,8 +34,66 @@ Your program always starts on the CPU. When you want the GPU to perform a task, 
 The Host talks to the Device through a queuing system.
 
 1.  **CPU Initiates Commands:** Your script, running on the CPU, encounters a line of code intended for the GPU (e.g., `tensor.to('cuda')`).
-2.  **Commands are Queued:** The CPU doesn't wait. It simply places this command onto a special to-do list for the GPU called a **CUDA Stream**.
+2.  **Commands are Queued:** The CPU doesn't wait. It simply places this command onto a special to-do list for the GPU called a **CUDA Stream** — more on this in the next section.
 3.  **Asynchronous Execution:** The CPU does not wait for the actual operation to be completed by the GPU, the host moves on to the next line of your script. This is called **asynchronous execution**, and it's a key to achieving high performance. While the GPU is busy crunching numbers, the CPU can work on other tasks, like preparing the next batch of data.
+
+# CUDA Streams
+
+A **CUDA Stream** is an ordered queue of GPU operations. Operations submitted to a single stream execute **in order**, one after another. However, operations across *different* streams can execute **concurrently** — the GPU can juggle multiple independent workloads at the same time.
+
+By default, every PyTorch GPU operation is enqueued on the **current active stream** (it's usually the default stream which is automatically created). This is simple and predictable: every operation waits for the previous one to finish before starting. For most code, you never notice this. But it leaves performance on the table when you have work that *could* overlap.
+
+## Multiple Streams: Concurrency
+
+The classic use case for multiple streams is **overlapping computation with data transfers**. While the GPU processes batch N, you can simultaneously copy batch N+1 from CPU RAM to GPU VRAM:
+
+```
+Stream 0 (compute): [process batch 0]──────────[process batch 1]──────────
+Stream 1 (data):       [copy batch 1]──────[copy batch 2]──────────────────
+```
+
+This pipeline is possible because compute and data transfer happen on separate hardware units inside the GPU, enabling true parallelism. In PyTorch, you create streams and schedule work onto them with context managers:
+
+```python
+compute_stream = torch.cuda.Stream()
+transfer_stream = torch.cuda.Stream()
+
+with torch.cuda.stream(transfer_stream):
+    # Enqueue the transfer on transfer_stream
+    next_batch = next_batch_cpu.to('cuda', non_blocking=True)
+
+with torch.cuda.stream(compute_stream):
+    # This runs concurrently with the transfer above
+    output = model(current_batch)
+```
+
+Note the `non_blocking=True` flag on `.to()`. Without it, the transfer would still block the CPU thread even when you intend it to run asynchronously.
+
+## Synchronization Between Streams
+
+Since streams are independent, you need to explicitly signal when one depends on another. The blunt tool is:
+
+```python
+torch.cuda.synchronize()  # waits for ALL streams on the device to finish
+```
+
+A more surgical approach uses **CUDA Events**. An event marks a specific point in a stream, and another stream can wait on it without halting the CPU thread:
+
+```python
+event = torch.cuda.Event()
+
+with torch.cuda.stream(transfer_stream):
+    next_batch = next_batch_cpu.to('cuda', non_blocking=True)
+    event.record()  # mark: transfer is done
+
+with torch.cuda.stream(compute_stream):
+    compute_stream.wait_event(event)  # don't start until transfer completes
+    output = model(next_batch)
+```
+
+This is more efficient than `stream.synchronize()` because it only stalls the dependent stream on the GPU side — the CPU thread stays free to keep queuing work.
+
+For day-to-day PyTorch training code you won't need to manage streams manually. But features like `DataLoader(pin_memory=True)` and prefetching rely heavily on this mechanism under the hood. Understanding streams helps you recognize why those settings exist and gives you the tools to diagnose subtle performance bottlenecks when they appear.
 
 # PyTorch Tensors
 
@@ -73,6 +131,7 @@ Congratulations for reading all the way to the end! In this post, you learned ab
 
 - The Host/Device relationship
 - Asynchronous execution
+- CUDA Streams and how they enable concurrent GPU work
 - Host-Device synchronization
 
 **In the [next blog post](../3-torch-distributed-operations/), we will dive deeper into Point-to-Point and Collective Operations, which enable multiple GPUs to coordinate complex workflows such as distributed neural network training.**

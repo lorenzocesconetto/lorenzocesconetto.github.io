@@ -49,11 +49,11 @@ This communication may be synchronous (blocking) or asynchronous (non-blocking),
 
 ### Synchronous (Blocking) Communication
 
-* **Behavior:** When you call a synchronous communication method, the host process **stops and waits** until the NCCL kernel is successfully enqueued on the NCCL CUDA stream. Once enqueued, the function returns. This is usually simple and reliable. Note that the host is not waiting for the transfer to complete, just for the operation to be enqueued. However, it blocks **that specific stream from moving on to the next operation** until the NCCL kernel is executed to completion.
+* **Behavior:** When you call a synchronous communication method, the host process **stops and waits** until the NCCL kernel is successfully enqueued on the current active CUDA stream. Once enqueued, the function returns. This is usually simple and reliable. Note that the host is not waiting for the transfer to complete, just for the operation to be enqueued. However, it blocks **that specific stream from moving on to the next operation** until the NCCL kernel is executed to completion.
 
 ### Asynchronous (Non-Blocking) Communication
 
-* **Behavior:** When you call an asynchronous communication method, the call returns **immediately**, and the enqueuing operation happens in the background. This allows your CPU to continue with other tasks, a technique known as **overlapping computation with communication**. The asynchronous API is more complex because you must ensure you don't modify data while it's being transferred, as doing so would lead to undefined behavior. However, mastering it is key to unlocking maximum performance in large-scale distributed training.
+* **Behavior:** When you call an asynchronous communication method, the call returns **immediately**, and the enqueuing operation happens in the background. It doesn't enqueue into the current active stream, but rather to a dedicated internal NCCL stream per device. This allows your CPU to continue with other tasks, a technique known as **overlapping computation with communication**. The asynchronous API is more complex because it can lead to undefined behavior if you don't properly use `.wait()` (explained below) and modify data while it's being transferred. However, mastering it is key to unlocking maximum performance in large-scale distributed training.
 
 # Point-to-Point (One-to-One)
 
@@ -61,16 +61,20 @@ This communication may be synchronous (blocking) or asynchronous (non-blocking),
 
 These operations are not considered **collectives**, but they are foundational communication primitives. They facilitate direct data transfer between two specific ranks and are fundamental for tasks where one GPU needs to send specific information to another.
 
-* **Synchronous (Blocking)**: The host process waits for the operation to be enqueued to the CUDA stream before proceeding.
+* **Synchronous (Blocking)**: The host process waits for the operation to be enqueued to the CUDA stream before proceeding. The kernel is enqueued into the current active stream.
   * `torch.distributed.send(tensor, dst)`: Sends a tensor to a specified destination rank.
   * `torch.distributed.recv(tensor, src)`: Receives a tensor from a source rank. The receiving tensor must be pre-allocated with the correct shape and `dtype`.
 
-* **Asynchronous (Non-Blocking)**: The host process initiates the enqueue operation and immediately continues with other tasks. This allows for overlapping communication with computation. These operations return a `request` object that can be used to track the enqueuing status.
+* **Asynchronous (Non-Blocking)**: The host process initiates the enqueue operation and immediately continues with other tasks. The kernel is enqueued into a dedicated internal NCCL stream per device, which allows for overlapping communication with computation. These operations return a `request` (technically a `Work` object) that can be used to track the enqueuing status.
   * `request = torch.distributed.isend(tensor, dst)`: Initiates an asynchronous send operation.
   * `request = torch.distributed.irecv(tensor, src)`: Initiates an asynchronous receive operation.
   * `request.wait()`: Blocks the host only until the operation has been successfully enqueued on the CUDA stream. However, it does block the currently active CUDA stream from executing later kernels until this specific asynchronous operation completes.
   * `request.wait(timeout)`: If you provide a timeout argument, the host behavior changes. It will block the CPU thread until the NCCL work completes or times out (raising an exception). In normal cases, users do not need to set the timeout.
   * `request.is_completed()`: Returns `True` if the operation has been successfully enqueued onto a CUDA stream. It may be used for polling. It does not guarantee that the actual data has been transferred.
+
+When PyTorch launches an NCCL kernel, it automatically inserts a dependency between your current active stream and the NCCL stream. This means the NCCL stream won't start until all previously enqueued work on the active stream finishes — guaranteeing the tensor being sent already holds the final values.
+
+Similarly, calling `req.wait()` inserts a dependency in the other direction. Any work you enqueue on the current stream after `req.wait()` won't execute until the NCCL operation completes, so you can safely use the received tensors.
 
 ### Major "Gotchas" in NCCL
 
