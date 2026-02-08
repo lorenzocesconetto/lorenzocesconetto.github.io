@@ -22,6 +22,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -316,6 +351,11 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
   <li><a href="#the-big-picture-the-host-and-the-device" id="toc-the-big-picture-the-host-and-the-device" class="nav-link" data-scroll-target="#the-big-picture-the-host-and-the-device">The Big Picture: The Host and The Device</a></li>
   <li><a href="#the-cpu-gpu-interaction" id="toc-the-cpu-gpu-interaction" class="nav-link" data-scroll-target="#the-cpu-gpu-interaction">The CPU-GPU Interaction</a></li>
+  <li><a href="#cuda-streams" id="toc-cuda-streams" class="nav-link" data-scroll-target="#cuda-streams">CUDA Streams</a>
+  <ul class="collapse">
+  <li><a href="#multiple-streams-concurrency" id="toc-multiple-streams-concurrency" class="nav-link" data-scroll-target="#multiple-streams-concurrency">Multiple Streams: Concurrency</a></li>
+  <li><a href="#synchronization-between-streams" id="toc-synchronization-between-streams" class="nav-link" data-scroll-target="#synchronization-between-streams">Synchronization Between Streams</a></li>
+  </ul></li>
   <li><a href="#pytorch-tensors" id="toc-pytorch-tensors" class="nav-link" data-scroll-target="#pytorch-tensors">PyTorch Tensors</a></li>
   <li><a href="#host-device-synchronization" id="toc-host-device-synchronization" class="nav-link" data-scroll-target="#host-device-synchronization">Host-Device Synchronization</a></li>
   <li><a href="#scaling-up-distributed-computing-and-ranks" id="toc-scaling-up-distributed-computing-and-ranks" class="nav-link" data-scroll-target="#scaling-up-distributed-computing-and-ranks">Scaling Up: Distributed Computing and Ranks</a></li>
@@ -389,9 +429,49 @@ ul.task-list li input[type="checkbox"] {
 <p>The Host talks to the Device through a queuing system.</p>
 <ol type="1">
 <li><strong>CPU Initiates Commands:</strong> Your script, running on the CPU, encounters a line of code intended for the GPU (e.g., <code>tensor.to('cuda')</code>).</li>
-<li><strong>Commands are Queued:</strong> The CPU doesn’t wait. It simply places this command onto a special to-do list for the GPU called a <strong>CUDA Stream</strong>.</li>
+<li><strong>Commands are Queued:</strong> The CPU doesn’t wait. It simply places this command onto a special to-do list for the GPU called a <strong>CUDA Stream</strong> — more on this in the next section.</li>
 <li><strong>Asynchronous Execution:</strong> The CPU does not wait for the actual operation to be completed by the GPU, the host moves on to the next line of your script. This is called <strong>asynchronous execution</strong>, and it’s a key to achieving high performance. While the GPU is busy crunching numbers, the CPU can work on other tasks, like preparing the next batch of data.</li>
 </ol>
+</section>
+<section id="cuda-streams" class="level1">
+<h1>CUDA Streams</h1>
+<p>A <strong>CUDA Stream</strong> is an ordered queue of GPU operations. Operations submitted to a single stream execute <strong>in order</strong>, one after another. However, operations across <em>different</em> streams can execute <strong>concurrently</strong> — the GPU can juggle multiple independent workloads at the same time.</p>
+<p>By default, every PyTorch GPU operation is enqueued on the <strong>current active stream</strong> (it’s usually the default stream which is automatically created). This is simple and predictable: every operation waits for the previous one to finish before starting. For most code, you never notice this. But it leaves performance on the table when you have work that <em>could</em> overlap.</p>
+<section id="multiple-streams-concurrency" class="level2">
+<h2 class="anchored" data-anchor-id="multiple-streams-concurrency">Multiple Streams: Concurrency</h2>
+<p>The classic use case for multiple streams is <strong>overlapping computation with data transfers</strong>. While the GPU processes batch N, you can simultaneously copy batch N+1 from CPU RAM to GPU VRAM:</p>
+<pre><code>Stream 0 (compute): [process batch 0]──────────[process batch 1]──────────
+Stream 1 (data):       [copy batch 1]──────[copy batch 2]──────────────────</code></pre>
+<p>This pipeline is possible because compute and data transfer happen on separate hardware units inside the GPU, enabling true parallelism. In PyTorch, you create streams and schedule work onto them with context managers:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>compute_stream <span class="op">=</span> torch.cuda.Stream()</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>transfer_stream <span class="op">=</span> torch.cuda.Stream()</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.cuda.stream(transfer_stream):</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Enqueue the transfer on transfer_stream</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    next_batch <span class="op">=</span> next_batch_cpu.to(<span class="st">'cuda'</span>, non_blocking<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.cuda.stream(compute_stream):</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This runs concurrently with the transfer above</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    output <span class="op">=</span> model(current_batch)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note the <code>non_blocking=True</code> flag on <code>.to()</code>. Without it, the transfer would still block the CPU thread even when you intend it to run asynchronously.</p>
+</section>
+<section id="synchronization-between-streams" class="level2">
+<h2 class="anchored" data-anchor-id="synchronization-between-streams">Synchronization Between Streams</h2>
+<p>Since streams are independent, you need to explicitly signal when one depends on another. The blunt tool is:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>torch.cuda.synchronize()  <span class="co"># waits for ALL streams on the device to finish</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>A more surgical approach uses <strong>CUDA Events</strong>. An event marks a specific point in a stream, and another stream can wait on it without halting the CPU thread:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>event <span class="op">=</span> torch.cuda.Event()</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.cuda.stream(transfer_stream):</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    next_batch <span class="op">=</span> next_batch_cpu.to(<span class="st">'cuda'</span>, non_blocking<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    event.record()  <span class="co"># mark: transfer is done</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.cuda.stream(compute_stream):</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    compute_stream.wait_event(event)  <span class="co"># don't start until transfer completes</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    output <span class="op">=</span> model(next_batch)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This is more efficient than <code>stream.synchronize()</code> because it only stalls the dependent stream on the GPU side — the CPU thread stays free to keep queuing work.</p>
+<p>For day-to-day PyTorch training code you won’t need to manage streams manually. But features like <code>DataLoader(pin_memory=True)</code> and prefetching rely heavily on this mechanism under the hood. Understanding streams helps you recognize why those settings exist and gives you the tools to diagnose subtle performance bottlenecks when they appear.</p>
+</section>
 </section>
 <section id="pytorch-tensors" class="level1">
 <h1>PyTorch Tensors</h1>
@@ -422,6 +502,7 @@ ul.task-list li input[type="checkbox"] {
 <ul>
 <li>The Host/Device relationship</li>
 <li>Asynchronous execution</li>
+<li>CUDA Streams and how they enable concurrent GPU work</li>
 <li>Host-Device synchronization</li>
 </ul>
 <p><strong>In the <a href="../3-torch-distributed-operations/">next blog post</a>, we will dive deeper into Point-to-Point and Collective Operations, which enable multiple GPUs to coordinate complex workflows such as distributed neural network training.</strong></p>
