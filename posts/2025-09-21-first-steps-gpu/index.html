@@ -401,6 +401,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
+<style>
+img {
+  max-width: 100%;
+  height: auto;
+}
+pre code {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+</style>
 <p>This article is part of a series about distributed AI across multiple GPUs:</p>
 <ul>
 <li><strong>Part 1: Understanding the Host and Device Paradigm</strong> (this article)</li>
@@ -485,7 +495,12 @@ Stream 1 (data):       [copy batch 1]──────[copy batch 2]───�
 <p>For example, consider the line <code>print(gpu_tensor)</code> which prints a tensor that is still being computed by the GPU. The CPU cannot print the tensor’s values until the GPU has finished all the calculations to obtain the final result. When the script reaches this line, the CPU is forced to <strong>block</strong>, i.e.&nbsp;it stops and waits for the GPU to finish. Only after the GPU completes its work and copies the data from its VRAM to the CPU’s RAM can the CPU proceed.</p>
 <p>As another example, what’s the difference between <code>torch.randn(100, 100).to(device)</code> and <code>torch.randn(100, 100, device=device)</code>? The first method is less efficient because it creates the data on the CPU and then transfers it to the GPU. The second method is more efficient because it creates the tensor directly on the GPU; the CPU only sends the creation command.</p>
 <p>These synchronization points can severely impact performance. Effective GPU programming involves minimizing them to ensure both the Host and Device stay as busy as possible. After all, you want your GPUs to go <em>brrrrr</em>.</p>
-<p><img src="https://www.perrygeo.com/images/brr.png" class="img-fluid"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./gpus-go-brr.png" height="350" class="figure-img"></p>
+<figcaption>Image by author: generated with ChatGPT</figcaption>
+</figure>
+</div>
 </section>
 <section id="scaling-up-distributed-computing-and-ranks" class="level1">
 <h1>Scaling Up: Distributed Computing and Ranks</h1>
