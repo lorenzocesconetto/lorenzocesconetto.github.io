@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Lorenzo Cesconetto">
+<meta name="dcterms.date" content="2026-01-30">
 
-<title>Welcome to Technical AI – Technical AI</title>
+<title>How softmax is implemented in practice – Technical AI</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,30 +22,63 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-7ffecba3d65d0ceb76f4c7db622b63c9.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-7ffecba3d65d0ceb76f4c7db622b63c9.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-874deed9d0e94da0c44fb58e1b1e2e63.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-e416944d4c0aba2c9058af46e1c3098e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7ffecba3d65d0ceb76f4c7db622b63c9.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-7ffecba3d65d0ceb76f4c7db622b63c9.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-874deed9d0e94da0c44fb58e1b1e2e63.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-e416944d4c0aba2c9058af46e1c3098e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -71,35 +106,6 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-title','listing-reading-time',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-title-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -131,7 +137,7 @@ window.Quarto = {
 };
 </script>
 
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../../styles.css">
 </head>
 
 <body class="nav-fixed quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
@@ -310,7 +316,7 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Technical AI</span>
     </a>
   </div>
@@ -321,13 +327,13 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./opensource.html"> 
+    <a class="nav-link" href="../../opensource.html"> 
 <span class="menu-text">Projects &amp; Contributions</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
+    <a class="nav-link" href="../../about.html"> 
 <span class="menu-text">About me</span></a>
   </li>  
   <li class="nav-item compact">
@@ -359,26 +365,50 @@ window.Quarto = {
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(8)</span></div><div class="category" data-category="R1BV">GPU <span class="quarto-category-count">(4)</span></div><div class="category" data-category="VHJhbnNmb3JtZXJz">Transformers <span class="quarto-category-count">(4)</span></div></div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul class="collapse">
+  <li><a href="#the-problem-numerical-overflow-and-underflow" id="toc-the-problem-numerical-overflow-and-underflow" class="nav-link active" data-scroll-target="#the-problem-numerical-overflow-and-underflow">The problem: numerical overflow and underflow</a></li>
+  <li><a href="#the-constant-trick" id="toc-the-constant-trick" class="nav-link" data-scroll-target="#the-constant-trick">The constant trick</a></li>
+  <li><a href="#the-actual-pytorch-implementation" id="toc-the-actual-pytorch-implementation" class="nav-link" data-scroll-target="#the-actual-pytorch-implementation">The actual PyTorch implementation</a></li>
+  <li><a href="#why-this-matters-for-transformers" id="toc-why-this-matters-for-transformers" class="nav-link" data-scroll-target="#why-this-matters-for-transformers">Why this matters for transformers</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
-<main class="content column-page-left" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
 
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Welcome to Technical AI</h1>
-</div>
+<h1 class="title">How softmax is implemented in practice</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Transformers</div>
+  </div>
+  </div>
 
 
 
-<div class="quarto-title-meta column-page-left">
+<div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Lorenzo Cesconetto </p>
+          </div>
+  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">January 30, 2026</p>
+    </div>
+  </div>
   
     
   </div>
@@ -388,120 +418,133 @@ window.Quarto = {
 </header>
 
 
-<p><strong>Technical AI</strong> the a blog by Lorenzo Cesconetto, where I document and share some of my learnings in ML and AI.</p>
+<p>The softmax function is ubiquitous in neural networks, especially in transformers where it plays an important role in the attention mechanism. The mathematical definition is simple:</p>
+<p><span class="math display">\[
+softmax(x_i) = \frac{e^{x_i}}{\sum_{j=1}^{n} e^{x_j}}
+\]</span></p>
+<p>However, the naive implementation has severe numerical stability issues.</p>
+<section id="the-problem-numerical-overflow-and-underflow" class="level2">
+<h2 class="anchored" data-anchor-id="the-problem-numerical-overflow-and-underflow">The problem: numerical overflow and underflow</h2>
+<p>Consider what happens when we try to compute softmax on large values:</p>
+<div id="81f9abbf" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> naive_softmax(x):</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    exp_x <span class="op">=</span> np.exp(x)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> exp_x <span class="op">/</span> np.<span class="bu">sum</span>(exp_x)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># This causes overflow</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>large_values <span class="op">=</span> np.array([<span class="dv">1000</span>, <span class="dv">1001</span>, <span class="dv">1002</span>])</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"exp(1000) = </span><span class="sc">{</span>np<span class="sc">.</span>exp(<span class="dv">1000</span>)<span class="sc">}</span><span class="ss">"</span>)  <span class="co"># inf</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"naive_softmax result: </span><span class="sc">{</span>naive_softmax(large_values)<span class="sc">}</span><span class="ss">"</span>)  <span class="co"># nan, nan, nan</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>exp(1000) = inf
+naive_softmax result: [nan nan nan]</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/var/folders/0s/q5mn7k7n46v1x5c9klg2ck_w0000gn/T/ipykernel_2643/3427519139.py:9: RuntimeWarning:
+
+overflow encountered in exp
+
+/var/folders/0s/q5mn7k7n46v1x5c9klg2ck_w0000gn/T/ipykernel_2643/3427519139.py:4: RuntimeWarning:
+
+overflow encountered in exp
+
+/var/folders/0s/q5mn7k7n46v1x5c9klg2ck_w0000gn/T/ipykernel_2643/3427519139.py:5: RuntimeWarning:
+
+invalid value encountered in divide
+</code></pre>
+</div>
+</div>
+<p>The exponential function grows extremely fast. For values around 1000, <code>exp(x)</code> exceeds the maximum representable floating-point number, resulting in infinity. The division then becomes <code>inf/inf = nan</code>.</p>
+<p>The opposite problem occurs with very negative values:</p>
+<div id="d2e1c7cf" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This causes underflow</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>small_values <span class="op">=</span> np.array([<span class="op">-</span><span class="dv">1000</span>, <span class="op">-</span><span class="dv">1001</span>, <span class="op">-</span><span class="dv">1002</span>])</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"exp(-1000) = </span><span class="sc">{</span>np<span class="sc">.</span>exp(<span class="op">-</span><span class="dv">1000</span>)<span class="sc">}</span><span class="ss">"</span>)  <span class="co"># 0.0</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"naive_softmax result: </span><span class="sc">{</span>naive_softmax(small_values)<span class="sc">}</span><span class="ss">"</span>)  <span class="co"># nan, nan, nan</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>exp(-1000) = 0.0
+naive_softmax result: [nan nan nan]</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/var/folders/0s/q5mn7k7n46v1x5c9klg2ck_w0000gn/T/ipykernel_2643/3427519139.py:5: RuntimeWarning:
+
+invalid value encountered in divide
+</code></pre>
+</div>
+</div>
+<p>Here <code>exp(x)</code> underflows to zero, and we get <code>0/0 = nan</code>.</p>
+</section>
+<section id="the-constant-trick" class="level2">
+<h2 class="anchored" data-anchor-id="the-constant-trick">The constant trick</h2>
+<p>The solution exploits a mathematical identity. We can factor out any constant <code>c</code> from the softmax computation:</p>
+<p><span class="math display">\[
+softmax(x_i) = \frac{e^{x_i}}{\sum_j e^{x_j}} = \frac{e^{-c} \cdot e^{x_i}}{e^{-c} \cdot \sum_j e^{x_j}} = \frac{e^{x_i - c}}{\sum_j e^{x_j - c}}
+\]</span></p>
+<p>So we can calculate softmax as: <span class="math display">\[
+softmax(x_i) = \frac{e^{x_i - c}}{\sum_j e^{x_j - c}}
+\]</span></p>
+<p>Choosing <strong><span class="math inline">\(c = \max(x)\)</span></strong> ensures the largest exponentiated value is <code>exp(0) = 1</code>, preventing overflow. Any values that end up small enough to underflow to zero after subtraction represent genuinely negligible probabilities, so the result remains correct.</p>
+<div id="97bfb7c3" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> stable_softmax(x):</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    c <span class="op">=</span> np.<span class="bu">max</span>(x)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    exp_shifted <span class="op">=</span> np.exp(x <span class="op">-</span> c)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> exp_shifted <span class="op">/</span> np.<span class="bu">sum</span>(exp_shifted)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Now both cases work perfectly</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Large values: </span><span class="sc">{</span>stable_softmax(large_values)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Small values: </span><span class="sc">{</span>stable_softmax(small_values)<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Large values: [0.09003057 0.24472847 0.66524096]
+Small values: [0.66524096 0.24472847 0.09003057]</code></pre>
+</div>
+</div>
+</section>
+<section id="the-actual-pytorch-implementation" class="level2">
+<h2 class="anchored" data-anchor-id="the-actual-pytorch-implementation">The actual PyTorch implementation</h2>
+<p>You can see the <a href="https://github.com/pytorch/pytorch/blob/bcb0bb7e0e03b386ad837015faba6b4b16e3bfb9/aten/src/ATen/native/SoftMax.cpp">source code</a> for the softmax implementation in PyTorch. The core logic is essentially the same as described above, but it’s implemented in C++ for performance reasons. The code iterates over the input data, computes the maximum value, and then applies the stable softmax formula.</p>
+<p>Here’s a simplified, easy-to-understand version of the core logic in C++:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> host_softmax<span class="op">(</span>Tensor output<span class="op">,</span> <span class="at">const</span> Tensor<span class="op">&amp;</span> input<span class="op">,</span> <span class="at">const</span> <span class="dt">int64_t</span> dim<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// initialize max_input to the first element of the input tensor</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">scalar_t</span> max_input <span class="op">=</span> input_data<span class="op">[</span><span class="dv">0</span><span class="op">];</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// iterate over the input data to find the maximum value</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int64_t</span> d <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> d <span class="op">&lt;</span> dim_size<span class="op">;</span> d<span class="op">++)</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>        max_input <span class="op">=</span> <span class="bu">std::</span>max<span class="op">(</span>max_input<span class="op">,</span> input_data<span class="op">[</span>d <span class="op">*</span> dim_stride<span class="op">]);</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// initialize tmpsum as zero to accumulate the sum of exponentials</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">acc_type</span><span class="op">&lt;</span><span class="dt">scalar_t</span><span class="op">,</span> <span class="kw">false</span><span class="op">&gt;</span> tmpsum <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int64_t</span> d <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> d <span class="op">&lt;</span> dim_size<span class="op">;</span> d<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>        <span class="co">// compute the exponential of the shifted input value</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>        <span class="dt">scalar_t</span> z <span class="op">=</span> <span class="bu">std::</span>exp<span class="op">(</span>input_data<span class="op">[</span>d <span class="op">*</span> dim_stride<span class="op">]</span> <span class="op">-</span> max_input<span class="op">);</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>        <span class="co">// store the result in the output tensor to serve as the</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>        <span class="co">// numerator of the softmax formula</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>        output_data<span class="op">[</span>d <span class="op">*</span> dim_stride<span class="op">]</span> <span class="op">=</span> z<span class="op">;</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>        <span class="co">// accumulate the sum of the exponentials to serve as the </span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>        <span class="co">// denominator of the softmax formula</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>        tmpsum <span class="op">+=</span> z<span class="op">;</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    <span class="co">// we need to divide by the sum of exponentials,</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>    <span class="co">// so we compute the reciprocal of tmpsum</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>    tmpsum <span class="op">=</span> <span class="dv">1</span> <span class="op">/</span> tmpsum<span class="op">;</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>    <span class="co">// finally, we multiply each element in the output tensor by</span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>    <span class="co">// tmpsum to get the final softmax values</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int64_t</span> d <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> d <span class="op">&lt;</span> dim_size<span class="op">;</span> d<span class="op">++)</span></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>        output_data<span class="op">[</span>d <span class="op">*</span> dim_stride<span class="op">]</span> <span class="op">*=</span> tmpsum<span class="op">;</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="why-this-matters-for-transformers" class="level2">
+<h2 class="anchored" data-anchor-id="why-this-matters-for-transformers">Why this matters for transformers</h2>
+<p>The stable softmax implementation ensures that regardless of the magnitude of attention scores, the computation remains numerically sound. This is critical for training stability as a single <code>NaN</code> or large rounding errors in the attention matrix can propagate and corrupt the entire model.</p>
 
 
+</section>
 
-
-<div class="quarto-listing quarto-listing-container-table" id="listing-listing">
-<table class="quarto-listing-table table table-hover">
-<thead>
-<tr>
-
-<th>
-Title
-</th>
-
-<th>
-Reading Time
-</th>
-
-</tr>
-</thead>
-<tbody class="list">
-
-<tr data-index="0" data-categories="VHJhbnNmb3JtZXJz" data-listing-date-sort="1769742000000" data-listing-file-modified-sort="1770512991623" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="691" data-listing-title-sort="How softmax is implemented in practice" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="./posts/2026-01-30-how-softmax-is-implemented-in-practice/index.html" class="title listing-title">How softmax is implemented in practice</a>
-</td>
-<td>
-<span class="listing-reading-time">4 min</span>
-</td>
-
-</tr>
-
-<tr data-index="1" data-categories="VHJhbnNmb3JtZXJz" data-listing-date-sort="1769655600000" data-listing-file-modified-sort="1770084673762" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="442" data-listing-title-sort="Why we need to divide by $\sqrt{d_k}$ in attention?" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="./posts/2026-01-29-why-divide-by-d/index.html" class="title listing-title">Why we need to divide by <span class="math inline">\(\sqrt{d_k}\)</span> in attention?</a>
-</td>
-<td>
-<span class="listing-reading-time">3 min</span>
-</td>
-
-</tr>
-
-<tr data-index="2" data-categories="VHJhbnNmb3JtZXJz" data-listing-date-sort="1769482800000" data-listing-file-modified-sort="1769521812401" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="212" data-listing-title-sort="Transformers in a nutshell" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="./posts/2026-01-27-transformers-in-a-nutshell/index.html" class="title listing-title">Transformers in a nutshell</a>
-</td>
-<td>
-<span class="listing-reading-time">2 min</span>
-</td>
-
-</tr>
-
-<tr data-index="3" data-categories="R1BV" data-listing-date-sort="1760238000000" data-listing-file-modified-sort="1770427031313" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8" data-listing-word-count-sort="1524" data-listing-title-sort="(4/6) AI in Multiple GPUs: Grad Accum &amp; Data Parallelism" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="./posts/2025-10-12-ddp/index.html" class="title listing-title">(4/6) AI in Multiple GPUs: Grad Accum &amp; Data Parallelism</a>
-</td>
-<td>
-<span class="listing-reading-time">8 min</span>
-</td>
-
-</tr>
-
-<tr data-index="4" data-categories="R1BV" data-listing-date-sort="1759287600000" data-listing-file-modified-sort="1769734085722" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="839" data-listing-title-sort="(3/6) AI in Multiple GPUs: How GPUs Communicate" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="./posts/2025-10-01-how-gpus-communicate/index.html" class="title listing-title">(3/6) AI in Multiple GPUs: How GPUs Communicate</a>
-</td>
-<td>
-<span class="listing-reading-time">5 min</span>
-</td>
-
-</tr>
-
-<tr data-index="5" data-categories="R1BV" data-listing-date-sort="1758596400000" data-listing-file-modified-sort="1770576298772" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="11" data-listing-word-count-sort="2089" data-listing-title-sort="(2/6) AI in Multiple GPUs: Point-to-Point and Collective Operations" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="./posts/2025-09-23-torch-distributed-operations/index.html" class="title listing-title">(2/6) AI in Multiple GPUs: Point-to-Point and Collective Operations</a>
-</td>
-<td>
-<span class="listing-reading-time">11 min</span>
-</td>
-
-</tr>
-
-<tr data-index="6" data-categories="R1BV" data-listing-date-sort="1758423600000" data-listing-file-modified-sort="1770904916970" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1388" data-listing-title-sort="(1/6) AI in Multiple GPUs: Understanding the Host and Device Paradigm" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="./posts/2025-09-21-the-host-device-paradigm/index.html" class="title listing-title">(1/6) AI in Multiple GPUs: Understanding the Host and Device Paradigm</a>
-</td>
-<td>
-<span class="listing-reading-time">7 min</span>
-</td>
-
-</tr>
-
-<tr data-index="7" data-categories="VHJhbnNmb3JtZXJz" data-listing-date-sort="1757991600000" data-listing-file-modified-sort="1770904920518" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9" data-listing-word-count-sort="1727" data-listing-title-sort="RoPE clearly explained" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="./posts/2025-09-16-RoPE/index.html" class="title listing-title">RoPE clearly explained</a>
-</td>
-<td>
-<span class="listing-reading-time">9 min</span>
-</td>
-
-</tr>
-
-</tbody>
-</table>
-<div class="listing-no-matching d-none">No matching items</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right

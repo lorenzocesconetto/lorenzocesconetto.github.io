@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Lorenzo Cesconetto">
+<meta name="dcterms.date" content="2026-01-27">
 
-<title>Welcome to Technical AI – Technical AI</title>
+<title>Transformers in a nutshell – Technical AI</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,27 +25,25 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-7ffecba3d65d0ceb76f4c7db622b63c9.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-7ffecba3d65d0ceb76f4c7db622b63c9.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-874deed9d0e94da0c44fb58e1b1e2e63.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-e416944d4c0aba2c9058af46e1c3098e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7ffecba3d65d0ceb76f4c7db622b63c9.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-7ffecba3d65d0ceb76f4c7db622b63c9.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-874deed9d0e94da0c44fb58e1b1e2e63.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-e416944d4c0aba2c9058af46e1c3098e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -71,35 +71,6 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-title','listing-reading-time',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-title-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -131,7 +102,7 @@ window.Quarto = {
 };
 </script>
 
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../../styles.css">
 </head>
 
 <body class="nav-fixed quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
@@ -310,7 +281,7 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Technical AI</span>
     </a>
   </div>
@@ -321,13 +292,13 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./opensource.html"> 
+    <a class="nav-link" href="../../opensource.html"> 
 <span class="menu-text">Projects &amp; Contributions</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
+    <a class="nav-link" href="../../about.html"> 
 <span class="menu-text">About me</span></a>
   </li>  
   <li class="nav-item compact">
@@ -359,26 +330,41 @@ window.Quarto = {
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
         
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(8)</span></div><div class="category" data-category="R1BV">GPU <span class="quarto-category-count">(4)</span></div><div class="category" data-category="VHJhbnNmb3JtZXJz">Transformers <span class="quarto-category-count">(4)</span></div></div></div>
+    </div>
 <!-- main -->
-<main class="content column-page-left" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
 
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Welcome to Technical AI</h1>
-</div>
+<h1 class="title">Transformers in a nutshell</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Transformers</div>
+  </div>
+  </div>
 
 
 
-<div class="quarto-title-meta column-page-left">
+<div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Lorenzo Cesconetto </p>
+          </div>
+  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">January 27, 2026</p>
+    </div>
+  </div>
   
     
   </div>
@@ -388,120 +374,76 @@ window.Quarto = {
 </header>
 
 
-<p><strong>Technical AI</strong> the a blog by Lorenzo Cesconetto, where I document and share some of my learnings in ML and AI.</p>
+<p>Transformers in a nutshell (<strong>pre-normalization, decoder-only architecture</strong>):</p>
+<section id="embedding-layer" class="level3">
+<h3 class="anchored" data-anchor-id="embedding-layer">Embedding Layer</h3>
+<p><span class="math display">\[
+x = S \cdot E
+\]</span></p>
+<p>where <span class="math inline">\(E\)</span> is the embedding matrix and <span class="math inline">\(S\)</span> is a matrix of canonical (standard basis <span class="math inline">\([0, ..., 1, ..., 0]\)</span>) vectors that selects the embeddings for the input tokens</p>
+</section>
+<section id="attention-block" class="level3">
+<h3 class="anchored" data-anchor-id="attention-block">Attention Block</h3>
+<p><span class="math display">\[
+\text{residual} = x
+\]</span></p>
+<p><span class="math display">\[
+x = RMSNorm(x) = \frac{x}{\sqrt{\frac{1}{d}\sum_{i=1}^{d} x_i^2 + \epsilon}} \cdot g
+\]</span></p>
+<p>Where <span class="math inline">\(g\)</span> is a learnable scaling vector and <span class="math inline">\(\epsilon\)</span> is a small constant to avoid division by zero.</p>
+<p><span class="math display">\[
+Q = x \cdot W_q \quad K = x \cdot W_k \quad V = x \cdot W_v
+\]</span></p>
+<p>In actual code implementations, these multiplications are fused into a single matrix multiplication for efficiency.</p>
+<p><span class="math display">\[
+Q,K = RoPE(Q,K)
+\]</span></p>
+<p><span class="math display">\[
+x = softmax\left(\frac{QK^T}{\sqrt{d_k}} + M \right) \cdot V
+\]</span></p>
+<p>Where <span class="math inline">\(M\)</span> is the attention mask (causal mask for decoder-only models), it contains <span class="math inline">\(-\infty\)</span> in the positions above the main diagonal and <span class="math inline">\(0\)</span> elsewhere.</p>
+<p>In practice you never compute the full <span class="math inline">\(QK^T\)</span> matrix (that’s huge for long sequences). You use flash attention.</p>
+<p><span class="math display">\[
+x = x \cdot W_o
+\]</span></p>
+<p><span class="math display">\[
+x = \text{residual} + x
+\]</span></p>
+</section>
+<section id="feed-forward-network-ffn" class="level3">
+<h3 class="anchored" data-anchor-id="feed-forward-network-ffn">Feed-Forward Network (FFN)</h3>
+<p><span class="math display">\[
+\text{residual} = x
+\]</span></p>
+<p><span class="math display">\[
+x = RMSNorm(x)
+\]</span></p>
+<p><span class="math display">\[
+Gate = x \cdot W_{gate} \quad Up = x \cdot W_{up}
+\]</span></p>
+<p><span class="math display">\[
+x = (f(Gate) \circ Up) \cdot W_{down}
+\]</span></p>
+<p><span class="math display">\[
+x = \text{residual} + x
+\]</span></p>
+</section>
+<section id="decoder-layer" class="level3">
+<h3 class="anchored" data-anchor-id="decoder-layer">Decoder Layer</h3>
+<p>Final normalization <span class="math display">\[
+x = RMSNorm(x)
+\]</span></p>
+<p><span class="math display">\[
+Probs = softmax(x \cdot L)
+\]</span> Where <span class="math inline">\(L\)</span> is the linear head classifier (could be tied or not with the embedding matrix <span class="math inline">\(E\)</span>).</p>
+<p><span class="math display">\[
+Cost = CrossEntropy(Probs, Target)
+\]</span></p>
 
 
+</section>
 
-
-<div class="quarto-listing quarto-listing-container-table" id="listing-listing">
-<table class="quarto-listing-table table table-hover">
-<thead>
-<tr>
-
-<th>
-Title
-</th>
-
-<th>
-Reading Time
-</th>
-
-</tr>
-</thead>
-<tbody class="list">
-
-<tr data-index="0" data-categories="VHJhbnNmb3JtZXJz" data-listing-date-sort="1769742000000" data-listing-file-modified-sort="1770512991623" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="691" data-listing-title-sort="How softmax is implemented in practice" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="./posts/2026-01-30-how-softmax-is-implemented-in-practice/index.html" class="title listing-title">How softmax is implemented in practice</a>
-</td>
-<td>
-<span class="listing-reading-time">4 min</span>
-</td>
-
-</tr>
-
-<tr data-index="1" data-categories="VHJhbnNmb3JtZXJz" data-listing-date-sort="1769655600000" data-listing-file-modified-sort="1770084673762" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="442" data-listing-title-sort="Why we need to divide by $\sqrt{d_k}$ in attention?" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="./posts/2026-01-29-why-divide-by-d/index.html" class="title listing-title">Why we need to divide by <span class="math inline">\(\sqrt{d_k}\)</span> in attention?</a>
-</td>
-<td>
-<span class="listing-reading-time">3 min</span>
-</td>
-
-</tr>
-
-<tr data-index="2" data-categories="VHJhbnNmb3JtZXJz" data-listing-date-sort="1769482800000" data-listing-file-modified-sort="1769521812401" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="212" data-listing-title-sort="Transformers in a nutshell" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="./posts/2026-01-27-transformers-in-a-nutshell/index.html" class="title listing-title">Transformers in a nutshell</a>
-</td>
-<td>
-<span class="listing-reading-time">2 min</span>
-</td>
-
-</tr>
-
-<tr data-index="3" data-categories="R1BV" data-listing-date-sort="1760238000000" data-listing-file-modified-sort="1770427031313" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8" data-listing-word-count-sort="1524" data-listing-title-sort="(4/6) AI in Multiple GPUs: Grad Accum &amp; Data Parallelism" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="./posts/2025-10-12-ddp/index.html" class="title listing-title">(4/6) AI in Multiple GPUs: Grad Accum &amp; Data Parallelism</a>
-</td>
-<td>
-<span class="listing-reading-time">8 min</span>
-</td>
-
-</tr>
-
-<tr data-index="4" data-categories="R1BV" data-listing-date-sort="1759287600000" data-listing-file-modified-sort="1769734085722" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="839" data-listing-title-sort="(3/6) AI in Multiple GPUs: How GPUs Communicate" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="./posts/2025-10-01-how-gpus-communicate/index.html" class="title listing-title">(3/6) AI in Multiple GPUs: How GPUs Communicate</a>
-</td>
-<td>
-<span class="listing-reading-time">5 min</span>
-</td>
-
-</tr>
-
-<tr data-index="5" data-categories="R1BV" data-listing-date-sort="1758596400000" data-listing-file-modified-sort="1770576298772" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="11" data-listing-word-count-sort="2089" data-listing-title-sort="(2/6) AI in Multiple GPUs: Point-to-Point and Collective Operations" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="./posts/2025-09-23-torch-distributed-operations/index.html" class="title listing-title">(2/6) AI in Multiple GPUs: Point-to-Point and Collective Operations</a>
-</td>
-<td>
-<span class="listing-reading-time">11 min</span>
-</td>
-
-</tr>
-
-<tr data-index="6" data-categories="R1BV" data-listing-date-sort="1758423600000" data-listing-file-modified-sort="1770904916970" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1388" data-listing-title-sort="(1/6) AI in Multiple GPUs: Understanding the Host and Device Paradigm" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="./posts/2025-09-21-the-host-device-paradigm/index.html" class="title listing-title">(1/6) AI in Multiple GPUs: Understanding the Host and Device Paradigm</a>
-</td>
-<td>
-<span class="listing-reading-time">7 min</span>
-</td>
-
-</tr>
-
-<tr data-index="7" data-categories="VHJhbnNmb3JtZXJz" data-listing-date-sort="1757991600000" data-listing-file-modified-sort="1770904920518" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9" data-listing-word-count-sort="1727" data-listing-title-sort="RoPE clearly explained" data-listing-filename-sort="index.qmd" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="./posts/2025-09-16-RoPE/index.html" class="title listing-title">RoPE clearly explained</a>
-</td>
-<td>
-<span class="listing-reading-time">9 min</span>
-</td>
-
-</tr>
-
-</tbody>
-</table>
-<div class="listing-no-matching d-none">No matching items</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
