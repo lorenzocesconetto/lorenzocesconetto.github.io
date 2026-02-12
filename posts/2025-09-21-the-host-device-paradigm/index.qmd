@@ -18,6 +18,8 @@ pre code {
 </style>
 ```
 
+> This blog post got featured on [Towards Data Science](https://towardsdatascience.com/understanding-the-host-and-device-paradigm/)!
+
 This article is part of a series about distributed AI across multiple GPUs:
 
 - **Part 1: Understanding the Host and Device Paradigm** (this article)

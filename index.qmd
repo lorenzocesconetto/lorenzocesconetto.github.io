@@ -1,5 +1,5 @@
 ---
-title: "AI Blog"
+title: "Welcome to Technical AI"
 listing:
   contents: posts
   sort: "date desc"
@@ -13,5 +13,4 @@ page-layout: full
 title-block-banner: false
 ---
 
-
-Here's where I document and share some of my learnings in Machine Learning and Artificial Intelligence :)
+**Technical AI** the a blog by Lorenzo Cesconetto, where I document and share some of my learnings in ML and AI.

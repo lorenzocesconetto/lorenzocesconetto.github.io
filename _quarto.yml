@@ -2,13 +2,11 @@ project:
   type: website
 
 website:
-  title: "Lorenzo Cesconetto"
+  title: "Technical AI"
   navbar:
     left:
       - href: opensource.qmd
         text: Projects & Contributions
-      - href: quick-notes.qmd
-        text: Quick Notes
     right:
       - href: about.qmd
         text: About me
@@ -26,7 +24,7 @@ website:
         target: "_blank"
   page-footer: 
     background: secondary
-    center: "Copyright 2025, Lorenzo Cesconetto" 
+    center: "Copyright 2026, Technical AI" 
     right:
       - icon: youtube
         href: https://www.youtube.com/@lorenzocesconetto
