@@ -6,11 +6,11 @@
   </url>
   <url>
     <loc>https://lorenzocesconetto.github.io/blog-lorenzo/notes.html</loc>
-    <lastmod>2026-02-08T01:13:52.448Z</lastmod>
+    <lastmod>2026-02-13T23:57:16.003Z</lastmod>
   </url>
   <url>
     <loc>https://lorenzocesconetto.github.io/blog-lorenzo/index.html</loc>
-    <lastmod>2026-02-11T14:24:21.127Z</lastmod>
+    <lastmod>2026-02-19T11:43:04.908Z</lastmod>
   </url>
   <url>
     <loc>https://lorenzocesconetto.github.io/blog-lorenzo/posts/2025-10-12-ddp/index.html</loc>
@@ -18,11 +18,11 @@
   </url>
   <url>
     <loc>https://lorenzocesconetto.github.io/blog-lorenzo/posts/2025-10-01-how-gpus-communicate/index.html</loc>
-    <lastmod>2026-01-30T00:48:05.722Z</lastmod>
+    <lastmod>2026-02-19T11:16:42.736Z</lastmod>
   </url>
   <url>
     <loc>https://lorenzocesconetto.github.io/blog-lorenzo/posts/2025-09-23-torch-distributed-operations/index.html</loc>
-    <lastmod>2026-02-08T18:44:58.772Z</lastmod>
+    <lastmod>2026-02-13T01:56:38.837Z</lastmod>
   </url>
   <url>
     <loc>https://lorenzocesconetto.github.io/blog-lorenzo/posts/2026-01-29-why-divide-by-d/index.html</loc>
@@ -42,7 +42,7 @@
   </url>
   <url>
     <loc>https://lorenzocesconetto.github.io/blog-lorenzo/posts/2025-09-21-the-host-device-paradigm/index.html</loc>
-    <lastmod>2026-02-12T14:01:56.970Z</lastmod>
+    <lastmod>2026-02-14T00:03:53.731Z</lastmod>
   </url>
   <url>
     <loc>https://lorenzocesconetto.github.io/blog-lorenzo/todo.html</loc>
@@ -54,6 +54,6 @@
   </url>
   <url>
     <loc>https://lorenzocesconetto.github.io/blog-lorenzo/opensource.html</loc>
-    <lastmod>2026-01-19T19:19:23.982Z</lastmod>
+    <lastmod>2026-02-14T20:55:03.057Z</lastmod>
   </url>
 </urlset>

@@ -266,6 +266,10 @@ ul.task-list li input[type="checkbox"] {
     <a class="nav-link" href="../../opensource.html"> 
 <span class="menu-text">Projects &amp; Contributions</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://docs.google.com/document/d/e/2PACX-1vSWeqXhxjRhmrmqZZ3sq5t_09R3NJnjSx9xVt-fakO3c_xq9inmLw52AEAai7rluw/pub" target="_blank"> 
+<span class="menu-text">CV</span></a>
+  </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
@@ -367,6 +371,7 @@ ul.task-list li input[type="checkbox"] {
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
 <p>Before diving into advanced parallelism techniques, we need to understand the key technologies that enable GPUs to communicate with each other.</p>
+<p>But why do GPUs need to communicate in the first place? When training AI models across multiple GPUs, each GPU processes different data batches but they all need to stay synchronized by sharing gradients during backpropagation or exchanging model weights. The specifics of what gets communicated and when depends on your parallelism strategy, which we’ll explore in depth in the next blog posts. For now, just know that modern AI training is communication-intensive, making efficient GPU-to-GPU data transfer critical for performance.</p>
 </section>
 <section id="the-communication-stack" class="level1">
 <h1>The Communication Stack</h1>
@@ -374,12 +379,11 @@ ul.task-list li input[type="checkbox"] {
 <h3 class="anchored" data-anchor-id="pcie">PCIe</h3>
 <p>PCIe (Peripheral Component Interconnect Express) connects expansion cards like GPUs to the motherboard using independent point-to-point serial lanes. Here’s what different PCIe generations offer for a GPU using 16 lanes:</p>
 <ul>
-<li><strong>Gen4 x16</strong>: ~32 GB/s bidirectional<br>
-</li>
+<li><strong>Gen4 x16</strong>: ~32 GB/s bidirectional</li>
 <li><strong>Gen5 x16</strong>: ~64 GB/s bidirectional</li>
-<li><strong>Gen6 x16</strong>: ~128 GB/s bidirectional (FYI 16 lanes x 8Gb/s/lane = 128 GB/s)</li>
+<li><strong>Gen6 x16</strong>: ~128 GB/s bidirectional (FYI 16 lanes × 8 GB/s/lane = 128 GB/s)</li>
 </ul>
-<p>High-end server CPUs typically offer 128 PCIe lanes, and modern GPUs need 16 lanes for optimal bandwidth. This is why you usually see 8 GPUs per server (128 = 16 x 8). Power consumption, and physical space in server chassis also makes it impractical to go beyond 8 GPUs in a single node.</p>
+<p>High-end server CPUs typically offer 128 PCIe lanes, and modern GPUs need 16 lanes for optimal bandwidth. This is why you usually see 8 GPUs per server (128 = 16 x 8). Power consumption and physical space in server chassis also make it impractical to go beyond 8 GPUs in a single node.</p>
 </section>
 <section id="nvlink" class="level3">
 <h3 class="anchored" data-anchor-id="nvlink">NVLink</h3>
@@ -416,25 +420,21 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="infiniband" class="level3">
 <h3 class="anchored" data-anchor-id="infiniband">InfiniBand</h3>
-<p>InfiniBand handles inter-node communication. While much slower (and cheaper) than NVSwitch, it’s commonly used in datacenters to scale to thousands of GPUs. Modern InfiniBand supports GPU-Direct RDMA, letting network adapters access GPU memory directly without CPU involvement (no expensive copying to host RAM).</p>
+<p>InfiniBand handles inter-node communication. While much slower (and cheaper) than NVSwitch, it’s commonly used in datacenters to scale to thousands of GPUs. Modern InfiniBand supports NVIDIA GPUDirect® RDMA (Remote Direct Memory Access), letting network adapters access GPU memory directly without CPU involvement (no expensive copying to host RAM).</p>
 <p>Current InfiniBand speeds include:</p>
 <ul>
 <li><strong>HDR</strong>: ~25 GB/s per port</li>
 <li><strong>NDR</strong>: ~50 GB/s per port</li>
 <li><strong>NDR200</strong>: ~100 GB/s per port</li>
 </ul>
-<p>These speeds are significantly slower than intra-node NVLink due to network protocol overhead and the need for two PCIe traversals (once at the sender and once at the receiver).</p>
-</section>
-<section id="nvidia-direct" class="level3">
-<h3 class="anchored" data-anchor-id="nvidia-direct">NVIDIA Direct</h3>
-<p>…</p>
+<p>These speeds are significantly slower than intra-node NVLink due to network protocol overhead and the need for two PCIe traversals (one at the sender and one at the receiver).</p>
 </section>
 </section>
 <section id="key-design-principles" class="level1">
 <h1>Key Design Principles</h1>
 <section id="understanding-linear-scaling" class="level3">
 <h3 class="anchored" data-anchor-id="understanding-linear-scaling">Understanding Linear Scaling</h3>
-<p>Linear scaling is the holy grail of distributed computing. In simple terms, it means doubling your GPUs should either double your throughput or halve your training time. That happens when each GPU operates at full capacity. However, perfect linear scaling is rare in AI workloads because communication requirements grow with the number of devices, and it’s usually impossible to achieve perfect compute-communication overlap (explained next).</p>
+<p>Linear scaling is the holy grail of distributed computing. In simple terms, it means doubling your GPUs should double your throughput and halve your training time. This happens when communication overhead is minimal compared to computation time, allowing each GPU to operate at full capacity. However, perfect linear scaling is rare in AI workloads because communication requirements grow with the number of devices, and it’s usually impossible to achieve perfect compute-communication overlap (explained next).</p>
 </section>
 <section id="the-importance-of-compute-communication-overlap" class="level3">
 <h3 class="anchored" data-anchor-id="the-importance-of-compute-communication-overlap">The Importance of Compute-Communication Overlap</h3>
@@ -443,18 +443,18 @@ ul.task-list li input[type="checkbox"] {
 <section id="intra-node-vs.-inter-node-the-performance-cliff" class="level3">
 <h3 class="anchored" data-anchor-id="intra-node-vs.-inter-node-the-performance-cliff">Intra-Node vs.&nbsp;Inter-Node: The Performance Cliff</h3>
 <p>Modern server-grade motherboards support up to 8 GPUs. Within this range, you can often achieve near-linear scaling thanks to high-bandwidth, low-latency intra-node communication.</p>
-<p>Once you scale beyond 8 GPUs and start using multiple nodes with InfiniBand, performance usually degrades faster. Inter-node communication introduces network protocol overhead, higher latency, and bandwidth limitations. This transition is where diminishing returns become much more pronounced. Each new additional GPU ends up operating at a fraction of its maximum capacity.</p>
+<p>Once you scale beyond 8 GPUs and start using multiple nodes connected via InfiniBand, you’ll see a large performance degradation. Inter-node communication is much slower than intra-node NVLink, introducing network protocol overhead, higher latency, and bandwidth limitations. As you add more GPUs, each GPU must coordinate with more peers, spending more time idle waiting for data transfers to complete.</p>
 </section>
 </section>
 <section id="conclusion" class="level1">
 <h1>Conclusion</h1>
-<p>Congratulations for reading all the way to the end! In this post you learned about:</p>
+<p>Congratulations on making it to the end! In this post you learned about:</p>
 <ul>
 <li>The CPU-GPU and GPU-GPU communication fundamentals:
 <ul>
 <li>PCIe, NVLink, NVSwitch, and InfiniBand</li>
 </ul></li>
-<li>Latency and throughput bottlenecks</li>
+<li>Key design principles for distributed GPU computing</li>
 <li>You’re now able to make much more informed decisions when designing your AI workloads</li>
 </ul>
 <p><strong>In the next <a href="../5-ddp/">blog post</a>, we’ll dive into our first parallelism technique, the Distributed Data Parallelism.</strong></p>
@@ -463,6 +463,7 @@ ul.task-list li input[type="checkbox"] {
 <h1>References</h1>
 <ol type="1">
 <li><a href="https://developer.nvidia.com/blog/nvidia-nvlink-and-nvidia-nvswitch-supercharge-large-language-model-inference/">NVIDIA Blog</a></li>
+<li><a href="https://developer.nvidia.com/gpudirect">GPU Direct</a></li>
 </ol>
 
 
