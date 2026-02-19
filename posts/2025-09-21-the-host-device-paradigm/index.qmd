@@ -142,7 +142,7 @@ This means you are launching two separate instances of your Python script. On a 
 
 # Conclusion
 
-Congratulations for reading all the way to the end! In this post, you learned about:
+Congratulations on making it to the end! In this post, you learned about:
 
 - The Host/Device relationship
 - Asynchronous execution
@@ -150,3 +150,8 @@ Congratulations for reading all the way to the end! In this post, you learned ab
 - Host-Device synchronization
 
 **In the [next blog post](../3-torch-distributed-operations/), we will dive deeper into Point-to-Point and Collective Operations, which enable multiple GPUs to coordinate complex workflows such as distributed neural network training.**
+
+References:
+
+- [PyTorch tutorial on non_blocking and pin_memory()](https://docs.pytorch.org/tutorials/intermediate/pinmem_nonblock.html)
+- [PyTorch distributed docs](https://docs.pytorch.org/docs/stable/distributed.html)

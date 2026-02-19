@@ -13,4 +13,4 @@ page-layout: full
 title-block-banner: false
 ---
 
-**Technical AI** the a blog by Lorenzo Cesconetto, where I document and share some of my learnings in ML and AI.
+Hi, I'm Lorenzo and I'm the author of the **Technical AI** blog, where I share ML/AI content for free.

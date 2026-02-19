@@ -12,7 +12,7 @@ title-block-banner: false
 
 ## Projects
 
-- [FastAPI app template](https://github.com/lorenzocesconetto/fastapi-postgresql) 165 ⭐.
+- [FastAPI app template](https://github.com/lorenzocesconetto/fastapi-postgresql) +160 ⭐
 - [Machine Learning Engineering Project](https://github.com/lorenzocesconetto/zoomcamp-mlops-2025-final-project)
 - [TripleAI](https://tripleai.com.br)
 - [Buscamed](https://www.folhavitoria.com.br/folha-business/startup-capixaba-do-setor-farmaceutico-promete-ate-70-de-desconto/)

@@ -7,6 +7,9 @@ website:
     left:
       - href: opensource.qmd
         text: Projects & Contributions
+      - href: https://docs.google.com/document/d/e/2PACX-1vSWeqXhxjRhmrmqZZ3sq5t_09R3NJnjSx9xVt-fakO3c_xq9inmLw52AEAai7rluw/pub
+        text: CV
+        target: "_blank"
     right:
       - href: about.qmd
         text: About me

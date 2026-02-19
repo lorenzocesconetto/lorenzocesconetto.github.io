@@ -247,5 +247,6 @@ Congratulations on making it to the end! In this post, you learned about:
 **In the [next blog post](../2025-10-01-how-gpus-communicate/) we'll dive into PCIe, NVLink, and other mechanisms that enable communication in a distributed setting!**
 
 # References
-- [PyTorch Docs](https://docs.pytorch.org/docs/stable/distributed.html)
+- [PyTorch distributed docs](https://docs.pytorch.org/docs/stable/distributed.html)
 - [NCCL P2P Docs](https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/api/p2p.html)
+- [PyTorch tutorial on non_blocking and pin_memory()](https://docs.pytorch.org/tutorials/intermediate/pinmem_nonblock.html)
