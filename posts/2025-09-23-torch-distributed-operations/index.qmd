@@ -20,7 +20,7 @@ pre code {
 
 This article is part of a series about distributed AI across multiple GPUs:
 
-- [Part 1: Understanding the Host and Device Paradigm](../2025-09-21-first-steps-gpu/)
+- [Part 1: Understanding the Host and Device Paradigm](../2025-09-21-the-host-device-paradigm/)
 - **Part 2: Point-to-Point and Collective Operations** (this article)
 - [Part 3: How GPUs Communicate](../2025-10-01-how-gpus-communicate/)
 - [Part 4: Gradient Accumulation & Distributed Data Parallelism (DDP)](../2025-10-12-ddp/)
@@ -43,7 +43,7 @@ Although PyTorch exposes these operations, it ultimately calls a backend framewo
 
 # Communication: Blocking vs. Non-Blocking
 
-To work together, GPUs must exchange data. The CPU initiates the communication by enqueuing NCCL kernels into CUDA streams (if you don't know what CUDA Streams are, check out the [first blog post](../2025-09-21-first-steps-gpu/) of this series), but the actual data transfer happens directly between GPUs over the interconnect, bypassing the CPU's main memory entirely. Ideally, the GPUs are connected with a high-speed interconnect like NVLink or InfiniBand (these interconnects are covered in the [third post of this series](../2025-10-01-how-gpus-communicate/)).
+To work together, GPUs must exchange data. The CPU initiates the communication by enqueuing NCCL kernels into CUDA streams (if you don't know what CUDA Streams are, check out the [first blog post](../2025-09-21-the-host-device-paradigm/) of this series), but the actual data transfer happens directly between GPUs over the interconnect, bypassing the CPU's main memory entirely. Ideally, the GPUs are connected with a high-speed interconnect like NVLink or InfiniBand (these interconnects are covered in the [third post of this series](../2025-10-01-how-gpus-communicate/)).
 
 This communication may be synchronous (blocking) or asynchronous (non-blocking), which we explore below.
 

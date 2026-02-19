@@ -7,10 +7,10 @@ categories: [GPU]
 
 This article is part of a series about distributed AI across multiple GPUs:
 
-- [Part 1: Understanding the Host and Device Paradigm](../2-first-steps-gpu/)
-- [Part 2: Point-to-Point and Collective Operations](../3-torch-distributed-operations/)
+- [Part 1: Understanding the Host and Device Paradigm](../2025-09-21-the-host-device-paradigm/)
+- [Part 2: Point-to-Point and Collective Operations](../2025-09-23-torch-distributed-operations/)
 - **Part 3: How GPUs Communicate** (this article)
-- [Part 4: Gradient Accumulation & Distributed Data Parallelism (DDP)](../5-ddp/)
+- [Part 4: Gradient Accumulation & Distributed Data Parallelism (DDP)](../2025-10-12-ddp/)
 - [Part 5: ZeRO](../2025-10-25-ZeRO/)
 - Part 6: Tensor Parallelism *(coming soon)*
 
@@ -100,7 +100,7 @@ Congratulations on making it to the end! In this post you learned about:
 - Key design principles for distributed GPU computing
 - You're now able to make much more informed decisions when designing your AI workloads
 
-**In the next [blog post](../5-ddp/), we'll dive into our first parallelism technique, the Distributed Data Parallelism.**
+**In the next [blog post](../2025-10-12-ddp/), we'll dive into our first parallelism technique, the Distributed Data Parallelism.**
 
 # References
 

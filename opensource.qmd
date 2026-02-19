@@ -23,8 +23,9 @@ title-block-banner: false
 Most of my work has been closed source for private companies.
 But I am planning to do more Open Source contributions this year. Hopefully this list will grow longer :)
 
+- Llama.cpp:
+  - [PR ...](...)
 - Model Context Protocol (MCP) Python SDK:
   - [PR 775](https://github.com/modelcontextprotocol/python-sdk/pull/775/)
   - [PR 802](https://github.com/modelcontextprotocol/python-sdk/pull/802)
-  - [PR 871](https://github.com/modelcontextprotocol/python-sdk/pull/871)
-  - [Found a mistake in the ultrascale playbook](https://huggingface.co/spaces/nanotron/ultrascale-playbook/discussions/120)
+- [Found a mistake in the ultrascale playbook](https://huggingface.co/spaces/nanotron/ultrascale-playbook/discussions/120)
