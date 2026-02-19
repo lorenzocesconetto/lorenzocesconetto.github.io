@@ -413,7 +413,7 @@ pre code {
 </style>
 <p>This article is part of a series about distributed AI across multiple GPUs:</p>
 <ul>
-<li><a href="../2025-09-21-first-steps-gpu/">Part 1: Understanding the Host and Device Paradigm</a></li>
+<li><a href="../2025-09-21-the-host-device-paradigm/">Part 1: Understanding the Host and Device Paradigm</a></li>
 <li><strong>Part 2: Point-to-Point and Collective Operations</strong> (this article)</li>
 <li><a href="../2025-10-01-how-gpus-communicate/">Part 3: How GPUs Communicate</a></li>
 <li><a href="../2025-10-12-ddp/">Part 4: Gradient Accumulation &amp; Distributed Data Parallelism (DDP)</a></li>
@@ -437,7 +437,7 @@ pre code {
 </section>
 <section id="communication-blocking-vs.-non-blocking" class="level1">
 <h1>Communication: Blocking vs.&nbsp;Non-Blocking</h1>
-<p>To work together, GPUs must exchange data. The CPU initiates the communication by enqueuing NCCL kernels into CUDA streams (if you don’t know what CUDA Streams are, check out the <a href="../2025-09-21-first-steps-gpu/">first blog post</a> of this series), but the actual data transfer happens directly between GPUs over the interconnect, bypassing the CPU’s main memory entirely. Ideally, the GPUs are connected with a high-speed interconnect like NVLink or InfiniBand (these interconnects are covered in the <a href="../2025-10-01-how-gpus-communicate/">third post of this series</a>).</p>
+<p>To work together, GPUs must exchange data. The CPU initiates the communication by enqueuing NCCL kernels into CUDA streams (if you don’t know what CUDA Streams are, check out the <a href="../2025-09-21-the-host-device-paradigm/">first blog post</a> of this series), but the actual data transfer happens directly between GPUs over the interconnect, bypassing the CPU’s main memory entirely. Ideally, the GPUs are connected with a high-speed interconnect like NVLink or InfiniBand (these interconnects are covered in the <a href="../2025-10-01-how-gpus-communicate/">third post of this series</a>).</p>
 <p>This communication may be synchronous (blocking) or asynchronous (non-blocking), which we explore below.</p>
 <section id="synchronous-blocking-communication" class="level3">
 <h3 class="anchored" data-anchor-id="synchronous-blocking-communication">Synchronous (Blocking) Communication</h3>
