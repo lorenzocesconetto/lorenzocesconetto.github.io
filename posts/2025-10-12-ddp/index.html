@@ -451,7 +451,7 @@ pre code {
 </section>
 <section id="gradient-accumulation" class="level1">
 <h1>Gradient Accumulation</h1>
-<p>Here’s how it works: pick a large mini-batch that won’t fit in GPU memory, but then split it into <em>micro-batches</em> that do fit. For each micro-batch, run forward and backward passes, adding (accumulating) the computed gradients. Once all micro-batches are processed, perform a single optimization step using the averaged gradients.</p>
+<p>Here’s how it works: pick a large mini-batch that won’t fit in GPU memory, but then split it into <em>micro-batches</em> that do fit. For each micro-batch, run forward and backward passes, averaging the computed gradients. Once all micro-batches are processed, perform a single optimization step using the averaged gradients.</p>
 <p><strong>Notice Gradient Accumulation isn’t a parallelization technique and doesn’t require multiple GPUs.</strong></p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -472,13 +472,16 @@ pre code {
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, batch <span class="kw">in</span> <span class="bu">enumerate</span>(dataloader):</span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        inputs, targets <span class="op">=</span> batch</span>
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        output <span class="op">=</span> model(inputs)</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        loss <span class="op">=</span> loss_fn(output, targets)</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        loss.backward()  <span class="co"># Gradients get accumulated (summed)</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        loss <span class="op">=</span> loss_fn(output, targets) <span class="op">/</span> grad_accum_steps <span class="co"># Average loss</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        loss.backward()  <span class="co"># Gradients get accumulated</span></span>
 <span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Only update weights after `grad_accum_steps` micro-batches</span></span>
 <span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (i<span class="op">+</span><span class="dv">1</span>) <span class="op">%</span> grad_accum_steps <span class="op">==</span> <span class="dv">0</span>:  <span class="co"># i+1 to avoid a step in the first iteration when i=0</span></span>
 <span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>            optimizer.step()</span>
 <span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>            optimizer.zero_grad()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<blockquote class="blockquote">
+<p>In the first version of this post, I forgot to divide the loss by <code>grad_accum_steps</code>. Thanks <a href="https://www.linkedin.com/in/yitzhak-levi/">Yitzhak Levi</a> for catching the bug and pointing it out to me!</p>
+</blockquote>
 <p>Notice we’re <em><strong>sequentially</strong></em> performing multiple forward and backward passes before each optimization step, which requires longer training times. It would be nice if we could speed this up by processing multiple micro-batches in <em><strong>parallel</strong></em>… that’s exactly what DDP does!</p>
 </section>
 <section id="distributed-data-parallelism-ddp" class="level1">
