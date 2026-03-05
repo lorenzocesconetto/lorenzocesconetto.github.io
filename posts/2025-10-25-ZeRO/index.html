@@ -462,15 +462,16 @@ window.Quarto = {
 <li><strong>Optimizer States (Adam)</strong>: <span class="math inline">\(2P\)</span> values (first moment <span class="math inline">\(m\)</span> and second moment <span class="math inline">\(v\)</span> for each parameter)</li>
 <li><strong>Activations</strong>: Intermediate outputs stored during forward pass for use in backward pass</li>
 </ul>
-<p>The first three scale with model size and are <strong>redundant across GPUs</strong> in DDP. Activations scale with batch size, sequence length, and model depth, and are <strong>unique per GPU</strong> since each GPU processes different data. ZeRO doesn’t touch activation memory.</p>
+<p>The first three scale with model size and are <strong>redundant across GPUs</strong> in DDP. Activations scale with batch size, sequence length, and # neurons, and are <strong>unique per GPU</strong> since each GPU processes different data. ZeRO doesn’t touch activation memory.</p>
 <p>Let’s calculate the memory usage for a 7B-parameter model using Adam and FP32:</p>
 <ul>
 <li>Parameters: <span class="math inline">\(7B \times 4\)</span> bytes = 28 GB</li>
 <li>Gradients: <span class="math inline">\(7B \times 4\)</span> bytes = 28 GB</li>
 <li>Optimizer states: <span class="math inline">\(7B \times 2 \times 4\)</span> bytes = 56 GB</li>
-<li><strong>Memory per GPU in DDP: ~112 GB</strong></li>
+<li><strong>Memory per GPU in DDP: <span class="math inline">\(112\)</span> GB</strong></li>
 </ul>
 <p>Activations add significant memory on top of this, but since they’re unique per GPU, ZeRO can’t partition them. Techniques like <strong>activation checkpointing</strong> can help, it discards some activations and then recomputes them as needed during the backward pass. But that’s outside the scope of this article.</p>
+<p>Let’s understand how ZeRO works by implementing it from the ground up, starting with ZeRO-1 and working our way to ZeRO-3.</p>
 </section>
 <section id="zero-1-optimizer-state-partitioning" class="level1">
 <h1>ZeRO-1: Optimizer State Partitioning</h1>
@@ -488,6 +489,12 @@ window.Quarto = {
 <li><strong>Optimizer step:</strong> Each GPU updates its parameter partition</li>
 <li><strong><code>all-gather</code> parameters:</strong> sync the updated model across GPUs</li>
 </ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./zero-1.gif" class="img-fluid figure-img"></p>
+<figcaption>Image by author: Zero 1 animation</figcaption>
+</figure>
+</div>
 <p>Here’s a simplified implementation:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.distributed <span class="im">as</span> dist</span>
@@ -499,8 +506,8 @@ window.Quarto = {
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.rank <span class="op">=</span> dist.get_rank()</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.world_size <span class="op">=</span> dist.get_world_size()</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.param_metadata <span class="op">=</span> []</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        shard_list <span class="op">=</span> []</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.param_shards <span class="op">=</span> <span class="bu">list</span>()  <span class="co"># each rank holds only its shard of the optimizer states</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.param_metadata <span class="op">=</span> <span class="bu">list</span>()  <span class="co"># metadata to reconstruct shards</span></span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> param <span class="kw">in</span> <span class="va">self</span>.model.parameters():</span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>            original_shape <span class="op">=</span> param.data.shape</span>
@@ -532,19 +539,19 @@ window.Quarto = {
 <span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>                flat_padded <span class="op">=</span> flat</span>
 <span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>            shard <span class="op">=</span> flat_padded[shard_start:shard_end].clone()</span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>            shard_list.append(shard)</span>
-<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.param_shards <span class="op">=</span> [s.requires_grad_(<span class="va">True</span>) <span class="cf">for</span> s <span class="kw">in</span> shard_list]</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>            shard.requires_grad_(<span class="va">True</span>)</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.param_shards.append(shard)</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.optimizer <span class="op">=</span> optimizer_cls(<span class="va">self</span>.param_shards)</span>
 <span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> training_step(<span class="va">self</span>, inputs, targets, loss_fn):</span>
-<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>        output <span class="op">=</span> <span class="va">self</span>.model(inputs)</span>
-<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>        loss <span class="op">=</span> loss_fn(output, targets)</span>
-<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>        loss.backward()</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>        output <span class="op">=</span> <span class="va">self</span>.model(inputs) <span class="co"># forward</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>        loss <span class="op">=</span> loss_fn(output, targets) <span class="co"># compute loss</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>        loss.backward() <span class="co"># backward</span></span>
 <span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._sync_gradients()  <span class="co"># all-reduce gradients across GPUs</span></span>
-<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.optimizer.step()</span>
-<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._allgather_params()</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.optimizer.step() <span class="co"># update local shard of parameters</span></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._sync_params() <span class="co"># all gather model params</span></span>
 <span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>        <span class="co"># clear gradients for the next step</span></span>
 <span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> param <span class="kw">in</span> <span class="va">self</span>.model.parameters():</span>
@@ -557,9 +564,9 @@ window.Quarto = {
 <span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>            dist.all_reduce(param.grad, op<span class="op">=</span>dist.ReduceOp.SUM)</span>
 <span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a>            param.grad <span class="op">/=</span> <span class="va">self</span>.world_size</span>
 <span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.param_shards[idx].grad <span class="op">=</span> param.grad.view(<span class="op">-</span><span class="dv">1</span>)[meta[<span class="st">"shard_start"</span>]: meta[<span class="st">"shard_end"</span>]]</span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.param_shards[idx].grad <span class="op">=</span> param.grad.view(<span class="op">-</span><span class="dv">1</span>)[meta[<span class="st">"shard_start"</span>]:meta[<span class="st">"shard_end"</span>]]</span>
 <span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> _allgather_params(<span class="va">self</span>):</span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> _sync_params(<span class="va">self</span>):</span>
 <span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> idx, param <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="va">self</span>.model.parameters()):</span>
 <span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a>            meta <span class="op">=</span> <span class="va">self</span>.param_metadata[idx]</span>
 <span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a></span>
@@ -568,16 +575,17 @@ window.Quarto = {
 <span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a>                output_tensor<span class="op">=</span>full_flat,</span>
 <span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a>                input_tensor<span class="op">=</span><span class="va">self</span>.param_shards[idx].data,</span>
 <span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a>            )</span>
-<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a>            param.data.copy_(full_flat[: meta[<span class="st">"numel"</span>]].view(meta[<span class="st">"original_shape"</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a>            reconstructed <span class="op">=</span> full_flat[:meta[<span class="st">"numel"</span>]].view(meta[<span class="st">"original_shape"</span>])</span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a>            param.data.copy_(reconstructed)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Notice that the <code>all-reduce</code> syncs <em>all</em> gradients, but each GPU only uses the gradients for its own parameter partition, it’s overcommunicating. ZeRO-2 fixes this by sharding the gradients too.</p>
 <p>In practice, you’d never use ZeRO-1 as ZeRO-2 gives you better memory savings at essentially the same cost. But it’s still worth going over it for learning purposes.</p>
 <p><strong>Memory with ZeRO-1, 7B model, 8 GPUs:</strong></p>
 <ul>
-<li>Parameters: 28 GB (fully replicated)</li>
-<li>Gradients: 28 GB (fully replicated)</li>
+<li>Parameters: <span class="math inline">\(28\)</span> GB (fully replicated)</li>
+<li>Gradients: <span class="math inline">\(28\)</span> GB (fully replicated)</li>
 <li>Optimizer states: <span class="math inline">\(56 \text{ GB} / 8 = 7 \text{ GB per GPU}\)</span></li>
-<li><strong>Total per GPU: 63 GB</strong> (down from 112 GB)</li>
+<li><strong>Total per GPU: <span class="math inline">\(63\)</span> GB</strong> (down from <span class="math inline">\(112\)</span> GB)</li>
 </ul>
 </section>
 <section id="zero-2-gradient-partitioning" class="level1">
@@ -592,72 +600,83 @@ window.Quarto = {
 <li><strong>Optimizer step:</strong> Each GPU updates its parameter partition</li>
 <li><strong><code>all-gather</code> parameters:</strong> sync the updated model across GPUs</li>
 </ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./zero-2.gif" class="img-fluid figure-img"></p>
+<figcaption>Image by author: Zero 2 animation</figcaption>
+</figure>
+</div>
 <p>The implementation is very similar to ZeRO-1, but the gradient synchronization step uses <code>reduce-scatter</code> instead of <code>all-reduce</code>:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ZeRO_2(ZeRO_1):</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> _sync_gradients(<span class="va">self</span>):</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">        ZeRO-2: reduce_scatter gradients so each rank receives only</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">        the averaged gradient shard for the parameters it owns,</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">        saving memory.</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> idx, param <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="va">self</span>.model.parameters()):</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>            meta <span class="op">=</span> <span class="va">self</span>.param_metadata[idx]</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>            grad_flat <span class="op">=</span> param.grad.view(<span class="op">-</span><span class="dv">1</span>)</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>            pad_size <span class="op">=</span> meta[<span class="st">"padded_numel"</span>] <span class="op">-</span> meta[<span class="st">"numel"</span>]</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> pad_size <span class="op">&gt;</span> <span class="dv">0</span>:</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>                grad_flat <span class="op">=</span> torch.cat([grad_flat, grad_flat.new_zeros(pad_size)])</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Each rank receives only its own shard of the reduced gradient</span></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>            grad_shard <span class="op">=</span> torch.zeros(</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>                meta[<span class="st">"shard_size"</span>],</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>                device<span class="op">=</span>param.device,</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>                dtype<span class="op">=</span>param.dtype</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>            )</span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>            dist.reduce_scatter_tensor(</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>                output<span class="op">=</span>grad_shard,</span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>                <span class="bu">input</span><span class="op">=</span>grad_flat.contiguous(),</span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>                op<span class="op">=</span>dist.ReduceOp.SUM,</span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>            )</span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>            grad_shard <span class="op">/=</span> <span class="va">self</span>.world_size</span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.param_shards[idx].grad <span class="op">=</span> grad_shard</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">        the gradient shard for the parameters it owns</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> idx, param <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="va">self</span>.model.parameters()):</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>            meta <span class="op">=</span> <span class="va">self</span>.param_metadata[idx]</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>            grad_flat <span class="op">=</span> param.grad.view(<span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>            pad_size <span class="op">=</span> meta[<span class="st">"padded_numel"</span>] <span class="op">-</span> meta[<span class="st">"numel"</span>]</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> pad_size <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>                grad_flat <span class="op">=</span> torch.cat([grad_flat, grad_flat.new_zeros(pad_size)])</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Each rank receives only its own shard of the reduced gradient</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>            grad_shard <span class="op">=</span> torch.empty(</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>                meta[<span class="st">"shard_size"</span>], device<span class="op">=</span>param.device, dtype<span class="op">=</span>param.dtype</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>            dist.reduce_scatter_tensor(</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>                output<span class="op">=</span>grad_shard,</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>                <span class="bu">input</span><span class="op">=</span>grad_flat.contiguous(),</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>                op<span class="op">=</span>dist.ReduceOp.SUM,</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>            grad_shard <span class="op">/=</span> <span class="va">self</span>.world_size</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.param_shards[idx].grad <span class="op">=</span> grad_shard</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p><strong>But wait, if every GPU computes all gradients during backprop, how does this actually save VRAM?</strong> Here’s how:</p>
 <ul>
-<li>As the parameter gradients are computed layer by layer, they’re immediately <code>reduce-scattered</code> and the local copy is freed.</li>
+<li>As the parameter gradients are computed layer by layer, they’re immediately <code>reduce-scattered</code> and the local copy is freed (our simplified implementation doesn’t perform this).</li>
 <li>During backprop, you only need the gradient of the next neuron activation to compute the current param’s gradient, i.e., you don’t need the entire gradient graph.</li>
 <li>That way you can free up the memory for gradients as you’re moving backwards, keeping only the assigned partition for each GPU.</li>
 </ul>
 <p><strong>Memory with ZeRO-2, 7B model, 8 GPUs:</strong></p>
 <ul>
-<li>Parameters: 28 GB (fully replicated)</li>
+<li>Parameters: <span class="math inline">\(28\)</span> GB (fully replicated)</li>
 <li>Gradients: <span class="math inline">\(28 \text{ GB} / 8 = 3.5 \text{ GB per GPU}\)</span></li>
 <li>Optimizer states: <span class="math inline">\(56 \text{ GB} / 8 = 7 \text{ GB per GPU}\)</span></li>
-<li><strong>Total per GPU: 38.5 GB</strong> (down from 112 GB)</li>
+<li><strong>Total per GPU: <span class="math inline">\(38.5\)</span> GB</strong> (down from 112 GB)</li>
 </ul>
 </section>
 <section id="zero-3-parameter-partitioning" class="level1">
 <h1>ZeRO-3: Parameter Partitioning</h1>
 <p>ZeRO-3 partitions optimizer states, gradients, and <strong>parameters</strong>. Each GPU stores only 1/N of the entire model state.</p>
-<p>This is where things get interesting. During forward and backward passes, each layer needs its full parameters, but each GPU only stores a fraction. The solution: <strong>all-gather parameters just-in-time</strong>, use them, then discard them immediately after.</p>
+<p>During forward and backward passes, each layer needs its full parameters, but each GPU only stores a fraction. So we <strong>all-gather parameters just-in-time</strong>, use them, then discard immediately after.</p>
 <p>Training steps:</p>
 <ol type="1">
 <li><strong>Forward pass (per layer)</strong>:
 <ul>
 <li>All-gather the layer’s parameters from all GPUs</li>
-<li>Run the layer’s forward pass</li>
+<li>Run the layer’s forward pass using previous layer’s activations as input</li>
 <li>Discard the gathered parameters (keep only the local partition)</li>
+<li>Repeat these steps until all layers are done</li>
 </ul></li>
 <li><strong>Backward pass (per layer, in reverse)</strong>:
 <ul>
 <li>All-gather the layer’s parameters again</li>
-<li>Compute gradients for this layer</li>
-<li>Reduce-scatter the gradients (each GPU keeps its partition)</li>
-<li>Discard the gathered parameters</li>
+<li>Compute gradients for current layer using activation gradients from next layer</li>
+<li>Reduce-scatter the gradients (each GPU keeps its shard)</li>
+<li>Discard the gathered parameters (keep only the local partition)</li>
+<li>Repeat these steps until all layers are done</li>
 </ul></li>
 <li>Each GPU runs an optimizer step on its partition</li>
 <li>No final all-gather needed since parameters are gathered layer-by-layer during the forward pass</li>
 </ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./zero-3.gif" class="img-fluid figure-img"></p>
+<figcaption>Image by author: Zero 3 animation</figcaption>
+</figure>
+</div>
 <div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ZeRO_3(ZeRO_2):</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">    ZeRO-3: Shard optimizer states (stage 1) + gradients (stage 2) + model parameters (stage 3).</span></span>
