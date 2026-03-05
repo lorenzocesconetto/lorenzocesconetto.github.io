@@ -211,7 +211,7 @@ In these operations, every rank both sends and receives data from all other rank
 
 ### Reduce Scatter
 
-* **`torch.distributed.reduce_scatter(output, input_list)`**: Equivalent of performing a reduce operation on a list of tensors and then scattering the results. Each rank receives a different part of the reduced output.
+* **`torch.distributed.reduce_scatter(output, input_list, op)`**: Equivalent of performing a reduce operation on a list of tensors and then scattering the results. Each rank receives a different part of the reduced output.
 
     ```python
     # Example for torch.distributed.reduce_scatter

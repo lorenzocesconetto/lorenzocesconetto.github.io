@@ -63,7 +63,7 @@ This is where Gradient Accumulation and Data Parallelism come into play. Althoug
 
 # Gradient Accumulation
 
-Here's how it works: pick a large mini-batch that won't fit in GPU memory, but then split it into *micro-batches* that do fit. For each micro-batch, run forward and backward passes, adding (accumulating) the computed gradients. Once all micro-batches are processed, perform a single optimization step using the averaged gradients.
+Here's how it works: pick a large mini-batch that won't fit in GPU memory, but then split it into *micro-batches* that do fit. For each micro-batch, run forward and backward passes, averaging the computed gradients. Once all micro-batches are processed, perform a single optimization step using the averaged gradients.
 
 **Notice Gradient Accumulation isn't a parallelization technique and doesn't require multiple GPUs.**
 
@@ -84,14 +84,16 @@ def training_loop(
     for i, batch in enumerate(dataloader):
         inputs, targets = batch
         output = model(inputs)
-        loss = loss_fn(output, targets)
-        loss.backward()  # Gradients get accumulated (summed)
+        loss = loss_fn(output, targets) / grad_accum_steps # Average loss
+        loss.backward()  # Gradients get accumulated
 
         # Only update weights after `grad_accum_steps` micro-batches
         if (i+1) % grad_accum_steps == 0:  # i+1 to avoid a step in the first iteration when i=0
             optimizer.step()
             optimizer.zero_grad()
 ```
+
+> In the first version of this post, I forgot to divide the loss by `grad_accum_steps`. Thanks [Yitzhak Levi](https://www.linkedin.com/in/yitzhak-levi/) for catching the bug and pointing it out to me!
 
 Notice we're _**sequentially**_ performing multiple forward and backward passes before each optimization step, which requires longer training times. It would be nice if we could speed this up by processing multiple micro-batches in _**parallel**_... that's exactly what DDP does!
 
@@ -206,9 +208,9 @@ def training_loop(
 
 - **PyTorch DDP overlaps communication with computation.** By default, DDP communicates gradients as they're computed during backpropagation rather than waiting for the full backward pass to finish. Here's how:
 
-  - PyTorch organizes model gradients into buckets of `bucket_cap_mb` megabytes. During the backward pass, PyTorch marks gradients as ready for reduction as they're computed. Once all gradients in a bucket are ready, DDP kicks off an asynchronous `allreduce` to average those gradients across all ranks. The `loss.backward()` call returns only after all `allreduce` operations have completed, so immediately calling `opt.step()` is safe.
+  - PyTorch organizes model gradients into buckets of `bucket_cap_mb` megabytes. During the backward pass, PyTorch marks gradients as ready for reduction as they're computed. Once all gradients in a bucket are ready, DDP kicks off an asynchronous `all-reduce` to average those gradients across all ranks. The `loss.backward()` call returns only after all `all-reduce` operations have completed, so immediately calling `opt.step()` is safe.
 
-  - The `bucket_cap_mb` parameter creates a tradeoff: smaller values trigger more frequent `allreduce` operations, but each communication kernel launch incurs some overhead that can hurt performance. Larger values reduce communication frequency but also reduce overlap; at the extreme, if buckets are too large, you're waiting for the entire backward pass to finish before communicating. The optimal value depends on your model architecture and hardware, so profile with different values to find what works best.
+  - The `bucket_cap_mb` parameter creates a tradeoff: smaller values trigger more frequent `all-reduce` operations, but each communication kernel launch incurs some overhead that can hurt performance. Larger values reduce communication frequency but also reduce overlap; at the extreme, if buckets are too large, you're waiting for the entire backward pass to finish before communicating. The optimal value depends on your model architecture and hardware, so profile with different values to find what works best.
 
 ![Source: [PyTorch Tutorial](https://docs.pytorch.org/docs/stable/notes/ddp.html)](https://user-images.githubusercontent.com/16999635/72401724-d296d880-371a-11ea-90ab-737f86543df9.png)
 
@@ -279,8 +281,8 @@ def train():
             output = ddp_model(x)
             loss = loss_fn(output, y)
 
-            # Backward automatically overlaps with allreduce per bucket.
-            # By the time this returns, all allreduce ops are done.
+            # Backward automatically overlaps with all-reduce per bucket.
+            # By the time this returns, all all-reduce ops are done.
             loss.backward()
             optimizer.step()
 
@@ -361,9 +363,9 @@ def train():
 
             is_last_micro_step = (batch_idx + 1) % ACCUM_STEPS == 0
 
-            # no_sync() suppresses allreduce on accumulation steps.
+            # no_sync() suppresses all-reduce on accumulation steps.
             # On the last microstep we exit no_sync() so DDP fires
-            # the allreduce overlapped with that backward pass.
+            # the all-reduce overlapped with that backward pass.
             ctx = ddp_model.no_sync() if not is_last_micro_step else nullcontext()
 
             with ctx:
