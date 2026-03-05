@@ -586,8 +586,8 @@ pre code {
 <li><p><strong>Don’t max out GPU memory.</strong> Counter-intuitively, leaving some free memory can lead to faster training throughput. When you leave at least ~15% of GPU memory free, the GPU can better manage memory by avoiding fragmentation.</p></li>
 <li><p><strong>PyTorch DDP overlaps communication with computation.</strong> By default, DDP communicates gradients as they’re computed during backpropagation rather than waiting for the full backward pass to finish. Here’s how:</p>
 <ul>
-<li><p>PyTorch organizes model gradients into buckets of <code>bucket_cap_mb</code> megabytes. During the backward pass, PyTorch marks gradients as ready for reduction as they’re computed. Once all gradients in a bucket are ready, DDP kicks off an asynchronous <code>allreduce</code> to average those gradients across all ranks. The <code>loss.backward()</code> call returns only after all <code>allreduce</code> operations have completed, so immediately calling <code>opt.step()</code> is safe.</p></li>
-<li><p>The <code>bucket_cap_mb</code> parameter creates a tradeoff: smaller values trigger more frequent <code>allreduce</code> operations, but each communication kernel launch incurs some overhead that can hurt performance. Larger values reduce communication frequency but also reduce overlap; at the extreme, if buckets are too large, you’re waiting for the entire backward pass to finish before communicating. The optimal value depends on your model architecture and hardware, so profile with different values to find what works best.</p></li>
+<li><p>PyTorch organizes model gradients into buckets of <code>bucket_cap_mb</code> megabytes. During the backward pass, PyTorch marks gradients as ready for reduction as they’re computed. Once all gradients in a bucket are ready, DDP kicks off an asynchronous <code>all-reduce</code> to average those gradients across all ranks. The <code>loss.backward()</code> call returns only after all <code>all-reduce</code> operations have completed, so immediately calling <code>opt.step()</code> is safe.</p></li>
+<li><p>The <code>bucket_cap_mb</code> parameter creates a tradeoff: smaller values trigger more frequent <code>all-reduce</code> operations, but each communication kernel launch incurs some overhead that can hurt performance. Larger values reduce communication frequency but also reduce overlap; at the extreme, if buckets are too large, you’re waiting for the entire backward pass to finish before communicating. The optimal value depends on your model architecture and hardware, so profile with different values to find what works best.</p></li>
 </ul></li>
 </ul>
 <div class="quarto-figure quarto-figure-center">
@@ -663,8 +663,8 @@ pre code {
 <span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>            output <span class="op">=</span> ddp_model(x)</span>
 <span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>            loss <span class="op">=</span> loss_fn(output, y)</span>
 <span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Backward automatically overlaps with allreduce per bucket.</span></span>
-<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a>            <span class="co"># By the time this returns, all allreduce ops are done.</span></span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Backward automatically overlaps with all-reduce per bucket.</span></span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a>            <span class="co"># By the time this returns, all all-reduce ops are done.</span></span>
 <span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a>            loss.backward()</span>
 <span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a>            optimizer.step()</span>
 <span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a></span>
@@ -744,9 +744,9 @@ pre code {
 <span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a>            is_last_micro_step <span class="op">=</span> (batch_idx <span class="op">+</span> <span class="dv">1</span>) <span class="op">%</span> ACCUM_STEPS <span class="op">==</span> <span class="dv">0</span></span>
 <span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a>            <span class="co"># no_sync() suppresses allreduce on accumulation steps.</span></span>
+<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a>            <span class="co"># no_sync() suppresses all-reduce on accumulation steps.</span></span>
 <span id="cb7-67"><a href="#cb7-67" aria-hidden="true" tabindex="-1"></a>            <span class="co"># On the last microstep we exit no_sync() so DDP fires</span></span>
-<span id="cb7-68"><a href="#cb7-68" aria-hidden="true" tabindex="-1"></a>            <span class="co"># the allreduce overlapped with that backward pass.</span></span>
+<span id="cb7-68"><a href="#cb7-68" aria-hidden="true" tabindex="-1"></a>            <span class="co"># the all-reduce overlapped with that backward pass.</span></span>
 <span id="cb7-69"><a href="#cb7-69" aria-hidden="true" tabindex="-1"></a>            ctx <span class="op">=</span> ddp_model.no_sync() <span class="cf">if</span> <span class="kw">not</span> is_last_micro_step <span class="cf">else</span> nullcontext()</span>
 <span id="cb7-70"><a href="#cb7-70" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-71"><a href="#cb7-71" aria-hidden="true" tabindex="-1"></a>            <span class="cf">with</span> ctx:</span>
